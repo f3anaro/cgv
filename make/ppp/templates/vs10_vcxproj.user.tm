@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 @func(::gen_user_config; :>ci=0, :>project_name="", :>return="")@{
   @define(:>debug_flavor=["","",0,0])
   @define(:>pj =& projects[project_name])

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 @func(::gen_files; :>pj = MAP, :>return="")@{@//
   @skip(sort_files_by_rule_id(<:pj =& pj))
   @define(F =& pj::file_by_rule)

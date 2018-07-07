@@ -1,22 +1,24 @@
-cmake_minimum_required(VERSION 2.6)
-project(cgv_viewer)
+project(cgv_viewer LANGUAGES CXX)
 
-# The CGV framework is needed
-# Also inherit build settings
-find_package(cgv COMPONENTS signal base gui)
+# Define cgv_viewer executable
+add_executable(cgv_viewer
+    src/main.cxx)
 
-include_directories(${cgv_INCLUDE_DIRS})
+# Define the libraries this project depends upon
+target_link_libraries(cgv_viewer
+    cgv::signal
+    cgv::base
+    cgv::gui)
 
-set(SOURCES main.cxx)
+# 'make install' to the correct locations (provided by GNUInstallDirs).
+install(TARGETS cgv_viewer EXPORT cgvViewerConfig
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
+# This makes the project importable from the install directory.
+# Put config file in per-project dir (name MUST match).
+install(EXPORT cgvViewerConfig DESTINATION lib/cmake/cgvViewer)
 
-cgv_add_executable(cgv_viewer ${SOURCES})
-target_link_libraries(cgv_viewer ${cgv_LIBRARIES})
-
-set_target_properties(cgv_viewer PROPERTIES FOLDER "${FOLDER_NAME_APPS}")
-
-cgv_write_find_file(cgv_viewer)
-
-# We need to install the main file for the binary distribution
-install(FILES main.cxx 
-		DESTINATION "${INSTALL_BASE}/${INSTALL_HEADER_PATH}/apps/cgv_viewer")
+# This makes the project importable from the build directory
+export(TARGETS cgv_viewer FILE cgvViewerConfig.cmake)

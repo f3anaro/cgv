@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 @func(::gen_rule; :>pj = MAP, :>R = MAP, :>return="")@{@//
   <PropertyGroup
     Condition=@('"'."'")$(@(get_rule_name(<:R =& R))BeforeTargets)@("' == '' and '")$(@(get_rule_name(<:R =& R))AfterTargets)@("' == '' and '")$(ConfigurationType)@("' != 'Makefile'".'"')>

@@ -53,7 +53,7 @@ file.
 Used extensions for ppp input files:
 - \c ".ph" ...  for pre-header files that are used to generate code
 - \c ".ppp" ... files that are used solely to configure ppp. The standard
-                ppp configuration file is located in \c "<cgv/config/ppp.ppp>".
+                ppp configuration file is located in \c "<components/config/ppp.ppp>".
 - \c ".hh" ...  header files of classes that uses the automatic type reflection
                 mechanism
 - \c ".pj" ...  project files used for make file generation
@@ -91,7 +91,7 @@ All ppp commands are preceeded by a @-symbol. This example includes three ppp co
 
 For completeness we give the ppp configuration file ppp.ppp:
 
-\c cgv/config/ppp.ppp:
+\c components/config/ppp.ppp:
 
 \include ppp.ppp
 
@@ -166,7 +166,7 @@ expression \c end-expr evaluated and interpreted as string. This list is written
 The command \verbatim @["T0 v0"; ","; "T3 v3"] \endverbatim will generated the output 
 \verbatim T0 v0, T1 v1, T2 v2, T3 v3 \endverbatim.
 - \verbatim
-@[include|exclude|insert] [<|"|(]cgv/config/ppp.ppp[>|"|)]
+@[include|exclude|insert] [<|"|(]components/config/ppp.ppp[>|"|)]
 \endverbatim ... include, exclude and insert commands make ppp include the given 
 specified files recursively. The argument can be enclosed either in \c <>, \c ""
 or \c (). In the first two cases it is not parsed and the file name lookup is

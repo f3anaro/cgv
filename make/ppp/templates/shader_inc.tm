@@ -1,4 +1,4 @@
-﻿@func(::gen_files; :>pj = MAP, :>T = MAP, :>filter = "", :>return="")@{@//
+@func(::gen_files; :>pj = MAP, :>T = MAP, :>filter = "", :>return="")@{@//
   @if(T ~~ MAP)@{
     @for(:>i=0; i<!T; ++i)@{
 	  @if(T[i] != "excl_cfg_idxs")@{

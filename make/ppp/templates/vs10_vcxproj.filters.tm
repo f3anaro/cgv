@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 @func(::gen_filters; :>T = MAP, :>prefix = "", :>return="")@{
   @for(:>i=0; i<!T; ++i)@{
 	@if(T[i] != "excl_cfg_idxs")@{@//
