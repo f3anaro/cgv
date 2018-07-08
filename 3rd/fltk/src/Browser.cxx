@@ -31,9 +31,10 @@
 #include <fltk/draw.h>
 #include <fltk/error.h>
 #include <fltk/Cursor.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cstdint>
 
 using namespace fltk;
 
@@ -1762,7 +1763,7 @@ public:
 */
 void Browser::column_labels(const char **t) {
   column_labels_ = t;
-  int i;
+  intptr_t i;
   if (header_) {
     for (i=0; i<nHeader; i++) delete header_[i];
     delete[] header_;

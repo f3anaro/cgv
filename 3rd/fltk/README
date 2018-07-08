@@ -1,5 +1,5 @@
 This is fltk version 2.0 r7725 modified in the following way by 
-Stefan Gumhold on 19th of december 2010:
+Stefan Gumhold on 19th of december 2010 and Lucas Kahlert on 7th of july 2018:
 
 1. The directory structure has been merged such that source folders
    are located within the fltk header folder.
@@ -57,6 +57,20 @@ pfDefWindowProc& fltk::refFilterWindowProc()
 =>
 #include <fltk/FileChooser.h>
 
+6. updated includes in src/Browser.cxx line 34-37
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+=>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cstdint>
    
+7. Fixes casting to pointer from different size in src/Browser.cxx line 1766
+int i;
+=>
+intptr_t i;
+
 The modified version is provided under the FLTK License provided in the 
 file "COPYING".
