@@ -32,6 +32,10 @@ add_library(cg_fltk
     src/fltk_driver.cxx
     src/fltk_driver_registry.cxx)
 
+# Add an alias target for the cgv:: namespace such that other components can use
+# this target like other imported targets with namespace prefixes.
+add_library(cgv::cg_fltk ALIAS cg_fltk)
+
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
 # paths.
@@ -81,7 +85,7 @@ target_link_libraries(cg_fltk
     FLTK2::FLTK2)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS cg_fltk EXPORT cg_fltkConfig
+install(TARGETS cg_fltk EXPORT cgFltkConfig
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -92,7 +96,7 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cg_fltkConfig NAMESPACE cgv:: DESTINATION lib/cmake/cg_fltk)
+install(EXPORT cgFltkConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgFltk)
 
 # This makes the project importable from the build directory
-export(TARGETS cg_fltk NAMESPACE cgv:: FILE cg_fltkConfig.cmake)
+export(TARGETS cg_fltk NAMESPACE cgv:: FILE cgFltkConfig.cmake)
