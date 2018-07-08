@@ -19,6 +19,14 @@ if(WIN32)
     add_subdirectory(3rd/pthread)
 endif()
 
+# TODO: Use in Windows builds only
+add_subdirectory(3rd/glew)
+
+# FLTK 2.0 is an experimental new version of the library which is currently
+# inactive. Hence, there is no stable release that can be installed system-wide
+# and we need to build it.
+add_subdirectory(3rd/fltk)
+
 # Tools
 add_subdirectory(tool/ppp)
 # add_subdirectory(tool/shader_test)
@@ -28,7 +36,7 @@ add_subdirectory(tool/ppp)
 # add_subdirectory(libs/ann_wrapper)
 # add_subdirectory(libs/capture)
 # add_subdirectory(libs/cg_gamepad)
-# add_subdirectory(libs/cgv_gl)
+add_subdirectory(libs/cgv_gl)
 # add_subdirectory(libs/cgv_reflect_types)
 # add_subdirectory(libs/cgv_win32)
 # add_subdirectory(libs/delaunay)
@@ -57,7 +65,7 @@ add_subdirectory(components/type)
 add_subdirectory(components/utils)
 
 # Plugins
-# add_subdirectory()
+add_subdirectory(plugins/cg_fltk)
 
 # Applications
 add_subdirectory(apps/cgv_viewer)

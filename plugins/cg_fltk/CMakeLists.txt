@@ -1,91 +1,98 @@
-cmake_minimum_required(VERSION 2.6)
 project(cg_fltk)
 
-#add_subdirectory(/home/jstaib/Entwicklung/CGV-Framework/release)
+# TODO: Use find_package for dependencies
 
-# The CGV framework is needed
-find_package(cgv 
-	COMPONENTS gui render media utils os base data type signal reflect
-	HINTS $ENV{CGV_DIR}
-	)
+add_library(cg_fltk
+    src/DockableGroup.cxx
+    src/fltk_align_group.cxx
+    src/fltk_base.cxx
+    src/fltk_bool_control.cxx
+    src/fltk_button.cxx
+    src/fltk_color_control.cxx
+    src/fltk_decorator.cxx
+    src/fltk_dockable_group.cxx
+    src/fltk_dragger.cxx
+    src/fltk_enum_control.cxx
+    src/fltk_event.cxx
+    src/fltk_font_server.cxx
+    src/fltk_generic_window.cxx
+    src/fltk_gl_view.cxx
+    src/fltk_gui_group.cxx
+    src/fltk_layout_group.cxx
+    src/fltk_shortcut_control.cxx
+    src/fltk_string_control.cxx
+    src/fltk_string_view.cxx
+    src/fltk_tab_group.cxx
+    src/fltk_text_editor.cxx
+    src/fltk_tree_group.cxx
+    src/fltk_trigger_server.cxx
+    src/fltk_value_control.cxx
+    src/fltk_value_view.cxx
+    src/fltk_viewer_window.cxx
+    src/fltk_driver.cxx
+    src/fltk_driver_registry.cxx)
 
-cgv_find_package(FLTK2)
-cgv_find_package(cgv_gl)
+# Define headers for this library. PUBLIC headers are used for
+# compiling the library, and will be added to consumers' build
+# paths.
+target_include_directories(cg_fltk
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
+if(${BUILD_SHARED_LIBS})
+    # Compiler definitions for shared library
+    target_compile_definitions(cg_fltk
+        PUBLIC
+            CGV_GUI_FLTK_EXPORTS
+            FL_SHARED)
+else()
+    # Compiler definitions for static library
+    target_compile_definitions(cg_fltk
+        PUBLIC
+            CGV_GUI_FLTK_FORCE_STATIC
+            CGV_FORCE_STATIC)
+endif()
 
-set(HEADERS
-	DockableGroup.h
-	fltk_align_group.h
-	fltk_base.h
-	fltk_bool_control.h
-	fltk_button.h
-	fltk_dockable_group.h
-	fltk_dragger.h
-	fltk_driver.h
-	fltk_driver_registry.h
-	fltk_enum_control.h
-	fltk_event.h
-	fltk_font_server.h
-	fltk_generic_window.h
-	fltk_gl_view.h
-	fltk_gui_group.h
-	fltk_layout_group.h
-	fltk_string_control.h
-	fltk_string_view.h
-	fltk_tab_group.h
-	fltk_text_editor.h
-	fltk_tree_group.h
-	fltk_trigger_server.h
-	fltk_value_control.h
-	fltk_value_view.h
-	fltk_viewer_window.h
-	lib_begin.h)
+if(WIN32)
+    # Add additional dependencies for Windows builds
+    target_link_libraries(cg_fltk Comdlg32 static)
 
-set(SOURCES
-	DockableGroup.cxx
-	fltk_align_group.cxx
-	fltk_base.cxx
-	fltk_bool_control.cxx
-	fltk_button.cxx
-	fltk_color_control.cxx
-	fltk_decorator.cxx
-	fltk_dockable_group.cxx
-	fltk_dragger.cxx
-	fltk_enum_control.cxx
-	fltk_event.cxx
-	fltk_font_server.cxx
-	fltk_generic_window.cxx
-	fltk_gl_view.cxx
-	fltk_gui_group.cxx
-	fltk_layout_group.cxx
-	fltk_shortcut_control.cxx
-	fltk_string_control.cxx
-	fltk_string_view.cxx
-	fltk_tab_group.cxx
-	fltk_text_editor.cxx
-	fltk_tree_group.cxx
-	fltk_trigger_server.cxx
-	fltk_value_control.cxx
-	fltk_value_view.cxx
-	fltk_viewer_window.cxx
-	fltk_driver.cxx
-	fltk_driver_registry.cxx	
-	)
+    # Mark the shared library as regular DLL for Windows. Otherwise it would be
+    # treated as Extension DLL.
+    if(${BUILD_SHARED_LIBS})
+        target_compile_definitions(cg_fltk PUBLIC _USRDLL)
+    endif()
+endif()
 
-include_directories( 
-	${FLTK2_INCLUDE_DIRS} 
-	${cgv_gl_INCLUDE_DIRS}
-	${cgv_INCLUDE_DIRS})
+# Dependencies on other components, plugins and libraries.
+target_link_libraries(cg_fltk
+    cgv::gui
+    cgv::render
+    cgv::media
+    cgv::utils
+    cgv::os
+    cgv::base
+    cgv::data
+    cgv::type
+    cgv::signal
+    cgv::reflect
+    cgv::gl
+    FLTK2::FLTK2)
 
-cgv_add_module(cg_fltk ${SOURCES} ${HEADERS})
+# 'make install' to the correct locations (provided by GNUInstallDirs).
+install(TARGETS cg_fltk EXPORT cg_fltkConfig
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
-# FIXME: do not use internal macros
-_cgv_set_definitions(cg_fltk
-	SHARED CGV_GUI_FLTK_EXPORTS FL_SHARED
-	STATIC CGV_GUI_FLTK_FORCE_STATIC ${cgv_gl_STATIC_DEFINITIONS})
+# Install header files of component.
+install(DIRECTORY include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-target_link_libraries(cg_fltk ${cgv_gl_LIBRARIES} ${cgv_LIBRARIES} ${FLTK2_LIBRARIES})
+# This makes the project importable from the install directory.
+# Put config file in per-project dir (name MUST match).
+install(EXPORT cg_fltkConfig NAMESPACE cgv:: DESTINATION lib/cmake/cg_fltk)
 
-cgv_write_find_file(cg_fltk)
-
-
+# This makes the project importable from the build directory
+export(TARGETS cg_fltk NAMESPACE cgv:: FILE cg_fltkConfig.cmake)
