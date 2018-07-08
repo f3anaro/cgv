@@ -1,6 +1,18 @@
 project(cg_fltk)
 
-# TODO: Use find_package for dependencies
+# Load required imported targets
+find_package(cgvGui REQUIRED)
+find_package(cgvRender REQUIRED)
+find_package(cgvMedia REQUIRED)
+find_package(cgvUtils REQUIRED)
+find_package(cgvOs REQUIRED)
+find_package(cgvBase REQUIRED)
+find_package(cgvData REQUIRED)
+find_package(cgvType REQUIRED)
+find_package(cgvSignal REQUIRED)
+find_package(cgvReflect REQUIRED)
+find_package(cgvGl REQUIRED)
+find_package(FLTK2 REQUIRED)
 
 add_library(cg_fltk
     src/DockableGroup.cxx
@@ -85,7 +97,7 @@ target_link_libraries(cg_fltk
     FLTK2::FLTK2)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS cg_fltk EXPORT cgFltkConfig
+install(TARGETS cg_fltk EXPORT cgFltkTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -96,7 +108,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgFltkConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgFltk)
+install(EXPORT cgFltkTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgFltk)
+install(FILES cgvFltkConfig.cmake DESTINATION lib/cmake/cgvFltk)
 
 # This makes the project importable from the build directory
-export(TARGETS cg_fltk NAMESPACE cgv:: FILE cgFltkConfig.cmake)
+export(TARGETS cg_fltk NAMESPACE cgv:: FILE cgFltkTargets.cmake)

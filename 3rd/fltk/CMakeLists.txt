@@ -271,7 +271,7 @@ target_link_libraries(FLTK2
 # -----------------------
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS FLTK2 EXPORT FLTK2Config
+install(TARGETS FLTK2 EXPORT FLTK2Targets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -282,7 +282,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT FLTK2Config NAMESPACE FLTK2:: DESTINATION lib/cmake/FLTK2)
+install(EXPORT FLTK2Targets NAMESPACE FLTK2:: DESTINATION lib/cmake/FLTK2)
+install(FILES FLTK2Config.cmake DESTINATION lib/cmake/FLTK2)
 
 # This makes the project importable from the build directory
-export(TARGETS FLTK2 NAMESPACE FLTK2:: FILE FLTK2Config.cmake)
+export(TARGETS FLTK2 NAMESPACE FLTK2:: FILE FLTK2Targets.cmake)

@@ -1,5 +1,12 @@
 project(cgv_media LANGUAGES CXX)
 
+# Load required imported targets
+find_package(cgvUtils REQUIRED)
+find_package(cgvType REQUIRED)
+find_package(cgvMath REQUIRED)
+find_package(cgvData REQUIRED)
+find_package(cgvBase REQUIRED)
+
 add_library(media
     src/color_scale.cxx
     src/riff.cxx
@@ -51,7 +58,7 @@ if(${BUILD_SHARED_LIBS})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS media EXPORT cgvMediaConfig
+install(TARGETS media EXPORT cgvMediaTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -62,7 +69,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvMediaConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvMedia)
+install(EXPORT cgvMediaTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvMedia)
+install(FILES cgvMediaConfig.cmake DESTINATION lib/cmake/cgvMedia)
 
 # This makes the project importable from the build directory
-export(TARGETS media NAMESPACE cgv:: FILE cgvMediaConfig.cmake)
+export(TARGETS media NAMESPACE cgv:: FILE cgvMediaTargets.cmake)

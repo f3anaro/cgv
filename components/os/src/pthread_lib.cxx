@@ -2,7 +2,7 @@
 
 #ifdef PTW32_STATIC_LIB
 
-#include <cgv/os/pthread.h>
+#include <pthread.h>
 
 struct thread_control_member
 {

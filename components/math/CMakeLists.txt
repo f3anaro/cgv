@@ -1,5 +1,8 @@
 project(cgv_math LANGUAGES CXX)
 
+# Load required imported targets
+find_package(cgvData REQUIRED)
+
 add_library(math
     src/functions.cxx
     src/normal_estimation.cxx
@@ -31,7 +34,7 @@ if(${BUILD_SHARED_LIBS})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS math EXPORT cgvMathConfig
+install(TARGETS math EXPORT cgvMathTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -42,7 +45,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvMathConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvMath)
+install(EXPORT cgvMathTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvMath)
+install(FILES cgvMathConfig.cmake DESTINATION lib/cmake/cgvMath)
 
 # This makes the project importable from the build directory
-export(TARGETS math NAMESPACE cgv:: FILE cgvMathConfig.cmake)
+export(TARGETS math NAMESPACE cgv:: FILE cgvMathTargets.cmake)

@@ -1,7 +1,16 @@
 project(cgv_gl LANGUAGES CXX)
 
-# TODO: Use find_package to load GLEW and cgv component dependencies
-# find_package(GLEW REQUIRED)
+# Load required imported targets
+find_package(cgvRender REQUIRED)
+find_package(cgvGui REQUIRED)
+find_package(cgvOs REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
+
+# OpenGL Utility Library (GLU) is required
+if (NOT TARGET OpenGL::GLU)
+    message(FATAL_ERROR "GLU (OpenGL Utility Library) was not found")
+endif()
 
 # Generate header files from pre-header templates. Ensure that the output
 # directory exists.
@@ -74,14 +83,11 @@ endif()
 
 # Dependencies on other components and libraries
 target_link_libraries(gl
-    PUBLIC
-        cgv::render
-        cgv::gui
-        cgv::os
-    # GLEW is not used in the implementation of cgv_gl but used in its public
-    # API.
-    INTERFACE
-        GLEW::GLEW)
+    cgv::render
+    cgv::gui
+    cgv::os
+    GLEW::GLEW
+    OpenGL::GLU)
 
 if(WIN32)
     # Add additional compiler defintions and dependencies for static Windows
@@ -93,7 +99,7 @@ if(WIN32)
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS gl EXPORT cgvGlConfig
+install(TARGETS gl EXPORT glTargets
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -107,7 +113,8 @@ install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_LIBDIR}/cgv/shader)
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT cgvGlConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvGl)
+install(EXPORT glTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvGl)
+install(FILES cgvGlConfig.cmake DESTINATION lib/cmake/cgvGl)
 
 # This makes the project importable from the build directory
-export(TARGETS gl NAMESPACE cgv:: FILE cgvGlConfig.cmake)
+export(TARGETS gl NAMESPACE cgv:: FILE cgvGlTargets.cmake)

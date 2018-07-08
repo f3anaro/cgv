@@ -1,11 +1,7 @@
 project(GLEW LANGUAGES C)
 
+# Load required imported targets
 find_package(OpenGL REQUIRED)
-
-# OpenGL Utility Library (GLU) is required for GLEW
-if (NOT TARGET OpenGL::GLU)
-    message(FATAL_ERROR "GLU (OpenGL Utility Library) was not found")
-endif()
 
 add_library(GLEW
     src/glew.c)
@@ -32,11 +28,10 @@ endif()
 
 # Dependencies on other libraries
 target_link_libraries(GLEW
-    OpenGL::GL
-    OpenGL::GLU)
+    OpenGL::GL)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS GLEW EXPORT GLEWConfig
+install(TARGETS GLEW EXPORT GLEWTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -47,7 +42,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT GLEWConfig NAMESPACE cgv:: DESTINATION lib/cmake/GLEW)
+install(EXPORT GLEWTargets NAMESPACE cgv:: DESTINATION lib/cmake/GLEW)
+install(FILES GLEWConfig.cmake DESTINATION lib/cmake/GLEW)
 
 # This makes the project importable from the build directory
-export(TARGETS GLEW NAMESPACE cgv:: FILE GLEWConfig.cmake)
+export(TARGETS GLEW NAMESPACE cgv:: FILE GLEWTargets.cmake)

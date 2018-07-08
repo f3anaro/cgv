@@ -14,7 +14,7 @@ target_include_directories(config
         $<INSTALL_INTERFACE:include>)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS config EXPORT cgvConfigConfig
+install(TARGETS config EXPORT cgvConfigTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -25,7 +25,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvConfigConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvConfig)
+install(EXPORT cgvConfigTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvConfig)
+install(FILES cgvConfigConfig.cmake DESTINATION lib/cmake/cgvConfig)
 
 # This makes the project importable from the build directory
-export(TARGETS config NAMESPACE cgv:: FILE cgvConfigConfig.cmake)
+export(TARGETS config NAMESPACE cgv:: FILE cgvConfigTargets.cmake)

@@ -1,5 +1,14 @@
 project(cgv_gui LANGUAGES CXX)
 
+# Load required imported targets
+find_package(cgvUtils REQUIRED)
+find_package(cgvType REQUIRED)
+find_package(cgvReflect REQUIRED)
+find_package(cgvData REQUIRED)
+find_package(cgvBase REQUIRED)
+find_package(cgvMedia REQUIRED)
+find_package(cgvSignal REQUIRED)
+
 add_library(gui
     src/animate.cxx
     src/application.cxx
@@ -66,7 +75,7 @@ if(WIN32)
 endif(WIN32)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS gui EXPORT cgvGuiConfig
+install(TARGETS gui EXPORT cgvGuiTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -77,7 +86,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvGuiConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvGui)
+install(EXPORT cgvGuiTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvGui)
+install(FILES cgvGuiConfig.cmake DESTINATION lib/cmake/cgvGui)
 
 # This makes the project importable from the build directory
-export(TARGETS gui NAMESPACE cgv:: FILE cgvGuiConfig.cmake)
+export(TARGETS gui NAMESPACE cgv:: FILE cgvGuiTargets.cmake)

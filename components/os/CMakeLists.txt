@@ -1,6 +1,21 @@
 cmake_minimum_required(VERSION 3.8)
 project(cgv_os LANGUAGES CXX)
 
+# Load required imported targets
+find_package(cgvUtils REQUIRED)
+find_package(cgvType REQUIRED)
+find_package(cgvData REQUIRED)
+find_package(cgvReflect REQUIRED)
+find_package(cgvSignal REQUIRED)
+
+if(WIN32)
+    # Use the 3rd party pthread-win32 implementation.
+    find_package(pthreadW32 REQUIRED)
+else()
+    # Use the system thread library on all other platforms
+    find_package(Threads REQUIRED)
+endif()
+
 add_library(os
     src/clipboard.cxx
     src/display.cxx
@@ -26,24 +41,16 @@ target_include_directories(os
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-
 # Dependencies on other components
 target_link_libraries(os
     cgv::utils
     cgv::type
     cgv::data
     cgv::reflect
-    cgv::signal)
+    cgv::signal
+    Threads::Threads)
 
-if(WIN32)
-    # Add additional dependencies for Windows builds. Use the 3rd party
-    # pthread-win32 implementation.
-    target_link_libraries(os pthread)
-else()
-    # Use the system thread library on all other platforms
-    find_package(Threads REQUIRED)
-    target_link_libraries(os ${CMAKE_THREAD_LIBS_INIT})
-
+if(NOT WIN32)
     # Enable C++-11 standard for non-Windows builds
     target_compile_features(os PUBLIC cxx_std_11)
 endif()
@@ -59,7 +66,7 @@ else()
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS os EXPORT cgvOsConfig
+install(TARGETS os EXPORT cgvOsTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -70,7 +77,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvOsConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvOs)
+install(EXPORT cgvOsTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvOs)
+install(FILES cgvOsConfig.cmake DESTINATION lib/cmake/cgvOs)
 
 # This makes the project importable from the build directory
-export(TARGETS os NAMESPACE cgv:: FILE cgvOsConfig.cmake)
+export(TARGETS os NAMESPACE cgv:: FILE cgvOsTargets.cmake)

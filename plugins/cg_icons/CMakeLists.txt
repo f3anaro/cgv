@@ -1,6 +1,6 @@
 project(cg_fltk)
 
-# TODO: Use find_package for dependencies
+find_package(cgvBase REQUIRED)
 
 # Generate header files from pre-header templates. Ensure that the output
 # directory exists.
@@ -102,14 +102,15 @@ endif()
 target_link_libraries(cg_icons PRIVATE cgv::base)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS cg_icons EXPORT cgIconsConfig
+install(TARGETS cg_icons EXPORT cgIconsTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgIconsConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgIcons)
+install(EXPORT cgIconsTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgIcons)
+install(FILES cgvIconsConfig.cmake DESTINATION lib/cmake/cgvIcons)
 
 # This makes the project importable from the build directory
-export(TARGETS cg_icons NAMESPACE cgv:: FILE cgIconsConfig.cmake)
+export(TARGETS cg_icons NAMESPACE cgv:: FILE cgIconsTargets.cmake)

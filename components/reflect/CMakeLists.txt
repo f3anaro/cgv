@@ -1,5 +1,9 @@
 project(cgv_reflect LANGUAGES CXX)
 
+# Load required imported targets
+find_package(cgvUtils REQUIRED)
+find_package(cgvType REQUIRED)
+
 # Generate header files from pre-header templates. Ensure that the output
 # directory exists.
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/reflect)
@@ -52,7 +56,7 @@ if(${BUILD_SHARED_LIBS})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS reflect EXPORT cgvReflectConfig
+install(TARGETS reflect EXPORT cgvReflectTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -70,7 +74,8 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvReflectConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvReflect)
+install(EXPORT cgvReflectTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvReflect)
+install(FILES cgvReflectConfig.cmake DESTINATION lib/cmake/cgvReflect)
 
 # This makes the project importable from the build directory
-export(TARGETS reflect NAMESPACE cgv:: FILE cgvReflectConfig.cmake)
+export(TARGETS reflect NAMESPACE cgv:: FILE cgvReflectTargets.cmake)

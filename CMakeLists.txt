@@ -7,9 +7,69 @@ include(GNUInstallDirs)
 
 option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
 
-# Some other library that we import that was also built using CMake
-# and has an exported target.
-# find_package(MyOtherLibrary REQUIRED)
+# Wraps the original "find_package" command (now accessible via
+# "_find_package"). The macro inhibits calls to "_find_package" if the variable
+# contains the name of the package
+#
+# If Foo is a ...
+#
+# system package:
+#     find_package(Foo) either finds FooConfig.cmake in the
+#     system or uses FindFoo.cmake to find the library in the system.
+#     In either case, the target Foo::Foo is imported.
+#
+# prebuilt library:
+#     find_package(Foo) either finds FooConfig.cmake in the
+#     CMAKE_PREFIX_PATH or uses FindFoo.cmake to find the
+#     library in the CMAKE_PREFIX_PATH.
+#     In either case, the target Foo::Foo is imported.
+# subproject:
+#     find_package(Foo) does nothing.
+#     The target Foo::Foo is part of the project.
+#
+# The list "as_subproject" contains all names of packages exported by any
+# subproject. This list will be checked during "find_package" calls if it
+# contains the requested package. If yes, "find_package" will simply do nothing.
+set(as_subproject
+    # 3rd party libraries (available for all platforms)
+    FLTK2
+
+    # Libraries
+    cgvGl
+    cgvLibppp
+
+    # Tools
+    cgvPPP
+    cgvResPrep
+
+    # Components
+    cgvBase
+    cgvConfig
+    cgvData
+    cgvDefines
+    cgvGui
+    cgvMath
+    cgvMedia
+    cgvOs
+    cgvReflect
+    cgvRender
+    cgvSignal
+    cgvType
+    cgvUtils)
+
+# Subprojects that are only build on Windows platforms
+if(WIN32)
+    list(APPEND as_subproject
+        # 3rd party libraries
+        pthreadW32
+        GLEW)
+endif()
+
+macro(find_package ARG0)
+    if(NOT "${ARG0}" IN_LIST as_subproject)
+        _find_package(${ARGV})
+    endif()
+endmacro()
 
 # Enable testing for current directory and below
 enable_testing()
@@ -17,20 +77,13 @@ enable_testing()
 # 3rd party libraries
 if(WIN32)
     add_subdirectory(3rd/pthread)
+    add_subdirectory(3rd/glew)
 endif()
-
-# TODO: Use in Windows builds only
-add_subdirectory(3rd/glew)
 
 # FLTK 2.0 is an experimental new version of the library which is currently
 # inactive. Hence, there is no stable release that can be installed system-wide
 # and we need to build it.
 add_subdirectory(3rd/fltk)
-
-# Tools
-add_subdirectory(tool/ppp)
-# add_subdirectory(tool/shader_test)
-add_subdirectory(tool/res_prep)
 
 # Libraries
 # add_subdirectory(libs/ann_wrapper)
@@ -48,6 +101,11 @@ add_subdirectory(libs/cgv_gl)
 add_subdirectory(libs/ppp)
 # add_subdirectory(libs/rect_pack)
 # add_subdirectory(libs/space_pilot)
+
+# Tools
+add_subdirectory(tool/ppp)
+# add_subdirectory(tool/shader_test)
+add_subdirectory(tool/res_prep)
 
 # Framework components
 add_subdirectory(components/base)

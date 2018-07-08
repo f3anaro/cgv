@@ -1,5 +1,16 @@
 project(cgv_render LANGUAGES CXX)
 
+# Load required imported targets
+find_package(cgvUtils REQUIRED)
+find_package(cgvType REQUIRED)
+find_package(cgvReflect REQUIRED)
+find_package(cgvData REQUIRED)
+find_package(cgvBase REQUIRED)
+find_package(cgvSignal REQUIRED)
+find_package(cgvMath REQUIRED)
+find_package(cgvMedia REQUIRED)
+find_package(cgvLibppp REQUIRED)
+
 add_library(render
     src/attribute_array_binding.cxx
     src/context.cxx
@@ -59,7 +70,7 @@ else()
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS render EXPORT cgvRenderConfig
+install(TARGETS render EXPORT cgvRenderTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -70,7 +81,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvRenderConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvRender)
+install(EXPORT cgvRenderTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvRender)
+install(FILES cgvRenderConfig.cmake DESTINATION lib/cmake/cgvRender)
 
 # This makes the project importable from the build directory
-export(TARGETS render NAMESPACE cgv:: FILE cgvRenderConfig.cmake)
+export(TARGETS render NAMESPACE cgv:: FILE cgvRenderTargets.cmake)

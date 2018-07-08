@@ -18,14 +18,15 @@ install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS defines EXPORT cgvDefinesConfig
+install(TARGETS defines EXPORT cgvDefinesTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # This makes the project importable from the install directory.
 # Put defines file in per-project dir (name MUST match).
-install(EXPORT cgvDefinesConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgvDefines)
+install(EXPORT cgvDefinesTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvDefines)
+install(FILES cgvDefinesConfig.cmake DESTINATION lib/cmake/cgvDefines)
 
 # This makes the project importable from the build directory
-export(TARGETS defines NAMESPACE cgv:: FILE cgvDefinesConfig.cmake)
+export(TARGETS defines NAMESPACE cgv:: FILE cgvDefinesTargets.cmake)
