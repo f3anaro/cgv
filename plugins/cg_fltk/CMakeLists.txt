@@ -56,7 +56,7 @@ endif()
 
 if(WIN32)
     # Add additional dependencies for Windows builds
-    target_link_libraries(cg_fltk Comdlg32 static)
+    target_link_libraries(cg_fltk INTERFACE Comdlg32)
 
     # Mark the shared library as regular DLL for Windows. Otherwise it would be
     # treated as Extension DLL.

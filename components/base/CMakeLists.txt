@@ -55,7 +55,7 @@ target_link_libraries(base
 
 if(WIN32)
     # Add additional dependencies for Windows builds
-    target_link_libraries(base user32)
+    target_link_libraries(base INTERFACE user32)
 else()
     # On Unix systems, tell the linker where to find "dlopen" and friends 
     target_link_libraries(base ${CMAKE_DL_LIBS})

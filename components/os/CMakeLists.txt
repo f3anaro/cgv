@@ -54,7 +54,7 @@ if(${BUILD_SHARED_LIBS})
 else()
     if(WIN32)
         # Add additional dependencies for static Windows builds
-        target_link_libraries(render user32)
+        target_link_libraries(render INTERFACE user32)
     endif()
 endif()
 

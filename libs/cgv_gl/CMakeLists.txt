@@ -74,17 +74,21 @@ endif()
 
 # Dependencies on other components and libraries
 target_link_libraries(gl
-    cgv::render
-    cgv::gui
-    cgv::os
-    GLEW::GLEW)
+    PUBLIC
+        cgv::render
+        cgv::gui
+        cgv::os
+    # GLEW is not used in the implementation of cgv_gl but used in its public
+    # API.
+    INTERFACE
+        GLEW::GLEW)
 
 if(WIN32)
     # Add additional compiler defintions and dependencies for static Windows
     # builds.
     if (NOT ${BUILD_SHARED_LIBS})
         target_compile_definitions(gl PUBLIC REGISTER_SHADER_FILES)
-        target_link_libraries(gl user32 gdi32)
+        target_link_libraries(gl INTERFACE user32 gdi32)
     endif()
 endif()
 
