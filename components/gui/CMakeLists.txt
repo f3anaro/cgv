@@ -60,6 +60,11 @@ if(${BUILD_SHARED_LIBS})
     target_compile_definitions(gui PUBLIC CGV_GUI_EXPORTS)
 endif()
 
+if(WIN32)
+    # Compiler definitions for Windows builds
+    target_compile_options(gui PRIVATE _WIN32)
+endif(WIN32)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS gui EXPORT cgvGuiConfig
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

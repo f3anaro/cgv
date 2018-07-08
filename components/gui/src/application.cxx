@@ -55,11 +55,16 @@ bool application::run()
 {
 	gui_driver_ptr d = get_gui_driver();
 	if (d.empty()) {
-		std::cerr << "\nSorry, but no cgv::gui-driver available.\n"
-			<< "To get one, compile project 'cg_fltk' and add 'plugin:cg_fltk.cgv'\n"
-			<< "to the argument list when starting the fltk_viewer\n"
-			<< "(in Visual Studio right click you project and get to properties,\n"
+		std::cerr << std::endl << "Sorry, but no cgv::gui-driver available." << std::endl
+#ifdef _WIN32
+			<< "To get one, compile plugin 'cg_fltk' and add 'plugin:cg_fltk.cgv' "
+			<< "to the argument list when starting the cgv_viewer." << std::endl
+			<< "(in Visual Studio right click you project and get to properties, "
 			<< " select 'configuration settings' -> 'debugging' -> command line arguments')" << std::endl;
+#else
+			<< "To get one, compile plugin 'cg_fltk' and add 'plugin:libcg_fltk.so' "
+			<< "to the argument list when starting the cgv_viewer." << std::endl;
+#endif
 		return false;
 	}
 	return d->run();
