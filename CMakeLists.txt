@@ -30,7 +30,7 @@ add_subdirectory(3rd/fltk)
 # Tools
 add_subdirectory(tool/ppp)
 # add_subdirectory(tool/shader_test)
-# add_subdirectory(tool/res_prep)
+add_subdirectory(tool/res_prep)
 
 # Libraries
 # add_subdirectory(libs/ann_wrapper)
