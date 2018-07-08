@@ -557,7 +557,7 @@ std::string clean_path(const std::string& file_path)
 		else
 			last_is_slash = false;
 	}
-	if (cleaned_path[m-1] == '/')
+	if (cleaned_path.size() > 0 && cleaned_path[m-1] == '/')
 		--m;
 	return cleaned_path.substr(0,m);
 }
