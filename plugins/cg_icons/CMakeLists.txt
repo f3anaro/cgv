@@ -1,23 +1,115 @@
-cmake_minimum_required(VERSION 2.6)
-project(cg_icons)
+project(cg_fltk)
 
-# The CGV framework is needed
-find_package(cgv COMPONENTS base)
-	
-set(SOURCES
-    main.cxx
-)
+# TODO: Use find_package for dependencies
 
-# Resource files
-file(GLOB_RECURSE IMAGES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.png")
+# Generate header files from pre-header templates. Ensure that the output
+# directory exists.
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/resources)
 
-include_directories(${cgv_INCLUDE_DIRS})
+set(IMAGES
+    resources/append32.png
+    resources/append64.png
+    resources/copy_node48.png
+    resources/cubemap20.png
+    resources/cut_node48.png
+    resources/del_node48.png
+    resources/empty20.png
+    resources/first_child48.png
+    resources/image20.png
+    resources/last_child48.png
+    resources/light20.png
+    resources/lock20.png
+    resources/lock48.png
+    resources/material20.png
+    resources/mesh20.png
+    resources/molecule20.png
+    resources/next_sibling48.png
+    resources/open32.png
+    resources/open64.png
+    resources/parent_node48.png
+    resources/prev_sibling48.png
+    resources/primitive20.png
+    resources/project20.png
+    resources/remove_parent48.png
+    resources/save32.png
+    resources/save64.png
+    resources/style20.png
+    resources/texture20.png
+    resources/transform20.png
+    resources/unlock20.png
+    resources/unlock48.png
+    resources/view20.png)
 
-cgv_add_module(cg_icons 
-	SOURCES ${SOURCES}
-	FILES ${IMAGES}
-)
-target_link_libraries(cg_icons ${cgv_LIBRARIES})
+# Add a generation command for each image
+foreach(image LISTS ${IMAGES})
+    add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${image}.cxx
+        COMMAND res_prep
+            ${CMAKE_CURRENT_SOURCE_DIR}/${image}
+            ${CMAKE_CURRENT_BINARY_DIR}/${image}.cxx
+        MAIN_DEPENDENCY ${image})
+endforeach(image)
 
-cgv_write_find_file(cg_icons)
+add_library(cg_icons
+    src/main.cxx
 
+    # Generated inline resources
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/append32.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/append64.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/copy_node48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/cubemap20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/cut_node48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/del_node48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/empty20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/first_child48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/image20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/last_child48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/light20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/lock20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/lock48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/material20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/mesh20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/molecule20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/next_sibling48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/open32.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/open64.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/parent_node48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/prev_sibling48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/primitive20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/project20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/remove_parent48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/save32.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/save64.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/style20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/texture20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/transform20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/unlock20.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/unlock48.png.cxx
+    ${CMAKE_CURRENT_BINARY_DIR}/resources/view20.png.cxx)
+
+# Add an alias target for the cgv:: namespace such that other components can use
+# this target like other imported targets with namespace prefixes.
+add_library(cgv::cg_icons ALIAS cg_icons)
+
+if(${BUILD_SHARED_LIBS})
+    # Compiler definitions for shared library
+    target_compile_definitions(cg_icons PUBLIC ICON_EXPORTS)
+endif()
+
+# Dependencies on other components. cgv::base is only used in the implementation
+# and not the public API of cg_icons. Hence, it is marked as a PRIVATE
+# dependency.
+target_link_libraries(cg_icons PRIVATE cgv::base)
+
+# 'make install' to the correct locations (provided by GNUInstallDirs).
+install(TARGETS cg_icons EXPORT cgIconsConfig
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+
+# This makes the project importable from the install directory.
+# Put config file in per-project dir (name MUST match).
+install(EXPORT cgIconsConfig NAMESPACE cgv:: DESTINATION lib/cmake/cgIcons)
+
+# This makes the project importable from the build directory
+export(TARGETS cg_icons NAMESPACE cgv:: FILE cgIconsConfig.cmake)
