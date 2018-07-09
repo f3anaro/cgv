@@ -5,15 +5,15 @@
 # load exported CMake targets.
 include(CMakeFindDependencyMacro)
 
-find_dependency(cgvUtils REQUIRED)
-find_dependency(cgvType REQUIRED)
-find_dependency(cgvReflect REQUIRED)
-find_dependency(cgvData REQUIRED)
-find_dependency(cgvBase REQUIRED)
-find_dependency(cgvMedia REQUIRED)
-find_dependency(cgvSignal REQUIRED)
+find_dependency(cgv_utils REQUIRED)
+find_dependency(cgv_type REQUIRED)
+find_dependency(cgv_reflect REQUIRED)
+find_dependency(cgv_data REQUIRED)
+find_dependency(cgv_base REQUIRED)
+find_dependency(cgv_media REQUIRED)
+find_dependency(cgv_signal REQUIRED)
 
 # Prevents importing that same targets multiple times
 if(NOT TARGET cgv::gui)
-    include("${CMAKE_CURRENT_LIST_DIR}/cgvGuiTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/cgv_guiTargets.cmake")
 endif()

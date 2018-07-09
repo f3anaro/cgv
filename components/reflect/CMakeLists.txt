@@ -56,7 +56,7 @@ if(${BUILD_SHARED_LIBS})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS reflect EXPORT cgvReflectTargets
+install(TARGETS reflect EXPORT cgv_reflectTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -74,8 +74,8 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvReflectTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvReflect)
-install(FILES cgvReflectConfig.cmake DESTINATION lib/cmake/cgvReflect)
+install(EXPORT cgv_reflectTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_reflect)
+install(FILES cgv_reflectConfig.cmake DESTINATION lib/cmake/cgv_reflect)
 
 # This makes the project importable from the build directory
-export(TARGETS reflect NAMESPACE cgv:: FILE cgvReflectTargets.cmake)
+export(TARGETS reflect NAMESPACE cgv:: FILE cgv_reflectTargets.cmake)

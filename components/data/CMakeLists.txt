@@ -1,10 +1,10 @@
 project(cgv_data LANGUAGES CXX)
 
 # Load required imported targets
-find_package(cgvUtils REQUIRED)
-find_package(cgvType REQUIRED)
-find_package(cgvReflect REQUIRED)
-find_package(cgvDefines REQUIRED)
+find_package(cgv_utils REQUIRED)
+find_package(cgv_type REQUIRED)
+find_package(cgv_reflect REQUIRED)
+find_package(cgv_defines REQUIRED)
 
 add_library(data
     src/ascii_io_reflection_handlers.cxx
@@ -43,7 +43,7 @@ if(${BUILD_SHARED_LIBS})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS data EXPORT cgvDataTargets
+install(TARGETS data EXPORT cgv_dataTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -54,8 +54,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvDataTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvData)
-install(FILES cgvDataConfig.cmake DESTINATION lib/cmake/cgvData)
+install(EXPORT cgv_dataTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_data)
+install(FILES cgv_dataConfig.cmake DESTINATION lib/cmake/cgv_data)
 
 # This makes the project importable from the build directory
-export(TARGETS data NAMESPACE cgv:: FILE cgvDataTargets.cmake)
+export(TARGETS data NAMESPACE cgv:: FILE cgv_dataTargets.cmake)

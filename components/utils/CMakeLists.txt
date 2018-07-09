@@ -1,7 +1,7 @@
 project(cgv_utils LANGUAGES CXX)
 
 # Load required imported targets
-find_package(cgvConfig REQUIRED)
+find_package(cgv_config REQUIRED)
 
 # Generate header files from pre-header templates. Ensure that the output
 # directory exists.
@@ -63,7 +63,7 @@ if(${BUILD_SHARED_LIBS})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS utils EXPORT cgvUtilsTargets
+install(TARGETS utils EXPORT cgv_utilsTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -81,8 +81,8 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvUtilsTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvUtils)
-install(FILES cgvUtilsConfig.cmake DESTINATION lib/cmake/cgvUtils)
+install(EXPORT cgv_utilsTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_utils)
+install(FILES cgv_utilsConfig.cmake DESTINATION lib/cmake/cgv_utils)
 
 # This makes the project importable from the build directory
-export(TARGETS utils NAMESPACE cgv:: FILE cgvUtilsTargets.cmake)
+export(TARGETS utils NAMESPACE cgv:: FILE cgv_utilsTargets.cmake)

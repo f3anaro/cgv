@@ -1,7 +1,7 @@
 project(cgv_signal LANGUAGES CXX)
 
 # Load required imported targets
-find_package(cgvType REQUIRED)
+find_package(cgv_type REQUIRED)
 
 # Generate header files from pre-header templates. Ensure that the output
 # directory exists.
@@ -76,7 +76,7 @@ if(${BUILD_SHARED_LIBS})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS signal EXPORT cgvSignalTargets
+install(TARGETS signal EXPORT cgv_signalTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -94,8 +94,8 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvSignalTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvSignal)
-install(FILES cgvSignalConfig.cmake DESTINATION lib/cmake/cgvSignal)
+install(EXPORT cgv_signalTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_signal)
+install(FILES cgv_signalConfig.cmake DESTINATION lib/cmake/cgv_signal)
 
 # This makes the project importable from the build directory
-export(TARGETS signal NAMESPACE cgv:: FILE cgvSignalTargets.cmake)
+export(TARGETS signal NAMESPACE cgv:: FILE cgv_signalTargets.cmake)

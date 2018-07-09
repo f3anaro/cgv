@@ -1,9 +1,9 @@
 project(cgv_gl LANGUAGES CXX)
 
 # Load required imported targets
-find_package(cgvRender REQUIRED)
-find_package(cgvGui REQUIRED)
-find_package(cgvOs REQUIRED)
+find_package(cgv_render REQUIRED)
+find_package(cgv_gui REQUIRED)
+find_package(cgv_os REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
@@ -113,8 +113,8 @@ install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_LIBDIR}/cgv/shader)
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT glTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvGl)
-install(FILES cgvGlConfig.cmake DESTINATION lib/cmake/cgvGl)
+install(EXPORT glTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_gl)
+install(FILES cgv_glConfig.cmake DESTINATION lib/cmake/cgv_gl)
 
 # This makes the project importable from the build directory
-export(TARGETS gl NAMESPACE cgv:: FILE cgvGlTargets.cmake)
+export(TARGETS gl NAMESPACE cgv:: FILE cgv_glTargets.cmake)

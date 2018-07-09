@@ -35,27 +35,27 @@ set(as_subproject
     FLTK2
 
     # Libraries
-    cgvGl
-    cgvLibppp
+    cgv_gl
+    cgv_libppp
 
     # Tools
-    cgvPPP
-    cgvResPrep
+    cgv_p_p_p
+    cgv_res_prep
 
     # Components
-    cgvBase
-    cgvConfig
-    cgvData
-    cgvDefines
-    cgvGui
-    cgvMath
-    cgvMedia
-    cgvOs
-    cgvReflect
-    cgvRender
-    cgvSignal
-    cgvType
-    cgvUtils)
+    cgv_base
+    cgv_config
+    cgv_data
+    cgv_defines
+    cgv_gui
+    cgv_math
+    cgv_media
+    cgv_os
+    cgv_reflect
+    cgv_render
+    cgv_signal
+    cgv_type
+    cgv_utils)
 
 # Subprojects that are only build on Windows platforms
 if(WIN32)

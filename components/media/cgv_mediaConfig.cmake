@@ -5,13 +5,13 @@
 # load exported CMake targets.
 include(CMakeFindDependencyMacro)
 
-find_dependency(cgvUtils REQUIRED)
-find_dependency(cgvType REQUIRED)
-find_dependency(cgvMath REQUIRED)
-find_dependency(cgvData REQUIRED)
-find_dependency(cgvBase REQUIRED)
+find_dependency(cgv_utils REQUIRED)
+find_dependency(cgv_type REQUIRED)
+find_dependency(cgv_math REQUIRED)
+find_dependency(cgv_data REQUIRED)
+find_dependency(cgv_base REQUIRED)
 
 # Prevents importing that same targets multiple times
 if(NOT TARGET cgv::media)
-    include("${CMAKE_CURRENT_LIST_DIR}/cgvMediaTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/cgv_mediaTargets.cmake")
 endif()

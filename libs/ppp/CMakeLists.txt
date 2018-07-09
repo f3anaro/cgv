@@ -72,7 +72,7 @@ else()
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS ${exported_targets} EXPORT libpppTargets
+install(TARGETS ${exported_targets} EXPORT cgv_libpppTargets
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -83,8 +83,8 @@ install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT libpppTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvLibppp)
-install(FILES cgvLibpppConfig.cmake DESTINATION lib/cmake/cgvLibppp)
+install(EXPORT cgv_libpppTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_libppp)
+install(FILES cgv_libpppConfig.cmake DESTINATION lib/cmake/cgv_libppp)
 
 # This makes the project importable from the build directory
-export(TARGETS ${exported_targets} NAMESPACE cgv:: FILE cgvLibpppTargets.cmake)
+export(TARGETS ${exported_targets} NAMESPACE cgv:: FILE cgv_libpppTargets.cmake)

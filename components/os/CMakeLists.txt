@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.8)
 project(cgv_os LANGUAGES CXX)
 
 # Load required imported targets
-find_package(cgvUtils REQUIRED)
-find_package(cgvType REQUIRED)
-find_package(cgvData REQUIRED)
-find_package(cgvReflect REQUIRED)
-find_package(cgvSignal REQUIRED)
+find_package(cgv_utils REQUIRED)
+find_package(cgv_type REQUIRED)
+find_package(cgv_data REQUIRED)
+find_package(cgv_reflect REQUIRED)
+find_package(cgv_signal REQUIRED)
 
 if(WIN32)
     # Use the 3rd party pthread-win32 implementation.
@@ -66,7 +66,7 @@ else()
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS os EXPORT cgvOsTargets
+install(TARGETS os EXPORT cgv_osTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -77,8 +77,8 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgvOsTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgvOs)
-install(FILES cgvOsConfig.cmake DESTINATION lib/cmake/cgvOs)
+install(EXPORT cgv_osTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_os)
+install(FILES cgv_osConfig.cmake DESTINATION lib/cmake/cgv_os)
 
 # This makes the project importable from the build directory
-export(TARGETS os NAMESPACE cgv:: FILE cgvOsTargets.cmake)
+export(TARGETS os NAMESPACE cgv:: FILE cgv_osTargets.cmake)

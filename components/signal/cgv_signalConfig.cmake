@@ -1,13 +1,13 @@
-# Configuration module for cgv::math
+# Configuration module for cgv::signal
 #
 # This module will be executed if downstreams import the package from the
 # install directory with find_package(). This modules resolves dependencies and
 # load exported CMake targets.
 include(CMakeFindDependencyMacro)
 
-find_dependency(cgvData REQUIRED)
+find_dependency(cgv_type REQUIRED)
 
 # Prevents importing that same targets multiple times
-if(NOT TARGET cgv::math)
-    include("${CMAKE_CURRENT_LIST_DIR}/cgvMathTargets.cmake")
+if(NOT TARGET cgv::signal)
+    include("${CMAKE_CURRENT_LIST_DIR}/cgv_signalTargets.cmake")
 endif()
