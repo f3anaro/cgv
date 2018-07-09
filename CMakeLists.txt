@@ -38,6 +38,7 @@ set(as_subproject
     cgv_gl
     cgv_reflect_types
     cgv_libppp
+    plot
 
     # Tools
     cgv_p_p_p
@@ -97,7 +98,7 @@ add_subdirectory(libs/cgv_reflect_types)
 # add_subdirectory(libs/gamepad)
 # add_subdirectory(libs/glsu)
 # add_subdirectory(libs/multi_mouse)
-# add_subdirectory(libs/plot)
+add_subdirectory(libs/plot)
 # add_subdirectory(libs/point_cloud)
 add_subdirectory(libs/ppp)
 # add_subdirectory(libs/rect_pack)

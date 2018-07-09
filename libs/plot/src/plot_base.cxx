@@ -1,4 +1,4 @@
-#include "plot_base.h"
+#include <plot/plot_base.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/signal/rebind.h>
 

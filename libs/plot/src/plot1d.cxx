@@ -1,6 +1,6 @@
-#include "plot1d.h"
-#include <libs/cgv_gl/gl/gl.h>
-#include <libs/cgv_gl/gl/gl_tools.h>
+#include <plot/plot1d.h>
+#include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
 
 namespace cgv {
 	namespace plot {
