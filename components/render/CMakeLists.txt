@@ -85,4 +85,5 @@ install(EXPORT cgv_renderTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_rende
 install(FILES cgv_renderConfig.cmake DESTINATION lib/cmake/cgv_render)
 
 # This makes the project importable from the build directory
-export(TARGETS render NAMESPACE cgv:: FILE cgv_renderTargets.cmake)
+export(TARGETS render NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_renderTargets.cmake)
+file(COPY cgv_renderConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

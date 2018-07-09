@@ -73,4 +73,5 @@ install(EXPORT cgv_mediaTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_media)
 install(FILES cgv_mediaConfig.cmake DESTINATION lib/cmake/cgv_media)
 
 # This makes the project importable from the build directory
-export(TARGETS media NAMESPACE cgv:: FILE cgv_mediaTargets.cmake)
+export(TARGETS media NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_mediaTargets.cmake)
+file(COPY cgv_mediaConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

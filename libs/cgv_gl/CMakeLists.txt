@@ -117,4 +117,5 @@ install(EXPORT glTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_gl)
 install(FILES cgv_glConfig.cmake DESTINATION lib/cmake/cgv_gl)
 
 # This makes the project importable from the build directory
-export(TARGETS gl NAMESPACE cgv:: FILE cgv_glTargets.cmake)
+export(TARGETS gl NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_glTargets.cmake)
+file(COPY cgv_glConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

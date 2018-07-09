@@ -81,4 +81,5 @@ install(EXPORT cgv_osTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_os)
 install(FILES cgv_osConfig.cmake DESTINATION lib/cmake/cgv_os)
 
 # This makes the project importable from the build directory
-export(TARGETS os NAMESPACE cgv:: FILE cgv_osTargets.cmake)
+export(TARGETS os NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_osTargets.cmake)
+file(COPY cgv_osConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

@@ -87,4 +87,5 @@ install(EXPORT cgv_libpppTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_libpp
 install(FILES cgv_libpppConfig.cmake DESTINATION lib/cmake/cgv_libppp)
 
 # This makes the project importable from the build directory
-export(TARGETS ${exported_targets} NAMESPACE cgv:: FILE cgv_libpppTargets.cmake)
+export(TARGETS ${exported_targets} NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_libpppTargets.cmake)
+file(COPY cgv_libpppConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

@@ -113,4 +113,5 @@ install(EXPORT cg_iconsTargets NAMESPACE cgv:: DESTINATION lib/cmake/cg_icons)
 install(FILES cg_iconsConfig.cmake DESTINATION lib/cmake/cg_icons)
 
 # This makes the project importable from the build directory
-export(TARGETS cg_icons NAMESPACE cgv:: FILE cg_iconsTargets.cmake)
+export(TARGETS cg_icons NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cg_iconsTargets.cmake)
+file(COPY cg_iconsConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

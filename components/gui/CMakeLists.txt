@@ -90,4 +90,5 @@ install(EXPORT cgv_guiTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_gui)
 install(FILES cgv_guiConfig.cmake DESTINATION lib/cmake/cgv_gui)
 
 # This makes the project importable from the build directory
-export(TARGETS gui NAMESPACE cgv:: FILE cgv_guiTargets.cmake)
+export(TARGETS gui NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_guiTargets.cmake)
+file(COPY cgv_guiConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

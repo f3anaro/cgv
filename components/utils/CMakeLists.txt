@@ -85,4 +85,5 @@ install(EXPORT cgv_utilsTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_utils)
 install(FILES cgv_utilsConfig.cmake DESTINATION lib/cmake/cgv_utils)
 
 # This makes the project importable from the build directory
-export(TARGETS utils NAMESPACE cgv:: FILE cgv_utilsTargets.cmake)
+export(TARGETS utils NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_utilsTargets.cmake)
+file(COPY cgv_utilsConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

@@ -98,4 +98,5 @@ install(EXPORT cgv_signalTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_signa
 install(FILES cgv_signalConfig.cmake DESTINATION lib/cmake/cgv_signal)
 
 # This makes the project importable from the build directory
-export(TARGETS signal NAMESPACE cgv:: FILE cgv_signalTargets.cmake)
+export(TARGETS signal NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_signalTargets.cmake)
+file(COPY cgv_signalConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

@@ -58,4 +58,5 @@ install(EXPORT cgv_dataTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_data)
 install(FILES cgv_dataConfig.cmake DESTINATION lib/cmake/cgv_data)
 
 # This makes the project importable from the build directory
-export(TARGETS data NAMESPACE cgv:: FILE cgv_dataTargets.cmake)
+export(TARGETS data NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_dataTargets.cmake)
+file(COPY cgv_dataConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

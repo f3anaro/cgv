@@ -96,4 +96,5 @@ install(EXPORT cgv_baseTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_base)
 install(FILES cgv_baseConfig.cmake DESTINATION lib/cmake/cgv_base)
 
 # This makes the project importable from the build directory
-export(TARGETS base NAMESPACE cgv:: FILE cgv_baseTargets.cmake)
+export(TARGETS base NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_baseTargets.cmake)
+file(COPY cgv_baseConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

@@ -286,4 +286,5 @@ install(EXPORT FLTK2Targets NAMESPACE FLTK2:: DESTINATION lib/cmake/FLTK2)
 install(FILES FLTK2Config.cmake DESTINATION lib/cmake/FLTK2)
 
 # This makes the project importable from the build directory
-export(TARGETS FLTK2 NAMESPACE FLTK2:: FILE FLTK2Targets.cmake)
+export(TARGETS FLTK2 NAMESPACE FLTK2:: FILE ${CMAKE_BINARY_DIR}/FLTK2Targets.cmake)
+file(COPY FLTK2Config.cmake DESTINATION ${CMAKE_BINARY_DIR})

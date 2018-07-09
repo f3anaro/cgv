@@ -112,4 +112,5 @@ install(EXPORT cg_fltkTargets NAMESPACE cgv:: DESTINATION lib/cmake/cg_fltk)
 install(FILES cg_fltkConfig.cmake DESTINATION lib/cmake/cg_fltk)
 
 # This makes the project importable from the build directory
-export(TARGETS cg_fltk NAMESPACE cgv:: FILE cg_fltkTargets.cmake)
+export(TARGETS cg_fltk NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cg_fltkTargets.cmake)
+file(COPY cg_fltkConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

@@ -49,4 +49,5 @@ install(EXPORT cgv_mathTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_math)
 install(FILES cgv_mathConfig.cmake DESTINATION lib/cmake/cgv_math)
 
 # This makes the project importable from the build directory
-export(TARGETS math NAMESPACE cgv:: FILE cgv_mathTargets.cmake)
+export(TARGETS math NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_mathTargets.cmake)
+file(COPY cgv_mathConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

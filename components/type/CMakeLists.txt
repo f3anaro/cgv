@@ -90,4 +90,5 @@ install(EXPORT cgv_typeTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_type)
 install(FILES cgv_typeConfig.cmake DESTINATION lib/cmake/cgv_type)
 
 # This makes the project importable from the build directory
-export(TARGETS type NAMESPACE cgv:: FILE cgv_typeTargets.cmake)
+export(TARGETS type NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_typeTargets.cmake)
+file(COPY cgv_typeConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

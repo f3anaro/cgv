@@ -78,4 +78,5 @@ install(EXPORT cgv_reflectTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_refl
 install(FILES cgv_reflectConfig.cmake DESTINATION lib/cmake/cgv_reflect)
 
 # This makes the project importable from the build directory
-export(TARGETS reflect NAMESPACE cgv:: FILE cgv_reflectTargets.cmake)
+export(TARGETS reflect NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_reflectTargets.cmake)
+file(COPY cgv_reflectConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

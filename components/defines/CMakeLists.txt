@@ -29,4 +29,5 @@ install(EXPORT cgv_definesTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_defi
 install(FILES cgv_definesConfig.cmake DESTINATION lib/cmake/cgv_defines)
 
 # This makes the project importable from the build directory
-export(TARGETS defines NAMESPACE cgv:: FILE cgv_definesTargets.cmake)
+export(TARGETS defines NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_definesTargets.cmake)
+file(COPY cgv_definesConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

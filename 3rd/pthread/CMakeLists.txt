@@ -53,4 +53,5 @@ install(EXPORT pthreadTargets NAMESPACE Threads:: DESTINATION lib/cmake/pthreadW
 install(FILES pthreadW32Config.cmake DESTINATION lib/cmake/pthreadW32)
 
 # This makes the project importable from the build directory
-export(TARGETS pthread NAMESPACE Threads:: FILE pthreadW32Targets.cmake)
+export(TARGETS pthread NAMESPACE Threads:: FILE ${CMAKE_BINARY_DIR}/pthreadW32Targets.cmake)
+file(COPY pthreadW32Config.cmake DESTINATION ${CMAKE_BINARY_DIR})
