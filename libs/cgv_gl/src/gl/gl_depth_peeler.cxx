@@ -1,5 +1,5 @@
-#include <cgv/render/gl/gl.h>
-#include <cgv/render/gl/gl_depth_peeler.h>
+#include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_depth_peeler.h>
 
 namespace cgv {
 	namespace render {

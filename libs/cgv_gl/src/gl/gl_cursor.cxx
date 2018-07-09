@@ -1,7 +1,7 @@
-#include <cgv/render/gl/gl_cursor.h>
+#include <cgv_gl/gl/gl_cursor.h>
 #include <iostream>
 #include <cgv/media/riff.h>
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl.h>
 
 #ifdef WIN32
 #include <windows.h>

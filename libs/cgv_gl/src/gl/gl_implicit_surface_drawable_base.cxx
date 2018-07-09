@@ -1,9 +1,8 @@
-#include <cgv/render/gl/gl_implicit_surface_drawable_base.h>
+#include <cgv_gl/gl/gl_implicit_surface_drawable_base.h>
 #include <cgv/media/mesh/marching_cubes.h>
 #include <cgv/media/mesh/dual_contouring.h>
 
-#include <cgv/render/drawable.h>
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl.h>
 
 #include <fstream>
 

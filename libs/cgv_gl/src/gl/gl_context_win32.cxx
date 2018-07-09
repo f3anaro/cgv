@@ -1,4 +1,4 @@
-#include <cgv/render/gl/gl_context.h>
+#include <cgv_gl/gl/gl_context.h>
 #ifdef WIN32
 #include <windows.h>
 #include <Tchar.h>

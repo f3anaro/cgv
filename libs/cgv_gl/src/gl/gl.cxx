@@ -1,4 +1,4 @@
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl.h>
 #include <iostream>
 
 namespace cgv {

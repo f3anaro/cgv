@@ -1,4 +1,4 @@
-#include <cgv/render/gl/gl_mesh_drawable_base.h>
+#include <cgv_gl/gl/gl_mesh_drawable_base.h>
 
 #include <cgv/base/attach_slot.h>
 #include <cgv/base/find_action.h>
@@ -9,7 +9,7 @@
 #include <cgv/utils/tokenizer.h>
 #include <cgv/utils/scan.h>
 
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl.h>
 #include <cgv/render/view.h>
 #include <cgv/utils/file.h>
 #include <cgv/base/import.h>

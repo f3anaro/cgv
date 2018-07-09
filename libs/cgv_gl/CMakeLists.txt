@@ -14,15 +14,15 @@ endif()
 
 # Generate header files from pre-header templates. Ensure that the output
 # directory exists.
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/render/gl)
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl)
 
 add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/render/gl/gl_context_switch.h
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl/gl_context_switch.h
     COMMAND ppp
         -CGV_DIR=${CMAKE_SOURCE_DIR}
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/render/gl/gl_context_switch.ph
-        ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/render/gl/gl_context_switch.h
-    MAIN_DEPENDENCY include/cgv/render/gl/gl_context_switch.ph)
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/cgv_gl/gl/gl_context_switch.ph
+        ${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl/gl_context_switch.h
+    MAIN_DEPENDENCY include/cgv_gl/gl/gl_context_switch.ph)
 
 add_library(gl 
     # src/box_renderer.cxx
@@ -50,7 +50,7 @@ add_library(gl
     src/gl/gl_image_drawable_base.cxx
 
     # Generated headers
-    ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/render/gl/gl_context_switch.h)
+    ${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl/gl_context_switch.h)
 
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.

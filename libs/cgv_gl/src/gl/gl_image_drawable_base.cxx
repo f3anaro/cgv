@@ -1,11 +1,11 @@
-#include <cgv/render/gl/gl_image_drawable_base.h>
+#include <cgv_gl/gl/gl_image_drawable_base.h>
 
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/media/axis_aligned_box.h>
 #include <cgv/base/import.h>
-#include <cgv/render/gl/gl_tools.h>
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
+#include <cgv_gl/gl/gl.h>
 
 using namespace cgv::base;
 using namespace cgv::data;

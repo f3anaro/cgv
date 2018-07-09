@@ -2,7 +2,7 @@
 
 #include <stack>
 #include <cgv/render/context.h>
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl.h>
 
 #include "lib_begin.h"
 

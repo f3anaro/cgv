@@ -1,6 +1,6 @@
-#include <cgv/render/normal_renderer.h>
-#include <cgv/render/gl/gl.h>
-#include <cgv/render/gl/gl_tools.h>
+#include <cgv_gl/normal_renderer.h>
+#include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
 
 namespace cgv {
 	namespace render {
@@ -99,7 +99,7 @@ namespace cgv {
 			}
 		};
 
-#include <cgv/render/gl/lib_begin.h>
+#include <cgv_gl/gl/lib_begin.h>
 
 		extern CGV_API cgv::gui::gui_creator_registration<normal_render_style_gui_creator> nrs_gc_reg("normal_render_style_gui_creator");
 

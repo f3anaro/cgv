@@ -1,4 +1,4 @@
-#include <cgv/render/renderer.h>
+#include <cgv_gl/renderer.h>
 
 namespace cgv {
 	namespace render {

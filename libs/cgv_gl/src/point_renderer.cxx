@@ -1,6 +1,6 @@
-#include <cgv/render/point_renderer.h>
-#include <cgv/render/gl/gl.h>
-#include <cgv/render/gl/gl_tools.h>
+#include <cgv_gl/point_renderer.h>
+#include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
 
 namespace cgv {
 	namespace render {
@@ -230,7 +230,7 @@ namespace cgv {
 			}
 		};
 
-#include <cgv/render/gl/lib_begin.h>
+#include <cgv_gl/gl/lib_begin.h>
 
 		extern CGV_API cgv::gui::gui_creator_registration<point_render_style_gui_creator> prs_gc_reg("point_render_style_gui_creator");
 

@@ -1,12 +1,12 @@
-#include <cgv/render/gl/wgl.h>
+#include <cgv_gl/gl/wgl.h>
 #ifdef _WIN32
 #undef TA_LEFT
 #undef TA_TOP
 #undef TA_RIGHT
 #undef TA_BOTTOM
 #endif
-#include <cgv/render/gl/gl_context.h>
-#include <cgv/render/gl/gl_tools.h>
+#include <cgv_gl/gl/gl_context.h>
+#include <cgv_gl/gl/gl_tools.h>
 #include <cgv/base/base.h>
 #include <cgv/base/action.h>
 #include <cgv/render/drawable.h>

@@ -1,6 +1,6 @@
-#include <cgv/render/box_renderer.h>
-#include <cgv/render/gl/gl.h>
-#include <cgv/render/gl/gl_tools.h>
+#include <cgv_gl/box_renderer.h>
+#include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
 
 namespace cgv {
 	namespace render {

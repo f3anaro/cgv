@@ -1,6 +1,6 @@
-#include <cgv/render/gl/gl_tools.h>
+#include <cgv_gl/gl/gl_tools.h>
 
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl.h>
 #include <cgv/render/frame_buffer.h>
 #include <cgv/render/shader_program.h>
 #include <iostream>

@@ -1,10 +1,10 @@
-#include <cgv/render/gl/gl_tools.h>
+#include <cgv_gl/gl/gl_tools.h>
 
 #include <cgv/media/image/image_reader.h>
 
 #include <cgv/render/context.h>
 #include <cgv/render/shader_program.h>
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl.h>
 
 #ifndef GL_CLAMP_TO_EDGE
 #define GL_CLAMP_TO_EDGE 0x812F

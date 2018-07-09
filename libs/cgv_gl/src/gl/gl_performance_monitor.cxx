@@ -1,5 +1,5 @@
-#include <cgv/render/gl/gl_performance_monitor.h>
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl_performance_monitor.h>
+#include <cgv_gl/gl/gl.h>
 
 namespace cgv {
 	namespace render {

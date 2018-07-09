@@ -1,6 +1,6 @@
 #ifndef WIN32
-#include <cgv/render/gl/wgl.h>
-#include <cgv/render/gl/gl_context.h>
+#include <cgv_gl/gl/wgl.h>
+#include <cgv_gl/gl/gl_context.h>
 #include <iostream>
 
 using namespace cgv::utils;
@@ -254,7 +254,7 @@ context* create_unix_gl_context(RenderAPI api, unsigned int w, unsigned int h,
 	}
 }
 
-#include <cgv/render/gl/lib_begin.h>
+#include <cgv_gl/gl/lib_begin.h>
 
 namespace cgv {
 	namespace render {
