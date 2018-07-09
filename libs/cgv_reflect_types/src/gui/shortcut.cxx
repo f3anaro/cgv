@@ -1,4 +1,4 @@
-#include "shortcut.h"
+#include <cgv_reflect_types/gui/shortcut.h>
 #include <cgv/reflect/set_reflection_handler.h>
 #include <cgv/utils/convert_string.h>
 

@@ -1,4 +1,4 @@
-#include "color.h"
+#include <cgv_reflect_types/media/color.h>
 
 #ifdef REFLECT_IN_CLASS_NAMESPACE
 namespace cgv { namespace media {

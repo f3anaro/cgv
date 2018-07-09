@@ -1,4 +1,4 @@
-#include "perm_mat.h"
+#include <cgv_reflect_types/math/perm_mat.h>
 
 namespace cgv {
 	namespace reflect {

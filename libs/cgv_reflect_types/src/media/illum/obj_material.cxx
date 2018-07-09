@@ -1,4 +1,4 @@
-#include "obj_material.h"
+#include <cgv_reflect_types/media/illum/obj_material.h>
 #include <cgv/reflect/set_reflection_handler.h>
 
 

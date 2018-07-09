@@ -1,26 +1,73 @@
-cmake_minimum_required(VERSION 2.6)
-project(cgv_reflect_types)
+project(cgv_reflect_types LANGUAGES CXX)
 
-# The CGV framework is needed!
-find_package(cgv COMPONENTS  utils type reflect media math render)
+# Load required imported targets
+find_package(cgv_utils REQUIRED)
+find_package(cgv_type REQUIRED)
+find_package(cgv_reflect REQUIRED)
+find_package(cgv_media REQUIRED)
+find_package(cgv_math REQUIRED)
+find_package(cgv_render REQUIRED)
+find_package(cgv_gui REQUIRED)
 
+add_library(reflect_types 
+    src/gui/shortcut.cxx
+    src/math/perm_mat.cxx
+    src/media/color.cxx
+    src/media/illum/light_source.cxx
+    src/media/illum/obj_material.cxx
+    src/media/illum/phong_material.cxx
+    src/render/context.cxx
+    src/render/view.cxx)
 
-# Source files
-file(GLOB_RECURSE SOURCES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.cxx")
-# Header files
-file(GLOB_RECURSE PUBLIC_HEADERS RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.h")
+# Add an alias target for the cgv:: namespace such that other components can use
+# this target like other imported targets with namespace prefixes.
+add_library(cgv::reflect_types ALIAS reflect_types)
 
-include_directories(
-	"${CGV_DIR}/libs"
-	${cgv_INCLUDE_DIRS})
+# Set full qualified name for the library filename
+set_target_properties(reflect_types PROPERTIES OUTPUT_NAME "cgv_reflect_types")
 
-cgv_add_library(cgv_reflect_types 
-	SOURCES ${SOURCES} 
-	PUBLIC_HEADERS ${PUBLIC_HEADERS}
-	DEFINITIONS UNICODE _UNICODE)
+target_include_directories(reflect_types
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
-	
-target_link_libraries(cgv_reflect_types ${cgv_LIBRARIES})
+# FIXME: For unicode support the definitions _UNICODE and UNICODE have to be
+#     set. Can we do this better?
+target_compile_definitions(reflect_types
+    PUBLIC
+        UNICODE
+        _UNICODE)
 
-cgv_write_find_file(cgv_reflect_types)
+if(${BUILD_SHARED_LIBS})
+    # Compiler definitions for shared library
+    target_compile_definitions(reflect_types PUBLIC CGV_REFLECT_TYPES_EXPORTS)
+endif()
 
+# Dependencies on other components and libraries
+target_link_libraries(reflect_types
+    cgv::utils
+    cgv::type
+    cgv::reflect
+    cgv::media
+    cgv::math
+    cgv::render
+    cgv::gui)
+
+# 'make install' to the correct locations (provided by GNUInstallDirs).
+install(TARGETS reflect_types EXPORT cgv_reflect_typesTargets
+    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+
+# Install header files of library
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+# This makes the project importable from the install directory
+# Put config file in per-project dir (name MUST match), can also
+# just go into 'cmake'.
+install(EXPORT cgv_reflect_typesTargets NAMESPACE cgv:: DESTINATION lib/cmake/reflect_types)
+install(FILES cgv_reflect_typesConfig.cmake DESTINATION lib/cmake/reflect_types)
+
+# This makes the project importable from the build directory
+export(TARGETS reflect_types NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_reflect_typesTargets.cmake)
+file(COPY cgv_reflect_typesConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

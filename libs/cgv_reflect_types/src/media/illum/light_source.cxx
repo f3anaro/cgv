@@ -1,4 +1,4 @@
-#include "light_source.h"
+#include <cgv_reflect_types/media/illum/light_source.h>
 #include <cgv/reflect/set_reflection_handler.h>
 
 

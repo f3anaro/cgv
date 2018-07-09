@@ -1,4 +1,4 @@
-#include "phong_material.h"
+#include <cgv_reflect_types/media/illum/phong_material.h>
 #include <cgv/reflect/reflection_handler.h>
 
 

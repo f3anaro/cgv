@@ -1,4 +1,4 @@
-#include "context.h"
+#include <cgv_reflect_types/render/context.h>
 #include <cgv/reflect/set_reflection_handler.h>
 
 #ifdef REFLECT_IN_CLASS_NAMESPACE

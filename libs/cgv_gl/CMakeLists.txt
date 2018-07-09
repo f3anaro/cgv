@@ -4,6 +4,7 @@ project(cgv_gl LANGUAGES CXX)
 find_package(cgv_render REQUIRED)
 find_package(cgv_gui REQUIRED)
 find_package(cgv_os REQUIRED)
+find_package(cgv_reflect_types REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
@@ -83,11 +84,14 @@ endif()
 
 # Dependencies on other components and libraries
 target_link_libraries(gl
-    cgv::render
-    cgv::gui
-    cgv::os
-    GLEW::GLEW
-    OpenGL::GLU)
+    PUBLIC
+        cgv::render
+        cgv::gui
+        cgv::os
+        GLEW::GLEW
+        OpenGL::GLU
+    INTERFACE
+        cgv::reflect_types)
 
 if(WIN32)
     # Add additional compiler defintions and dependencies for static Windows

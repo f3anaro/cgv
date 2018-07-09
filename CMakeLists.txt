@@ -36,6 +36,7 @@ set(as_subproject
 
     # Libraries
     cgv_gl
+    cgv_reflect_types
     cgv_libppp
 
     # Tools
@@ -90,7 +91,7 @@ add_subdirectory(3rd/fltk)
 # add_subdirectory(libs/capture)
 # add_subdirectory(libs/cg_gamepad)
 add_subdirectory(libs/cgv_gl)
-# add_subdirectory(libs/cgv_reflect_types)
+add_subdirectory(libs/cgv_reflect_types)
 # add_subdirectory(libs/cgv_win32)
 # add_subdirectory(libs/delaunay)
 # add_subdirectory(libs/gamepad)
