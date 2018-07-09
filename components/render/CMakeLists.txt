@@ -38,8 +38,6 @@ set_target_properties(render PROPERTIES OUTPUT_NAME "cgv_render")
 target_include_directories(render
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        # Adding the build directory for generated header files
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
 # Dependencies on other components
