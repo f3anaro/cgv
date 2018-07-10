@@ -7,7 +7,7 @@
 #include <cgv/gui/provider.h>
 #include <cgv/reflect/reflect_enum.h>
 #include <cgv_gl/gl/gl.h>
-#include <glsu/GL/glsu.h>
+#include <GL/glsu.h>
 #if defined(_WINDOWS) || defined(WIN32) || defined(WIN64)
 #undef max
 #undef min

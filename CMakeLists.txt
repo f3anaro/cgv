@@ -60,7 +60,12 @@ set(as_subproject
     cgv_render
     cgv_signal
     cgv_type
-    cgv_utils)
+    cgv_utils
+
+    # Plugins
+    cg_fltk
+    cg_icons
+    crg_stereo_view)
 
 # Subprojects that are only build on Windows platforms
 if(WIN32)
@@ -147,7 +152,7 @@ add_subdirectory(plugins/cg_icons)
 # add_subdirectory(plugins/crg_light)
 # add_subdirectory(plugins/crg_planar_view)
 # add_subdirectory(plugins/crg_spherical_view)
-# add_subdirectory(plugins/crg_stereo_view)
+add_subdirectory(plugins/crg_stereo_view)
 # add_subdirectory(plugins/crg_view)
 # add_subdirectory(plugins/examples)
 

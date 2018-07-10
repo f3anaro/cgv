@@ -1,6 +1,6 @@
-#include "stereo_view_interactor.h"
+#include <crg_stereo_view/stereo_view_interactor.h>
 #include <cgv/math/geom.h>
-#include <libs/cg_gamepad/gamepad_server.h>
+#include <cg_gamepad/gamepad_server.h>
 #include <cgv_reflect_types/math/fvec.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/scan_enum.h>

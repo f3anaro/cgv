@@ -79,7 +79,7 @@ public:
 	function_ptr fp;
 	bool_function_functor(function_ptr _fp) : fp(_fp) {}
 	bool operator() (@["typename S::A1 v1"; ", "; "typename S::A".i." v".i]) const { return fp(@["v1";",";"v".i]); }
-	void put_pointers(const void* &p1, const void* &p2) const { p1 = 0; p2 = fp; }
+	void put_pointers(const void* &p1, const void* &p2) const { p1 = 0; p2 = reinterpret_cast<void*>(fp); }
 	virtual functor_base* clone() const { return new bool_function_functor(*this); }
 };
 
