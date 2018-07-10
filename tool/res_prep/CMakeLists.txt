@@ -7,6 +7,9 @@ add_executable(res_prep
     ../../components/utils/src/dir.cxx
     ../../components/utils/src/file.cxx)
 
+# CGV uses C++11 standard
+target_compile_features(res_prep PUBLIC cxx_std_11)
+
 # We do not need the exports because we statically linking against libppp
 target_compile_definitions(res_prep PUBLIC CGV_FORCE_STATIC)
 

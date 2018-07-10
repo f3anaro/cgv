@@ -37,6 +37,9 @@ target_link_libraries(data
     cgv::reflect
     cgv::defines)
 
+# CGV uses C++11 standard
+target_compile_features(data PUBLIC cxx_std_11)
+
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
     target_compile_definitions(data PUBLIC CGV_DATA_EXPORTS)

@@ -8,6 +8,9 @@ find_package(cgvGui REQUIRED)
 add_executable(cgv_viewer
     src/main.cxx)
 
+# CGV uses C++11 standard
+target_compile_features(cgv_viewer PUBLIC cxx_std_11)
+
 # Define the libraries this project depends upon
 target_link_libraries(cgv_viewer
     cgv::signal

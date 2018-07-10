@@ -50,10 +50,8 @@ target_link_libraries(os
     cgv::signal
     Threads::Threads)
 
-if(NOT WIN32)
-    # Enable C++-11 standard for non-Windows builds
-    target_compile_features(os PUBLIC cxx_std_11)
-endif()
+# CGV uses C++11 standard
+target_compile_features(os PUBLIC cxx_std_11)
 
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library

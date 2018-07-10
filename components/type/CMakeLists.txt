@@ -62,6 +62,9 @@ target_include_directories(type
 target_link_libraries(type
     cgv::utils)
 
+# CGV uses C++11 standard
+target_compile_features(type PUBLIC cxx_std_11)
+
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
     target_compile_definitions(type PUBLIC CGV_TYPE_EXPORTS)

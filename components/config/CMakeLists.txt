@@ -13,6 +13,9 @@ target_include_directories(config
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
+# CGV uses C++11 standard
+target_compile_features(config INTERFACE cxx_std_11)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS config EXPORT cgv_configTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}

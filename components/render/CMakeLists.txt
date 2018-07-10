@@ -57,6 +57,9 @@ if(NOT WIN32)
     target_link_libraries(render ${CMAKE_DL_LIBS})
 endif()
 
+# CGV uses C++11 standard
+target_compile_features(render PUBLIC cxx_std_11)
+
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
     target_compile_definitions(render PUBLIC CGV_RENDER_EXPORTS)

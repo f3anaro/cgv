@@ -12,6 +12,9 @@ add_executable(ppp
 target_compile_definitions(ppp PUBLIC CGV_FORCE_STATIC)
 # target_compile_definitions(ppp PUBLIC CGV_PPP_EXPORTS)
 
+# CGV uses C++11 standard
+target_compile_features(ppp PUBLIC cxx_std_11)
+
 # Always link against a static version of libppp. If the target "libppp_static"
 # exists this means that there is a shared and a static version of the library.
 # Otherwise "libppp" is already a static library.

@@ -82,16 +82,17 @@ else()
     target_compile_definitions(gl PUBLIC CGV_RENDER_GL_FORCE_STATIC)
 endif()
 
+# CGV uses C++11 standard
+target_compile_features(gl PUBLIC cxx_std_11)
+
 # Dependencies on other components and libraries
 target_link_libraries(gl
-    PUBLIC
-        cgv::render
-        cgv::gui
-        cgv::os
-        GLEW::GLEW
-        OpenGL::GLU
-    INTERFACE
-        cgv::reflect_types)
+    cgv::render
+    cgv::gui
+    cgv::os
+    GLEW::GLEW
+    OpenGL::GLU
+    cgv::reflect_types)
 
 if(WIN32)
     # Add additional compiler defintions and dependencies for static Windows

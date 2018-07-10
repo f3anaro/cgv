@@ -28,6 +28,9 @@ target_include_directories(math
 target_link_libraries(math
     cgv::data)
 
+# CGV uses C++11 standard
+target_compile_features(math PUBLIC cxx_std_11)
+
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
     target_compile_definitions(math PUBLIC CGV_MATH_EXPORTS)

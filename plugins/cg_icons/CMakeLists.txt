@@ -48,7 +48,7 @@ foreach(image LISTS ${IMAGES})
             ${CMAKE_CURRENT_SOURCE_DIR}/${image}
             ${CMAKE_CURRENT_BINARY_DIR}/${image}.cxx
         MAIN_DEPENDENCY ${image})
-endforeach(image)
+endforeach()
 
 add_library(cg_icons
     src/main.cxx
