@@ -145,9 +145,9 @@ namespace cgv { // @<
 			void set_position_array(context& ctx, const T* positions, size_t nr_elements, size_t stride_in_bytes = 0) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), positions, nr_elements, stride_in_bytes); }
 			/// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			void set_position_array(context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes);
-			/// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
-			template <typename ElementType>
-			void set_position_array(context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			// /// template method to set the position attribute from a vertex buffer object, the element type must be given as explicit template parameter
+			// template <typename ElementType>
+			// void set_position_array(context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0) { has_positions = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "position"), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// template method to set the color attribute from a vector of colors of type T
 			template <typename T>
 			void set_color_array(context& ctx, const std::vector<T>& colors) { has_colors = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color"), colors); }

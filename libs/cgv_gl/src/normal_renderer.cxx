@@ -101,7 +101,7 @@ namespace cgv {
 
 #include <cgv_gl/gl/lib_begin.h>
 
-		extern CGV_API cgv::gui::gui_creator_registration<normal_render_style_gui_creator> nrs_gc_reg("normal_render_style_gui_creator");
+		static cgv::gui::gui_creator_registration<normal_render_style_gui_creator> nrs_gc_reg("normal_render_style_gui_creator");
 
 	}
 }

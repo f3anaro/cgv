@@ -48,6 +48,11 @@ namespace cgv {
 				bool self_reflect(cgv::reflect::reflection_handler& rh);
 			};
 		}
+
+#ifdef REFLECT_IN_CLASS_NAMESPACE
+}} namespace cgv { namespace render {
+#endif
+
 		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::normal_render_style, cgv::reflect::render::normal_render_style> get_reflection_traits(const cgv::render::normal_render_style&);
 	}
 }

@@ -26,14 +26,14 @@ add_custom_command(
     MAIN_DEPENDENCY include/cgv_gl/gl/gl_context_switch.ph)
 
 add_library(gl 
-    # src/box_renderer.cxx
-    # src/box_wire_renderer.cxx
-    # src/group_renderer.cxx
-    # src/line_renderer.cxx
-    # src/normal_renderer.cxx
-    # src/point_renderer.cxx
-    # src/renderer.cxx
-    # src/surface_renderer.cxx
+    src/box_renderer.cxx
+    src/box_wire_renderer.cxx
+    src/group_renderer.cxx
+    src/line_renderer.cxx
+    src/normal_renderer.cxx
+    src/point_renderer.cxx
+    src/renderer.cxx
+    src/surface_renderer.cxx
 
     src/gl/gl.cxx
     src/gl/gl_context_unix.cxx

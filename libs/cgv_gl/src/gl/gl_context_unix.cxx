@@ -259,7 +259,7 @@ context* create_unix_gl_context(RenderAPI api, unsigned int w, unsigned int h,
 namespace cgv {
 	namespace render {
 	
-extern CGV_API context_factory_registration create_unix_gl_context_registration(gl::create_unix_gl_context);
+const context_factory_registration create_unix_gl_context_registration(gl::create_unix_gl_context);
 
 	}
 }
