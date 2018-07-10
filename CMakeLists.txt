@@ -40,6 +40,7 @@ set(as_subproject
     cgv_reflect_types
     cgv_libppp
     gamepad
+    glsu
     plot
 
     # Tools
@@ -98,7 +99,7 @@ add_subdirectory(libs/cgv_reflect_types)
 # add_subdirectory(libs/cgv_win32)
 # add_subdirectory(libs/delaunay)
 add_subdirectory(libs/gamepad)
-# add_subdirectory(libs/glsu)
+add_subdirectory(libs/glsu)
 # add_subdirectory(libs/multi_mouse)
 add_subdirectory(libs/plot)
 # add_subdirectory(libs/point_cloud)

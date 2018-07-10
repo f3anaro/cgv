@@ -1,31 +1,52 @@
-cmake_minimum_required(VERSION 2.6)
-project(glsu)
+project(glsu LANGUAGES C)
 
-# Needed for cgv_ commands
-find_package(cgv COMPONENTS)
+# Load required imported targets
+find_package(OpenGL REQUIRED)
 
-cgv_find_package(OpenGL)
-
-set(HEADERS GL/glsu.h)
-
-set(SOURCES 
-	glsu.c
-)
-
-# Also add the .def-file to the sources. CMake will know what to do with it
-# FIXME: Do not check for WIN32, but for VisualStudio
-if (WIN32)
-	set(SOURCES ${SOURCES} glsu.def)
+# OpenGL Utility Library (GLU) is required
+if (NOT TARGET OpenGL::GLU)
+    message(FATAL_ERROR "GLU (OpenGL Utility Library) was not found")
 endif()
 
-include_directories(${OPENGL_INCLUDE_DIRS} "${CMAKE_CURRENT_SOURCE_DIR}")
+add_library(glsu 
+    src/glsu.c)
 
-cgv_add_library(glsu 
-	SOURCES ${SOURCES} 
-	HEADERS ${HEADERS})
+# Also add the .def-file to the sources. CMake will know what to do with it
+if(MSVC)
+    target_sources(glsu src/glsu.def)
+endif()
 
-target_link_libraries(glsu ${OPENGL_LIBRARIES})
+# Add an alias target for the cgv:: namespace such that other components can use
+# this target like other imported targets with namespace prefixes.
+add_library(cgv::glsu ALIAS glsu)
 
+target_include_directories(glsu
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
-cgv_write_find_file(glsu)
+# Dependencies on other components and libraries
+target_link_libraries(glsu
+    OpenGL::GLU)
 
+# 'make install' to the correct locations (provided by GNUInstallDirs).
+install(TARGETS glsu EXPORT glsuTargets
+    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+
+# Install header files of library
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+# Install shader files
+install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_LIBDIR}/cgv/shader)
+
+# This makes the project importable from the install directory
+# Put config file in per-project dir (name MUST match), can also
+# just go into 'cmake'.
+install(EXPORT glsuTargets NAMESPACE cgv:: DESTINATION lib/cmake/glsu)
+install(FILES glsuConfig.cmake DESTINATION lib/cmake/glsu)
+
+# This makes the project importable from the build directory
+export(TARGETS glsu NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/glsuTargets.cmake)
+file(COPY glsuConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
