@@ -5,7 +5,7 @@
 #include <cgv/gui/window.h>
 #include <cgv/signal/signal.h>
 #include <cgv/signal/bool_signal.h>
-#include <libs/gamepad/gamepad.h>
+#include <gamepad/gamepad.h>
 
 #include "lib_begin.h"
 

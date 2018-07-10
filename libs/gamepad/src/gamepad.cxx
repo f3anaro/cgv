@@ -1,5 +1,5 @@
-#include "gamepad.h"
-#include "gamepad_driver.h"
+#include <gamepad/gamepad.h>
+#include <gamepad/gamepad_driver.h>
 #include <cassert>
 
 namespace gamepad {

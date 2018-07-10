@@ -1,4 +1,4 @@
-#include "gamepad_server.h"
+#include <cg_gamepad/gamepad_server.h>
 #include <cgv/gui/application.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/gui/trigger.h>

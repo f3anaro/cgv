@@ -1,4 +1,4 @@
-#include "gamepad_driver.h"
+#include <gamepad/gamepad_driver.h>
 
 namespace gamepad {
 	/// register a new driver

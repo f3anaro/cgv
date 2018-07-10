@@ -35,9 +35,11 @@ set(as_subproject
     FLTK2
 
     # Libraries
+    cg_gamepad
     cgv_gl
     cgv_reflect_types
     cgv_libppp
+    gamepad
     plot
 
     # Tools
@@ -90,12 +92,12 @@ add_subdirectory(3rd/fltk)
 # Libraries
 # add_subdirectory(libs/ann_wrapper)
 # add_subdirectory(libs/capture)
-# add_subdirectory(libs/cg_gamepad)
+add_subdirectory(libs/cg_gamepad)
 add_subdirectory(libs/cgv_gl)
 add_subdirectory(libs/cgv_reflect_types)
 # add_subdirectory(libs/cgv_win32)
 # add_subdirectory(libs/delaunay)
-# add_subdirectory(libs/gamepad)
+add_subdirectory(libs/gamepad)
 # add_subdirectory(libs/glsu)
 # add_subdirectory(libs/multi_mouse)
 add_subdirectory(libs/plot)

@@ -1,7 +1,5 @@
-#ifdef WIN32
-
 #include <cassert>
-#include "gamepad_driver.h"
+#include <gamepad/gamepad_driver.h>
 #include <Windows.h>
 #include <Xinput.h>
 
@@ -183,5 +181,3 @@ struct xinput_gamepad_driver : public gamepad_driver
 };
 
 driver_registry<xinput_gamepad_driver> xinput_gpd_registry("xinput");
-
-#endif
