@@ -1,8 +1,13 @@
 project(res_prep LANGUAGES CXX)
 
+# Load required imported targets
+find_package(cgv_utils REQUIRED)
+
 # Define res_prep executable
 add_executable(res_prep
     src/res_prep.cxx
+
+    # We want to create an executable without any 
     ../../components/utils/src/scan.cxx
     ../../components/utils/src/dir.cxx
     ../../components/utils/src/file.cxx)
@@ -12,6 +17,12 @@ target_compile_features(res_prep PUBLIC cxx_std_11)
 
 # We do not need the exports because we statically linking against libppp
 target_compile_definitions(res_prep PUBLIC CGV_FORCE_STATIC)
+
+# Dependencies on other components and libraries
+target_link_libraries(res_prep
+    # We need headers from the utils component
+    PRIVATE
+        cgv::utils)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS res_prep EXPORT cgv_res_prepTargets
