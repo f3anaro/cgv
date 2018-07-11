@@ -42,9 +42,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT GLEWTargets NAMESPACE cgv:: DESTINATION lib/cmake/GLEW)
+install(EXPORT GLEWTargets NAMESPACE GLEW:: DESTINATION lib/cmake/GLEW)
 install(FILES GLEWConfig.cmake DESTINATION lib/cmake/GLEW)
 
 # This makes the project importable from the build directory
-export(TARGETS GLEW NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/GLEWTargets.cmake)
+export(TARGETS GLEW NAMESPACE GLEW:: FILE ${CMAKE_BINARY_DIR}/GLEWTargets.cmake)
 file(COPY GLEWConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
