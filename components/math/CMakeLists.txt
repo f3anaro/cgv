@@ -1,7 +1,7 @@
 project(cgv_math LANGUAGES CXX)
 
 # Load required imported targets
-find_package(cgvData REQUIRED)
+find_package(cgv_data REQUIRED)
 
 add_library(math
     src/functions.cxx

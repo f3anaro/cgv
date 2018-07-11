@@ -1,17 +1,17 @@
 project(cg_fltk)
 
 # Load required imported targets
-find_package(cgvGui REQUIRED)
-find_package(cgvRender REQUIRED)
-find_package(cgvMedia REQUIRED)
-find_package(cgvUtils REQUIRED)
-find_package(cgvOs REQUIRED)
-find_package(cgvBase REQUIRED)
-find_package(cgvData REQUIRED)
-find_package(cgvType REQUIRED)
-find_package(cgvSignal REQUIRED)
-find_package(cgvReflect REQUIRED)
-find_package(cgvGl REQUIRED)
+find_package(cgv_gui REQUIRED)
+find_package(cgv_render REQUIRED)
+find_package(cgv_media REQUIRED)
+find_package(cgv_utils REQUIRED)
+find_package(cgv_os REQUIRED)
+find_package(cgv_base REQUIRED)
+find_package(cgv_data REQUIRED)
+find_package(cgv_type REQUIRED)
+find_package(cgv_signal REQUIRED)
+find_package(cgv_reflect REQUIRED)
+find_package(cgv_gl REQUIRED)
 find_package(FLTK2 REQUIRED)
 
 add_library(cg_fltk

@@ -21,7 +21,7 @@ install(TARGETS res_prep EXPORT cgv_res_prepTargets
 
 # This makes the project importable from the install directory. Put config file
 # in per-project dir (name MUST match). An executable has no build dependencies.
-# Hence, there is no need to create an extra cgvViewerConfig.cmake file to
+# Hence, there is no need to create an extra cgv_resp_prepConfig.cmake file to
 # resolve the dependencies. We just use the target defintion file.
 install(EXPORT cgv_res_prepTargets FILE cgv_res_prepConfig.cmake DESTINATION lib/cmake/cgv_res_prep)
 

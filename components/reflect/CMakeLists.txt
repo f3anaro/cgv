@@ -1,8 +1,8 @@
 project(cgv_reflect LANGUAGES CXX)
 
 # Load required imported targets
-find_package(cgvUtils REQUIRED)
-find_package(cgvType REQUIRED)
+find_package(cgv_utils REQUIRED)
+find_package(cgv_type REQUIRED)
 
 # Generate header files from pre-header templates. Ensure that the output
 # directory exists.

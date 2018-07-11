@@ -1,8 +1,8 @@
 project(cgv_viewer LANGUAGES CXX)
 
-find_package(cgvSignal REQUIRED)
-find_package(cgvBase REQUIRED)
-find_package(cgvGui REQUIRED)
+find_package(cgv_signal REQUIRED)
+find_package(cgv_base REQUIRED)
+find_package(cgv_gui REQUIRED)
 
 # Define cgv_viewer executable
 add_executable(cgv_viewer

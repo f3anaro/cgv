@@ -34,7 +34,7 @@ install(TARGETS ppp EXPORT cgv_pppTargets
 
 # This makes the project importable from the install directory. Put config file
 # in per-project dir (name MUST match). An executable has no build dependencies.
-# Hence, there is no need to create an extra cgvViewerConfig.cmake file to
+# Hence, there is no need to create an extra cgv_pppConfig.cmake file to
 # resolve the dependencies. We just use the target defintion file.
 install(EXPORT cgv_pppTargets FILE cgv_pppConfig.cmake  DESTINATION lib/cmake/cgv_ppp)
 
