@@ -1,5 +1,10 @@
 project(cgv_gamepad LANGUAGES CXX)
 
+# Load required imported targets
+# TODO: Remove dependency on cgv_config once we use CMake to handle the build
+#     flags
+find_package(cgv_config REQUIRED)
+
 add_library(gamepad
     src/gamepad.cxx
     src/gamepad_driver.cxx)
@@ -27,6 +32,10 @@ if(WIN32)
     target_sources(gamepad src/xinput_gamepad_driver.cxx)
     target_compile_definitions(gamepad PUBLIC Xinput)
 endif()
+
+# Dependencies on other components and libraries
+target_link_libraries(gamepad
+    cgv::config)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS gamepad EXPORT cgv_gamepadTargets
