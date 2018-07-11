@@ -8,7 +8,7 @@
 #include <cgv/type/variant.h>
 #include <cgv/gui/key_event.h>
 #include <cgv/gui/mouse_event.h>
-#include <cgv/render/gl/gl.h>
+#include <cgv_gl/gl/gl.h>
 
 #include <fltk/events.h>
 #include <fltk/run.h>

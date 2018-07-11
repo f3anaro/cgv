@@ -6,8 +6,8 @@
 #include <cgv/gui/provider.h>
 #include <cgv/gui/mouse_event.h>
 #include <cgv/utils/stopwatch.h>
-#include <cgv/render/gl/gl_context.h>
-#include <cgv/render/gl/gl_performance_monitor.h>
+#include <cgv_gl/gl/gl_context.h>
+#include <cgv_gl/gl/gl_performance_monitor.h>
 #ifdef WIN32
 #pragma warning (disable:4311)
 #endif
