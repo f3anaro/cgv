@@ -71,6 +71,7 @@ set(as_subproject
 if(WIN32)
     list(APPEND as_subproject
         # 3rd party libraries
+        ANN
         pthreadW32
         GLEW)
 endif()
@@ -86,6 +87,7 @@ enable_testing()
 
 # 3rd party libraries
 if(WIN32)
+    add_subdirectory(3rd/ANN)
     add_subdirectory(3rd/pthread)
     add_subdirectory(3rd/glew)
 endif()
