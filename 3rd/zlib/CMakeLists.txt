@@ -1,38 +1,57 @@
-cmake_minimum_required(VERSION 2.6)
-project(ZLIB)
+project(zlib LANGUAGES C)
 
-# Include this file for standard build settings
-include("../../cmake/buildCoreComponents.cmake")
+add_library(zlib
+    src/adler32.c
+    src/compress.c
+    src/crc32.c
+    src/deflate.c
+    src/gzio.c
+    src/infback.c
+    src/inffast.c
+    src/inflate.c
+    src/inftrees.c
+    src/trees.c
+    src/uncompr.c
+    src/zutil.c)
 
-set(SOURCES
-	adler32.c
-	compress.c
-	crc32.c
-	deflate.c
-	gzio.c
-	infback.c
-	inffast.c
-	inflate.c
-	inftrees.c
-	trees.c
-	uncompr.c
-	zutil.c)
-	
-set(HEADERS
-	crc32.h
-	deflate.h
-	inffast.h
-	inffixed.h
-	inflate.h
-	inftrees.h
-	trees.h
-	zconf.h
-	zlib.h
-	zutil.h)
+# Add an alias target for the ZLIB:: namespace such that other components can use
+# this target like other imported targets with namespace prefixes.
+add_library(ZLIB::ZLIB ALIAS zlib)
 
-cgv_add_3rd_library(ZLIB
-	SOURCES ${SOURCES}
-	PUBLIC_HEADERS ${HEADERS}
-	SHARED_DEFINITIONS "ZLIB_DLL")
+# Library filename is in lowercase and uses version information.
+set_target_properties(zlib PROPERTIES
+    OUTPUT_NAME "z"
+    VERSION "1.2.3"
+    EXPORT_NAME "ZLIB")
 
-cgv_write_find_file(ZLIB)
+# Define headers for this library. PUBLIC headers are used for
+# compiling the library, and will be added to consumers' build
+# paths.
+target_include_directories(zlib
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
+
+if(${BUILD_SHARED_LIBS})
+    # Compiler definitions for shared library
+    target_compile_definitions(zlib PUBLIC ZLIB_DLL)
+endif()
+
+# 'make install' to the correct locations (provided by GNUInstallDirs).
+install(TARGETS zlib EXPORT ZLIBTargets
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+
+# Install header files of component.
+install(DIRECTORY include/
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+# This makes the project importable from the install directory.
+# Put config file in per-project dir (name MUST match).
+install(EXPORT ZLIBTargets NAMESPACE ZLIB:: DESTINATION lib/cmake/ZLIB)
+install(FILES ZLIBConfig.cmake DESTINATION lib/cmake/ZLIB)
+
+# This makes the project importable from the build directory
+export(TARGETS zlib NAMESPACE ZLIB:: FILE ${CMAKE_BINARY_DIR}/ZLIBTargets.cmake)
+file(COPY ZLIBConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})

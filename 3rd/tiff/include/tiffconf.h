@@ -7,6 +7,9 @@
 #ifndef _TIFFCONF_
 #define _TIFFCONF_
 
+#include <stdint.h>
+#include <inttypes.h>
+
 /* Define to 1 if the system has the type `int16'. */
 /* #undef HAVE_INT16 */
 
@@ -20,53 +23,53 @@
 #define SIZEOF_INT 4
 
 /* Signed 8-bit type */
-#define TIFF_INT8_T signed char
+#define TIFF_INT8_T int8_t
 
 /* Unsigned 8-bit type */
-#define TIFF_UINT8_T unsigned char
+#define TIFF_UINT8_T uint8_t
 
 /* Signed 16-bit type */
-#define TIFF_INT16_T signed short
+#define TIFF_INT16_T int16_t
 
 /* Unsigned 16-bit type */
-#define TIFF_UINT16_T unsigned short
+#define TIFF_UINT16_T uint16_t
 
 /* Signed 32-bit type formatter */
-#define TIFF_INT32_FORMAT "%d"
+#define TIFF_INT32_FORMAT "%" PRId32
 
 /* Signed 32-bit type */
 #define TIFF_INT32_T signed int
 
 /* Unsigned 32-bit type formatter */
-#define TIFF_UINT32_FORMAT "%u"
+#define TIFF_UINT32_FORMAT "%" PRIu32
 
 /* Unsigned 32-bit type */
-#define TIFF_UINT32_T unsigned int
+#define TIFF_UINT32_T uint32_t
 
 /* Signed 64-bit type formatter */
-#define TIFF_INT64_FORMAT "%I64d"
+#define TIFF_INT64_FORMAT "%" PRId64
 
 /* Signed 64-bit type */
-#define TIFF_INT64_T signed __int64
+#define TIFF_INT64_T int64_t
 
 /* Unsigned 64-bit type formatter */
-#define TIFF_UINT64_FORMAT "%I64u"
+#define TIFF_UINT64_FORMAT "%" PRIu64
 
 /* Unsigned 64-bit type */
-#define TIFF_UINT64_T unsigned __int64
+#define TIFF_UINT64_T uint64_t
 
 /* Signed size type */
-#if defined(_WIN64)
-#define TIFF_SSIZE_T signed __int64
+#if UINTPTR_MAX == 0xffffffffffffffffULL
+#define TIFF_SSIZE_T int64_t
 #else
-#define TIFF_SSIZE_T signed int
+#define TIFF_SSIZE_T int32_t
 #endif
 
 /* Signed size type formatter */
-#if defined(_WIN64)
-#define TIFF_SSIZE_FORMAT "%I64d"
+#if UINTPTR_MAX == 0xffffffffffffffffULL
+#define TIFF_SSIZE_FORMAT "%" PRId64
 #else
-#define TIFF_SSIZE_FORMAT "%ld"
+#define TIFF_SSIZE_FORMAT "%" PRId32
 #endif
 
 /* Pointer difference type */
@@ -82,8 +85,8 @@
 #define HOST_FILLORDER FILLORDER_LSB2MSB
 
 /* Native cpu byte order: 1 if big-endian (Motorola) or 0 if little-endian
-   (Intel) */
-#define HOST_BIGENDIAN 0
+   (Intel). Will be defined by CMake */
+/* #define HOST_BIGENDIAN 0 */
 
 /* Support CCITT Group 3 & 4 algorithms */
 #define CCITT_SUPPORT 1

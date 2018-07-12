@@ -72,8 +72,12 @@ if(WIN32)
     list(APPEND as_subproject
         # 3rd party libraries
         ANN
+        JPEG
+        PNG
+        GLEW
         pthreadW32
-        GLEW)
+        TIFF
+        ZLIB)
 endif()
 
 macro(find_package ARG0)
@@ -88,8 +92,12 @@ enable_testing()
 # 3rd party libraries
 if(WIN32)
     add_subdirectory(3rd/ANN)
-    add_subdirectory(3rd/pthread)
+    add_subdirectory(3rd/jpeg)
     add_subdirectory(3rd/glew)
+    add_subdirectory(3rd/png)
+    add_subdirectory(3rd/pthread)
+    add_subdirectory(3rd/tiff)
+    add_subdirectory(3rd/zlib)
 endif()
 
 # FLTK 2.0 is an experimental new version of the library which is currently
