@@ -18,5 +18,5 @@ find_dependency(cgv_gl REQUIRED)
 
 # Prevents importing that same targets multiple times
 if(NOT TARGET cgv::plot)
-    include("${CMAKE_CURRENT_LIST_DIR}/cgv_plotTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/plotTargets.cmake")
 endif()

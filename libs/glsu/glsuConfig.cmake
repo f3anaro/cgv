@@ -14,5 +14,5 @@ endif()
 
 # Prevents importing that same targets multiple times
 if(NOT TARGET cgv::glsu)
-    include("${CMAKE_CURRENT_LIST_DIR}/cgv_glTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/glsuTargets.cmake")
 endif()

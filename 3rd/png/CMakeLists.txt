@@ -44,6 +44,10 @@ else()
     target_compile_definitions(PNG PUBLIC PNG_STATIC)
 endif()
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(PNG PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS PNG EXPORT PNGTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -56,9 +60,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT PNGTargets NAMESPACE PNG:: DESTINATION lib/cmake/PNG)
-install(FILES PNGConfig.cmake DESTINATION lib/cmake/PNG)
+install(EXPORT PNGTargets NAMESPACE PNG:: DESTINATION cmake/PNG)
+install(FILES PNGConfig.cmake DESTINATION cmake/PNG)
 
 # This makes the project importable from the build directory
-export(TARGETS PNG NAMESPACE PNG:: FILE ${CMAKE_BINARY_DIR}/PNGTargets.cmake)
-file(COPY PNGConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS PNG NAMESPACE PNG:: FILE ${CMAKE_BINARY_DIR}/cmake/PNGTargets.cmake)
+file(COPY PNGConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

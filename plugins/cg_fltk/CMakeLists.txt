@@ -96,6 +96,10 @@ target_link_libraries(cg_fltk
     cgv::gl
     FLTK2::FLTK2)
 
+# Build the library in the plugins/ directory inside the build directory.
+set_target_properties(cg_fltk PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS cg_fltk EXPORT cg_fltkTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -108,9 +112,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cg_fltkTargets NAMESPACE cgv:: DESTINATION lib/cmake/cg_fltk)
-install(FILES cg_fltkConfig.cmake DESTINATION lib/cmake/cg_fltk)
+install(EXPORT cg_fltkTargets NAMESPACE cgv:: DESTINATION cmake/cg_fltk)
+install(FILES cg_fltkConfig.cmake DESTINATION cmake/cg_fltk)
 
 # This makes the project importable from the build directory
-export(TARGETS cg_fltk NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cg_fltkTargets.cmake)
-file(COPY cg_fltkConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS cg_fltk NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cg_fltkTargets.cmake)
+file(COPY cg_fltkConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

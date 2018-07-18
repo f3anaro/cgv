@@ -12,5 +12,5 @@
 @define(addDependencies=["opengl","glu","glew"])
 @define(addCommandLineArguments=[
 	'config:"'.CGV_DIR.'/plugins/examples/config.def"',
-	'"type(shader_config):shader_path='."'".CGV_DIR."/plugins/examples;".CGV_DIR."/cgv/render/glsl'".'"'])
+	'"type(shader_config):shader_path='."'".CGV_DIR."/plugins/examples;".CGV_DIR."/cgv/render/shader'".'"'])
 

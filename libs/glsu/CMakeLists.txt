@@ -29,6 +29,10 @@ target_include_directories(glsu
 target_link_libraries(glsu
     OpenGL::GLU)
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(glsu PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS glsu EXPORT glsuTargets
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -38,15 +42,12 @@ install(TARGETS glsu EXPORT glsuTargets
 # Install header files of library
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-# Install shader files
-install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_LIBDIR}/cgv/shader)
-
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT glsuTargets NAMESPACE cgv:: DESTINATION lib/cmake/glsu)
-install(FILES glsuConfig.cmake DESTINATION lib/cmake/glsu)
+install(EXPORT glsuTargets NAMESPACE cgv:: DESTINATION cmake/glsu)
+install(FILES glsuConfig.cmake DESTINATION cmake/glsu)
 
 # This makes the project importable from the build directory
-export(TARGETS glsu NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/glsuTargets.cmake)
-file(COPY glsuConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS glsu NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/glsuTargets.cmake)
+file(COPY glsuConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

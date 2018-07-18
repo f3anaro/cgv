@@ -26,6 +26,10 @@ else()
     target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
 endif()
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(GLEW PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # Dependencies on other libraries
 target_link_libraries(GLEW
     OpenGL::GL)
@@ -42,9 +46,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT GLEWTargets NAMESPACE GLEW:: DESTINATION lib/cmake/GLEW)
-install(FILES GLEWConfig.cmake DESTINATION lib/cmake/GLEW)
+install(EXPORT GLEWTargets NAMESPACE GLEW:: DESTINATION cmake/GLEW)
+install(FILES GLEWConfig.cmake DESTINATION cmake/GLEW)
 
 # This makes the project importable from the build directory
-export(TARGETS GLEW NAMESPACE GLEW:: FILE ${CMAKE_BINARY_DIR}/GLEWTargets.cmake)
-file(COPY GLEWConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS GLEW NAMESPACE GLEW:: FILE ${CMAKE_BINARY_DIR}/cmake/GLEWTargets.cmake)
+file(COPY GLEWConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

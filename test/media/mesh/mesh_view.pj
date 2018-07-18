@@ -11,7 +11,7 @@ addProjectDeps=[
 ];
 addIncDirs=[CGV_DIR."/libs"];
 addCommandLineArguments=[
-	"type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/component/glsl;".CGV_DIR."/libs/cgv_gl/glsl'",
+	"type(shader_config):shader_path='".INPUT_DIR.";".CGV_DIR."/libs/component/shader;".CGV_DIR."/libs/cgv_gl/shader'",
 	'config:"'.INPUT_DIR.'/config.def"'
 ];
 

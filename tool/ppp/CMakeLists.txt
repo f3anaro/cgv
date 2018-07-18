@@ -2,7 +2,7 @@
 project(ppp LANGUAGES CXX)
 
 # Load required imported targets
-find_package(cgv_libppp REQUIRED)
+find_package(libppp REQUIRED)
 
 # Define ppp executable
 add_executable(ppp
@@ -14,6 +14,16 @@ target_compile_definitions(ppp PUBLIC CGV_FORCE_STATIC)
 
 # CGV uses C++11 standard
 target_compile_features(ppp PUBLIC cxx_std_11)
+
+if(WIN32)
+    # Write executables in build directory
+    set_target_properties(ppp PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+else()
+    # Write executables in bin/ directory inside build directory
+    set_target_properties(ppp PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+endif()
 
 # Always link against a static version of libppp. If the target "libppp_static"
 # exists this means that there is a shared and a static version of the library.
@@ -36,7 +46,7 @@ install(TARGETS ppp EXPORT cgv_pppTargets
 # in per-project dir (name MUST match). An executable has no build dependencies.
 # Hence, there is no need to create an extra cgv_pppConfig.cmake file to
 # resolve the dependencies. We just use the target defintion file.
-install(EXPORT cgv_pppTargets FILE cgv_pppConfig.cmake  DESTINATION lib/cmake/cgv_ppp)
+install(EXPORT cgv_pppTargets FILE cgv_pppConfig.cmake DESTINATION cmake/cgv_ppp)
 
 # This makes the project importable from the build directory
-export(TARGETS ppp FILE cgv_pppConfig.cmake)
+export(TARGETS ppp FILE cmake/cgv_pppConfig.cmake)

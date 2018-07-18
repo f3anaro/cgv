@@ -23,8 +23,11 @@ add_library(libppp ${SOURCES})
 add_library(cgv::libppp ALIAS libppp)
 
 # Remove the redundant "lib" prefix from the output name. Otherwise the CMake
-# target "libppp" would produce a library called "liblibppp".
-set_target_properties(libppp PROPERTIES OUTPUT_NAME "ppp")
+# target "libppp" would produce a library called "liblibppp". Build the library
+# in the lib/ directory inside the build directory.
+set_target_properties(libppp PROPERTIES
+    OUTPUT_NAME "ppp"
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 if(${BUILD_SHARED_LIBS})
     # Explicit static version of libppp that is used to produce a statically linked
@@ -34,8 +37,11 @@ if(${BUILD_SHARED_LIBS})
     # Add an namespace alias
     add_library(cgv::libppp_static ALIAS libppp_static)
 
-    # Remove "lib" prefix from filename and "_static" suffix
-    set_target_properties(libppp_static PROPERTIES OUTPUT_NAME "ppp")
+    # Remove "lib" prefix from filename and "_static" suffix and build the
+    # library in the lib/ directory.
+    set_target_properties(libppp_static PROPERTIES
+        OUTPUT_NAME "ppp"
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
 if(${BUILD_SHARED_LIBS})
@@ -72,7 +78,7 @@ else()
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS ${exported_targets} EXPORT cgv_libpppTargets
+install(TARGETS ${exported_targets} EXPORT libpppTargets
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -83,9 +89,9 @@ install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT cgv_libpppTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_libppp)
-install(FILES cgv_libpppConfig.cmake DESTINATION lib/cmake/cgv_libppp)
+install(EXPORT libpppTargets NAMESPACE cgv:: DESTINATION cmake/libppp)
+install(FILES libpppConfig.cmake DESTINATION cmake/libppp)
 
 # This makes the project importable from the build directory
-export(TARGETS ${exported_targets} NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_libpppTargets.cmake)
-file(COPY cgv_libpppConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS ${exported_targets} NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/libpppTargets.cmake)
+file(COPY libpppConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

@@ -13,7 +13,7 @@ find_dependency(cgv_base REQUIRED)
 find_dependency(cgv_signal REQUIRED)
 find_dependency(cgv_math REQUIRED)
 find_dependency(cgv_media REQUIRED)
-find_dependency(cgv_libppp REQUIRED)
+find_dependency(libppp REQUIRED)
 
 # Prevents importing that same targets multiple times
 if(NOT TARGET cgv::render)

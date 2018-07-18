@@ -73,6 +73,10 @@ else()
     target_compile_definitions(JPEG PUBLIC JPEG_STATIC)
 endif()
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(JPEG PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS JPEG EXPORT JPEGTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -85,9 +89,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT JPEGTargets NAMESPACE JPEG:: DESTINATION lib/cmake/JPEG)
-install(FILES JPEGConfig.cmake DESTINATION lib/cmake/JPEG)
+install(EXPORT JPEGTargets NAMESPACE JPEG:: DESTINATION cmake/JPEG)
+install(FILES JPEGConfig.cmake DESTINATION cmake/JPEG)
 
 # This makes the project importable from the build directory
-export(TARGETS JPEG NAMESPACE JPEG:: FILE ${CMAKE_BINARY_DIR}/JPEGTargets.cmake)
-file(COPY JPEGConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS JPEG NAMESPACE JPEG:: FILE ${CMAKE_BINARY_DIR}/cmake/JPEGTargets.cmake)
+file(COPY JPEGConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

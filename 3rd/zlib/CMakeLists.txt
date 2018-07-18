@@ -37,6 +37,10 @@ if(${BUILD_SHARED_LIBS})
     target_compile_definitions(zlib PUBLIC ZLIB_DLL)
 endif()
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(zlib PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS zlib EXPORT ZLIBTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -49,9 +53,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT ZLIBTargets NAMESPACE ZLIB:: DESTINATION lib/cmake/ZLIB)
-install(FILES ZLIBConfig.cmake DESTINATION lib/cmake/ZLIB)
+install(EXPORT ZLIBTargets NAMESPACE ZLIB:: DESTINATION cmake/ZLIB)
+install(FILES ZLIBConfig.cmake DESTINATION cmake/ZLIB)
 
 # This makes the project importable from the build directory
-export(TARGETS zlib NAMESPACE ZLIB:: FILE ${CMAKE_BINARY_DIR}/ZLIBTargets.cmake)
-file(COPY ZLIBConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS zlib NAMESPACE ZLIB:: FILE ${CMAKE_BINARY_DIR}/cmake/ZLIBTargets.cmake)
+file(COPY ZLIBConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

@@ -57,8 +57,11 @@ add_library(gl
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::gl ALIAS gl)
 
-# Append "cgv_" prefix to the library filename.
-set_target_properties(gl PROPERTIES OUTPUT_NAME "cgv_gl")
+# Append "cgv_" prefix to the library filename. Build the library in the lib/
+# directory inside the build directory.
+set_target_properties(gl PROPERTIES
+    OUTPUT_NAME "cgv_gl"
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 target_include_directories(gl
     PUBLIC
@@ -113,14 +116,14 @@ install(TARGETS gl EXPORT glTargets
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install shader files
-install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_LIBDIR}/cgv/shader)
+install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_PREFIX}/shader)
 
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT glTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_gl)
-install(FILES cgv_glConfig.cmake DESTINATION lib/cmake/cgv_gl)
+install(EXPORT glTargets NAMESPACE cgv:: DESTINATION cmake/cgv_gl)
+install(FILES cgv_glConfig.cmake DESTINATION cmake/cgv_gl)
 
 # This makes the project importable from the build directory
-export(TARGETS gl NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_glTargets.cmake)
-file(COPY cgv_glConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS gl NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_glTargets.cmake)
+file(COPY cgv_glConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

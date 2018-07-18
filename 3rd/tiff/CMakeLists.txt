@@ -115,6 +115,10 @@ target_link_libraries(TIFF
     INTERFACE
         JPEG::JPEG)
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(TIFF PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS TIFF EXPORT TIFFTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -130,9 +134,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT TIFFTargets NAMESPACE TIFF:: DESTINATION lib/cmake/TIFF)
-install(FILES TIFFConfig.cmake DESTINATION lib/cmake/TIFF)
+install(EXPORT TIFFTargets NAMESPACE TIFF:: DESTINATION cmake/TIFF)
+install(FILES TIFFConfig.cmake DESTINATION cmake/TIFF)
 
 # This makes the project importable from the build directory
-export(TARGETS TIFF NAMESPACE TIFF:: FILE ${CMAKE_BINARY_DIR}/TIFFTargets.cmake)
-file(COPY TIFFConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS TIFF NAMESPACE TIFF:: FILE ${CMAKE_BINARY_DIR}/cmake/TIFFTargets.cmake)
+file(COPY TIFFConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

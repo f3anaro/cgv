@@ -18,6 +18,16 @@ target_compile_features(res_prep PUBLIC cxx_std_11)
 # We do not need the exports because we statically linking against libppp
 target_compile_definitions(res_prep PUBLIC CGV_FORCE_STATIC)
 
+if(WIN32)
+    # Write executables in build directory
+    set_target_properties(res_prep PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+else()
+    # Write executables in bin/ directory inside build directory
+    set_target_properties(res_prep PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+endif()
+
 # Dependencies on other components and libraries
 target_link_libraries(res_prep
     # We need headers from the utils component
@@ -34,7 +44,7 @@ install(TARGETS res_prep EXPORT cgv_res_prepTargets
 # in per-project dir (name MUST match). An executable has no build dependencies.
 # Hence, there is no need to create an extra cgv_resp_prepConfig.cmake file to
 # resolve the dependencies. We just use the target defintion file.
-install(EXPORT cgv_res_prepTargets FILE cgv_res_prepConfig.cmake DESTINATION lib/cmake/cgv_res_prep)
+install(EXPORT cgv_res_prepTargets FILE cgv_res_prepConfig.cmake DESTINATION cmake/cgv_res_prep)
 
 # This makes the project importable from the build directory
-export(TARGETS res_prep FILE cgv_res_prepConfig.cmake)
+export(TARGETS res_prep FILE cmake/cgv_res_prepConfig.cmake)

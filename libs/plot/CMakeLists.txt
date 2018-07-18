@@ -1,4 +1,4 @@
-project(cgv_plot LANGUAGES CXX)
+project(plot LANGUAGES CXX)
 
 # Load required imported targets
 find_package(cgv_utils REQUIRED)
@@ -21,9 +21,6 @@ add_library(plot
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::plot ALIAS plot)
 
-# Append "cgv_" prefix to the library filename.
-set_target_properties(plot PROPERTIES OUTPUT_NAME "cgv_plot")
-
 target_include_directories(plot
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -41,8 +38,8 @@ if(${BUILD_SHARED_LIBS})
     target_compile_definitions(plot PUBLIC PLOT_EXPORTS)
 endif()
 
-# Inline shaders for static and Windows builds
-if(WIN32 OR NOT ${BUILD_SHARED_LIBS})
+# Inline shaders for static Windows builds
+if(WIN32 AND NOT ${BUILD_SHARED_LIBS})
     target_compile_definitions(plot PUBLIC REGISTER_SHADER_FILES)
 endif()
 
@@ -59,6 +56,10 @@ target_link_libraries(plot
     cgv::render
     cgv::gl)
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(plot PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS plot EXPORT plotTargets
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -69,14 +70,14 @@ install(TARGETS plot EXPORT plotTargets
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install shader files
-install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_LIBDIR}/cgv_plot/shader)
+install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_LIBDIR}/plot/shader)
 
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT plotTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_plot)
-install(FILES cgv_glConfig.cmake DESTINATION lib/cmake/cgv_plot)
+install(EXPORT plotTargets NAMESPACE cgv:: DESTINATION cmake/plot)
+install(FILES plotConfig.cmake DESTINATION cmake/plot)
 
 # This makes the project importable from the build directory
-export(TARGETS plot NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_plotTargets.cmake)
-file(COPY cgv_plotConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS plot NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/plotTargets.cmake)
+file(COPY plotConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

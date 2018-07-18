@@ -55,6 +55,10 @@ target_link_libraries(crg_stereo_view
     cgv::gl
     cgv::cg_gamepad)
 
+# Build the library in the plugins/ directory inside the build directory.
+set_target_properties(crg_stereo_view PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS crg_stereo_view EXPORT crg_stereo_viewTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -67,9 +71,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT crg_stereo_viewTargets NAMESPACE cgv:: DESTINATION lib/cmake/crg_stereo_view)
-install(FILES crg_stereo_viewTargets.cmake DESTINATION lib/cmake/crg_stereo_view)
+install(EXPORT crg_stereo_viewTargets NAMESPACE cgv:: DESTINATION cmake/crg_stereo_view)
+install(FILES crg_stereo_viewConfig.cmake DESTINATION cmake/crg_stereo_view)
 
 # This makes the project importable from the build directory
-export(TARGETS crg_stereo_view NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/crg_stereo_viewTargets.cmake)
-file(COPY crg_stereo_viewConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS crg_stereo_view NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/crg_stereo_viewTargets.cmake)
+file(COPY crg_stereo_viewConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

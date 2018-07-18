@@ -36,6 +36,16 @@ if(${BUILD_SHARED_LIBS})
     target_compile_definitions(math PUBLIC CGV_MATH_EXPORTS)
 endif()
 
+if(WIN32)
+    # Build the library in build directory
+    set_target_properties(math PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+else()
+    # Build the library in the lib/ directory inside the build directory.
+    set_target_properties(math PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS math EXPORT cgv_mathTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -48,9 +58,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgv_mathTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_math)
-install(FILES cgv_mathConfig.cmake DESTINATION lib/cmake/cgv_math)
+install(EXPORT cgv_mathTargets NAMESPACE cgv:: DESTINATION cmake/cgv_math)
+install(FILES cgv_mathConfig.cmake DESTINATION cmake/cgv_math)
 
 # This makes the project importable from the build directory
-export(TARGETS math NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_mathTargets.cmake)
-file(COPY cgv_mathConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS math NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_mathTargets.cmake)
+file(COPY cgv_mathConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

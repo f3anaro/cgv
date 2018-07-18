@@ -28,9 +28,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgv_configTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_config)
-install(FILES cgv_configConfig.cmake DESTINATION lib/cmake/cgv_config)
+install(EXPORT cgv_configTargets NAMESPACE cgv:: DESTINATION cmake/cgv_config)
+install(FILES cgv_configConfig.cmake DESTINATION cmake/cgv_config)
 
 # This makes the project importable from the build directory
-export(TARGETS config NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_configTargets.cmake)
-file(COPY cgv_configConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS config NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_configTargets.cmake)
+file(COPY cgv_configConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

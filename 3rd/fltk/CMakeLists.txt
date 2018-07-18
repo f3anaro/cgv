@@ -199,6 +199,10 @@ if(${BUILD_SHARED_LIBS})
             FL_IMAGES_LIBRARY)
 endif()
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(FLTK2 PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # ------------
 # Dependencies
 # ------------
@@ -282,9 +286,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT FLTK2Targets NAMESPACE FLTK2:: DESTINATION lib/cmake/FLTK2)
-install(FILES FLTK2Config.cmake DESTINATION lib/cmake/FLTK2)
+install(EXPORT FLTK2Targets NAMESPACE FLTK2:: DESTINATION cmake/FLTK2)
+install(FILES FLTK2Config.cmake DESTINATION cmake/FLTK2)
 
 # This makes the project importable from the build directory
-export(TARGETS FLTK2 NAMESPACE FLTK2:: FILE ${CMAKE_BINARY_DIR}/FLTK2Targets.cmake)
-file(COPY FLTK2Config.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS FLTK2 NAMESPACE FLTK2:: FILE ${CMAKE_BINARY_DIR}/cmake/FLTK2Targets.cmake)
+file(COPY FLTK2Config.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

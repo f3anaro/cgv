@@ -1,4 +1,4 @@
-project(cgv_gamepad LANGUAGES CXX)
+project(gamepad LANGUAGES CXX)
 
 # Load required imported targets
 # TODO: Remove dependency on cgv_config once we use CMake to handle the build
@@ -37,8 +37,12 @@ endif()
 target_link_libraries(gamepad
     cgv::config)
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(gamepad PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS gamepad EXPORT cgv_gamepadTargets
+install(TARGETS gamepad EXPORT gamepadTargets
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -49,9 +53,9 @@ install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT cgv_gamepadTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_gamepad)
-install(FILES cgv_gamepadConfig.cmake DESTINATION lib/cmake/cgv_gamepad)
+install(EXPORT gamepadTargets NAMESPACE cgv:: DESTINATION cmake/gamepad)
+install(FILES gamepadConfig.cmake DESTINATION cmake/gamepad)
 
 # This makes the project importable from the build directory
-export(TARGETS gamepad NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_gamepadTargets.cmake)
-file(COPY cgv_gamepadConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS gamepad NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/gamepadTargets.cmake)
+file(COPY gamepadConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

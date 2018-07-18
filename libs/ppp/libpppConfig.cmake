@@ -9,5 +9,5 @@ find_dependency(cgv_config REQUIRED)
 
 # Prevents importing that same targets multiple times
 if(NOT TARGET cgv::libppp)
-    include("${CMAKE_CURRENT_LIST_DIR}/cgv_libpppTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/libpppTargets.cmake")
 endif()

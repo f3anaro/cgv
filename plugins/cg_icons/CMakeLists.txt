@@ -101,6 +101,10 @@ endif()
 # dependency.
 target_link_libraries(cg_icons PRIVATE cgv::base)
 
+# Build the library in the plugins/ directory inside the build directory.
+set_target_properties(cg_icons PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS cg_icons EXPORT cg_iconsTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -109,9 +113,9 @@ install(TARGETS cg_icons EXPORT cg_iconsTargets
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cg_iconsTargets NAMESPACE cgv:: DESTINATION lib/cmake/cg_icons)
-install(FILES cg_iconsConfig.cmake DESTINATION lib/cmake/cg_icons)
+install(EXPORT cg_iconsTargets NAMESPACE cgv:: DESTINATION cmake/cg_icons)
+install(FILES cg_iconsConfig.cmake DESTINATION cmake/cg_icons)
 
 # This makes the project importable from the build directory
-export(TARGETS cg_icons NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cg_iconsTargets.cmake)
-file(COPY cg_iconsConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS cg_icons NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cg_iconsTargets.cmake)
+file(COPY cg_iconsConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

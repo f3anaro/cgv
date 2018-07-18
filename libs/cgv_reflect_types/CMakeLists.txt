@@ -53,6 +53,10 @@ target_link_libraries(reflect_types
     cgv::render
     cgv::gui)
 
+# Build the library in the lib/ directory inside the build directory.
+set_target_properties(reflect_types PROPERTIES
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS reflect_types EXPORT cgv_reflect_typesTargets
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -65,9 +69,9 @@ install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT cgv_reflect_typesTargets NAMESPACE cgv:: DESTINATION lib/cmake/reflect_types)
-install(FILES cgv_reflect_typesConfig.cmake DESTINATION lib/cmake/reflect_types)
+install(EXPORT cgv_reflect_typesTargets NAMESPACE cgv:: DESTINATION cmake/reflect_types)
+install(FILES cgv_reflect_typesConfig.cmake DESTINATION cmake/reflect_types)
 
 # This makes the project importable from the build directory
-export(TARGETS reflect_types NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_reflect_typesTargets.cmake)
-file(COPY cgv_reflect_typesConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS reflect_types NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_reflect_typesTargets.cmake)
+file(COPY cgv_reflect_typesConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

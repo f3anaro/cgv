@@ -34,8 +34,10 @@ endif()
 target_link_libraries(pthread INTERFACE ws2_32)
 
 # Rename the exported target to "Threads" to match the "FindThreads" module
-# interface.
-set_target_properties(pthread PROPERTIES EXPORT_NAME Threads)
+# interface. Build the library in the lib/ directory inside the build directory.
+set_target_properties(pthread PROPERTIES
+    EXPORT_NAME Threads
+    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS pthread EXPORT pthreadTargets
@@ -49,9 +51,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT pthreadTargets NAMESPACE Threads:: DESTINATION lib/cmake/pthreadW32)
-install(FILES pthreadW32Config.cmake DESTINATION lib/cmake/pthreadW32)
+install(EXPORT pthreadTargets NAMESPACE Threads:: DESTINATION cmake/pthreadW32)
+install(FILES pthreadW32Config.cmake DESTINATION cmake/pthreadW32)
 
 # This makes the project importable from the build directory
-export(TARGETS pthread NAMESPACE Threads:: FILE ${CMAKE_BINARY_DIR}/pthreadW32Targets.cmake)
-file(COPY pthreadW32Config.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS pthread NAMESPACE Threads:: FILE ${CMAKE_BINARY_DIR}/cmake/pthreadW32Targets.cmake)
+file(COPY pthreadW32Config.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

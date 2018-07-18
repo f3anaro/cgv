@@ -49,6 +49,10 @@ foreach(lib IN ITEMS ANN ANNf)
         target_compile_definitions(${lib} PUBLIC
             ANN_STATIC)
     endif()
+
+    # Build the library in the lib/ directory inside the build directory.
+    set_target_properties(${lib} PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endforeach(${lib})
 
 # ANN library with floats
@@ -67,9 +71,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT ANNTargets NAMESPACE ANN:: DESTINATION lib/cmake/ANN)
-install(FILES ANNConfig.cmake DESTINATION lib/cmake/ANN)
+install(EXPORT ANNTargets NAMESPACE ANN:: DESTINATION cmake/ANN)
+install(FILES ANNConfig.cmake DESTINATION cmake/ANN)
 
 # This makes the project importable from the build directory
-export(TARGETS ANN NAMESPACE ANN:: FILE ${CMAKE_BINARY_DIR}/ANNTargets.cmake)
-file(COPY ANNConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS ANN NAMESPACE ANN:: FILE ${CMAKE_BINARY_DIR}/cmake/ANNTargets.cmake)
+file(COPY ANNConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

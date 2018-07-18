@@ -75,7 +75,15 @@ endif()
 if(WIN32)
     # Compiler definitions for Windows builds
     target_compile_options(gui PRIVATE _WIN32)
-endif(WIN32)
+
+    # Build the library in build directory
+    set_target_properties(gui PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+else()
+    # Build the library in the lib/ directory inside the build directory.
+    set_target_properties(gui PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS gui EXPORT cgv_guiTargets
@@ -89,9 +97,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgv_guiTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_gui)
-install(FILES cgv_guiConfig.cmake DESTINATION lib/cmake/cgv_gui)
+install(EXPORT cgv_guiTargets NAMESPACE cgv:: DESTINATION cmake/cgv_gui)
+install(FILES cgv_guiConfig.cmake DESTINATION cmake/cgv_gui)
 
 # This makes the project importable from the build directory
-export(TARGETS gui NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_guiTargets.cmake)
-file(COPY cgv_guiConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS gui NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_guiTargets.cmake)
+file(COPY cgv_guiConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

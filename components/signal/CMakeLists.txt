@@ -78,6 +78,16 @@ if(${BUILD_SHARED_LIBS})
     target_compile_definitions(signal PUBLIC CGV_SIGNAL_EXPORTS)
 endif()
 
+if(WIN32)
+    # Build the library in build directory
+    set_target_properties(signal PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+else()
+    # Build the library in the lib/ directory inside the build directory.
+    set_target_properties(signal PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS signal EXPORT cgv_signalTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -97,9 +107,9 @@ install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgv_signalTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_signal)
-install(FILES cgv_signalConfig.cmake DESTINATION lib/cmake/cgv_signal)
+install(EXPORT cgv_signalTargets NAMESPACE cgv:: DESTINATION cmake/cgv_signal)
+install(FILES cgv_signalConfig.cmake DESTINATION cmake/cgv_signal)
 
 # This makes the project importable from the build directory
-export(TARGETS signal NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_signalTargets.cmake)
-file(COPY cgv_signalConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS signal NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_signalTargets.cmake)
+file(COPY cgv_signalConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

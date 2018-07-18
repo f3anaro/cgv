@@ -9,7 +9,7 @@ find_package(cgv_base REQUIRED)
 find_package(cgv_signal REQUIRED)
 find_package(cgv_math REQUIRED)
 find_package(cgv_media REQUIRED)
-find_package(cgv_libppp REQUIRED)
+find_package(libppp REQUIRED)
 
 add_library(render
     src/attribute_array_binding.cxx
@@ -52,9 +52,14 @@ target_link_libraries(render
     cgv::media
     cgv::libppp)
 
+# Tell the linker where to find "dlopen" and friends on Unix systems
 if(NOT WIN32)
-    # On Unix systems, tell the linker where to find "dlopen" and friends 
     target_link_libraries(render ${CMAKE_DL_LIBS})
+endif()
+
+# Let use detect Windows
+if(WIN32)
+    target_compile_definitions(render PRIVATE _WIN32)
 endif()
 
 # CGV uses C++11 standard
@@ -70,6 +75,16 @@ else()
     endif()
 endif()
 
+if(WIN32)
+    # Build the library in build directory
+    set_target_properties(render PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+else()
+    # Build the library in the lib/ directory inside the build directory.
+    set_target_properties(render PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS render EXPORT cgv_renderTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -82,9 +97,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgv_renderTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_render)
-install(FILES cgv_renderConfig.cmake DESTINATION lib/cmake/cgv_render)
+install(EXPORT cgv_renderTargets NAMESPACE cgv:: DESTINATION cmake/cgv_render)
+install(FILES cgv_renderConfig.cmake DESTINATION cmake/cgv_render)
 
 # This makes the project importable from the build directory
-export(TARGETS render NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_renderTargets.cmake)
-file(COPY cgv_renderConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS render NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_renderTargets.cmake)
+file(COPY cgv_renderConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

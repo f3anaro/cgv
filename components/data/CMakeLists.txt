@@ -45,6 +45,16 @@ if(${BUILD_SHARED_LIBS})
     target_compile_definitions(data PUBLIC CGV_DATA_EXPORTS)
 endif()
 
+if(WIN32)
+    # Build the library in build directory
+    set_target_properties(data PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+else()
+    # Build the library in the lib/ directory inside the build directory.
+    set_target_properties(data PROPERTIES
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+endif()
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS data EXPORT cgv_dataTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -57,9 +67,9 @@ install(DIRECTORY include/
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
-install(EXPORT cgv_dataTargets NAMESPACE cgv:: DESTINATION lib/cmake/cgv_data)
-install(FILES cgv_dataConfig.cmake DESTINATION lib/cmake/cgv_data)
+install(EXPORT cgv_dataTargets NAMESPACE cgv:: DESTINATION cmake/cgv_data)
+install(FILES cgv_dataConfig.cmake DESTINATION cmake/cgv_data)
 
 # This makes the project importable from the build directory
-export(TARGETS data NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cgv_dataTargets.cmake)
-file(COPY cgv_dataConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
+export(TARGETS data NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_dataTargets.cmake)
+file(COPY cgv_dataConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)

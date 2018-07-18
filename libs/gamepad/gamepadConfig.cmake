@@ -7,5 +7,5 @@ include(CMakeFindDependencyMacro)
 
 # Prevents importing that same targets multiple times
 if(NOT TARGET cgv::gamepad)
-    include("${CMAKE_CURRENT_LIST_DIR}/cgv_gamepadTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/gamepadTargets.cmake")
 endif()

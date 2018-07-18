@@ -1,11 +1,23 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 project(cgv LANGUAGES CXX)
 
+option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
+
+if(UNIX AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    # Use a namespace directory for the whole cgv framework similar to the
+    # golang project.
+    set(CMAKE_INSTALL_PREFIX "/usr/local/cgv" CACHE PATH "Default install path" FORCE)
+endif()
+
 # Must use GNUInstallDirs to install libraries into correct
 # locations on all platforms.
 include(GNUInstallDirs)
 
-option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
+# Set runtime search path (rpath) of executables and libraries on Unix systems.
+# Windows does not have the concept of runtime search paths.
+if (UNIX)
+    set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR} CACHE PATH "rpath for installed targets" FORCE)
+endif()
 
 # Wraps the original "find_package" command (now accessible via
 # "_find_package"). The macro inhibits calls to "_find_package" if the variable
@@ -38,7 +50,7 @@ set(as_subproject
     cg_gamepad
     cgv_gl
     cgv_reflect_types
-    cgv_libppp
+    libppp
     gamepad
     glsu
     plot
