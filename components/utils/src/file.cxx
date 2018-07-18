@@ -9,6 +9,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <cstring>
+#include <Windows.h>
 #else
 #include <unistd.h>
 #include <sys/types.h>
@@ -525,6 +526,23 @@ bool is_relative_path(const std::string& file_path)
 	if (file_path[1] == ':' && is_letter(file_path[0]))
 		return false;
 	return true;
+}
+
+// return the full resolved path without any relative parts
+std::string get_full_path(const std::string& path)
+{
+#ifdef _WIN32
+	// Use GetFullPathName() in Windows
+	TCHAR resolved[MAX_PATH];
+	GetFullPathName(_T(path.c_str()), MAX_PATH, resolved, NULL);
+	return std::string(resolved);
+#else
+	// Use realpath() on Unix
+	char *resolved = realpath(path.c_str(), NULL);
+	std::string full_path(resolved);
+	free(resolved);
+	return full_path;
+#endif
 }
 
 /// clean up the path such that all back slashes are replaced by /, no multiple / arise and no trailing / arises

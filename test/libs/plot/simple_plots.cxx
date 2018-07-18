@@ -312,7 +312,7 @@ public:
 		if (cgv::render::get_shader_config()->shader_path.empty()) {
 			std::string prog_name = cgv::base::ref_prog_name();
 			std::string prog_path = cgv::utils::file::get_path(prog_name);
-			cgv::render::get_shader_config()->shader_path = prog_path+"/glsl";
+			cgv::render::get_shader_config()->shader_path = prog_path+"/shader";
 		}
 	}
 	bool init(cgv::render::context& ctx)

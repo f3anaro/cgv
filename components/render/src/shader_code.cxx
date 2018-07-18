@@ -41,8 +41,15 @@ shader_config_ptr get_shader_config()
 	static shader_config_ptr config;
 	if (!config) {
 		config = shader_config_ptr(new shader_config); 
-		if (getenv("CGV_SHADER_PATH"))
+		if (getenv("CGV_SHADER_PATH")) {
 			config->shader_path = getenv("CGV_SHADER_PATH");
+		} else {
+#ifdef _WIN32
+			config->shader_path = cgv::base::ref_prog_path_prefix() + "shader";
+#else
+			config->shader_path = cgv::utils::file::get_full_path(cgv::base::ref_prog_path_prefix() + "../shader");
+#endif
+		}
 	}
 	return config;
 }
@@ -148,7 +155,7 @@ std::string shader_code::find_file(const std::string& file_name)
 	if (exists(file_name))
 		return file_name;
 	
-	std::string try_name = cgv::utils::file::get_path(ref_prog_name()) + "/" + file_name;
+	std::string try_name = cgv::base::ref_prog_path_prefix() + file_name;
 	if (exists(try_name))
 		return try_name;
 
@@ -161,10 +168,13 @@ std::string shader_code::find_file(const std::string& file_name)
 			return std::string("res://") + file_name;
 	}
 	if (get_shader_config()->shader_path.empty()) {
-		try_name = std::string("glsl/") + file_name;
+		try_name = std::string("shader/") + file_name;
 		if (exists(try_name))
 			return try_name;
-		try_name = cgv::utils::file::get_path(ref_prog_name()) + "/glsl/" + file_name;
+		try_name = cgv::base::ref_prog_path_prefix() + "shader/" + file_name;
+		std::cerr << "ref_prog_name(): " << ref_prog_name() << std::endl;
+		std::cerr << "cgv::base::ref_prog_path_prefix():" << cgv::base::ref_prog_path_prefix() << std::endl;
+		std::cerr << "cgv::base::ref_prog_path_prefix() + ...:" << (cgv::base::ref_prog_path_prefix() + "/shader/") << std::endl;
 		if (exists(try_name))
 			return try_name;
 		return "";

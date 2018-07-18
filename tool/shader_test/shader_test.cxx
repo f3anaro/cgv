@@ -166,7 +166,7 @@ int perform_test()
 		shader_developer = is_element("SHADER_DEVELOPER", to_upper(options), ';');
 
 	if (getenv("CGV_DIR") != 0)
-		get_shader_config()->shader_path = std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/glsl";
+		get_shader_config()->shader_path = std::string(getenv("CGV_DIR"))+"/libs/cgv_gl/shader";
 	// check input file extension
 	std::string ext = to_lower(get_extension(g_argv[1]));
 	if (ext == "glpr") {

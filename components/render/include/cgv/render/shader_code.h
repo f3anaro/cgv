@@ -61,9 +61,11 @@ public:
 	/** Check if file exists. If not, check if a resource file of this
 	    file_name has been registered. If not search it recursively in the 
 	    shader_path of the shader_config that can be accessed with the
-		 function get_shader_config(). This path is initialized to the 
-		 environment variable CGV_SHADER_PATH or empty if that is not 
-		 defined. */
+		 function get_shader_config(). This path is initialized depending
+		 on the operating system: On Windows the path is the shader/ directory
+		 next to the current executable. On Unix, the path is the shader/
+		 directory next to bin/ directory. The shader path can be overwritten
+		 by the environment variable CGV_SHADER_PATH. */
 	static std::string find_file(const std::string& file_name);
 	/** format given last error in a way that developer environments can locate errors in the source file */
 	static std::string get_last_error(const std::string& file_name, const std::string& last_error);
