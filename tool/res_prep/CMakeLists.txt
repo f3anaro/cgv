@@ -49,5 +49,8 @@ install(TARGETS res_prep EXPORT cgv_res_prepTargets
 # resolve the dependencies. We just use the target defintion file.
 install(EXPORT cgv_res_prepTargets FILE cgv_res_prepConfig.cmake DESTINATION cmake/cgv_res_prep)
 
+# Install Python script for generating string resources from arbitrary files.
+install(PROGRAMS strres_prep.py DESTINATION ${CMAKE_INSTALL_BINDIR})
+
 # This makes the project importable from the build directory
 export(TARGETS res_prep FILE cmake/cgv_res_prepConfig.cmake)

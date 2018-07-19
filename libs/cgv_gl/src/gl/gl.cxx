@@ -38,8 +38,3 @@ bool ensure_glew_initialized()
 		}
 	}
 }
-
-#ifdef REGISTER_SHADER_FILES
-#include <cgv/base/register.h>
-#include <cgv_gl_shader_inc.h>
-#endif

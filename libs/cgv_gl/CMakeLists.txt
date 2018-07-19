@@ -141,6 +141,59 @@ else()
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
+# ---------------
+# Shader handling
+# ---------------
+# 
+# For shared builds, the shader files are copied into the build directory in
+# shader/ next to the runtime directory (bin/). If we are building a static
+# library or the option "REGISTER_SHADERS" is set to TRUE, the resources are
+# compiled into the library and registered as string resource.
+set(RESOURCES)
+
+if(REGISTER_SHADERS OR NOT ${BUILD_SHARED_LIBS})
+    # The shader resource generator is a simply Python script.
+    find_package(PythonInterp 3 REQUIRED)
+
+    foreach(shader IN LISTS SHADERS)
+        # Get the output directory for executables. By using the property of the
+        # target, we do not need to distinguish different platforms.
+        get_target_property(RUNTIME_OUTPUT gl RUNTIME_OUTPUT_DIRECTORY)
+
+        # Tell CMake how to generate inline shader resources
+        add_custom_command(
+            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${shader}.cxx
+            COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tool/res_prep/strres_prep.py
+                ${CMAKE_CURRENT_SOURCE_DIR}/${shader}
+                ${CMAKE_CURRENT_BINARY_DIR}/${shader}.cxx
+            MAIN_DEPENDENCY ${shader}
+            DEPENDS ${CMAKE_SOURCE_DIR}/tool/res_prep/strres_prep.py)
+
+        list(APPEND RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/${shader}.cxx)
+    endforeach()
+else()
+    foreach(shader IN LISTS SHADERS)
+        # Get the output directory for executables. By using the property of the
+        # target, we do not need to distinguish different platforms.
+        get_target_property(RUNTIME_OUTPUT gl RUNTIME_OUTPUT_DIRECTORY)
+
+        # Tell CMake how to copy the shader resources
+        add_custom_command(
+            OUTPUT ${RUNTIME_OUTPUT}/../${shader}
+            COMMAND ${CMAKE_COMMAND}
+                -E copy ${CMAKE_CURRENT_SOURCE_DIR}/${shader} ${RUNTIME_OUTPUT}/../${shader}
+            MAIN_DEPENDENCY ${shader})
+
+        list(APPEND RESOURCES ${RUNTIME_OUTPUT}/../${shader})
+    endforeach()
+endif()
+
+# Add generated shader resources to library target.
+target_sources(gl PRIVATE ${RESOURCES})
+
+# Move shader files into "Shaders" folder in Visual Studio.
+source_group("Shaders" FILES ${SHADERS})
+
 target_include_directories(gl
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -176,25 +229,21 @@ target_link_libraries(gl
     cgv::reflect_types)
 
 if(WIN32)
-    # Add additional compiler defintions and dependencies for static Windows
-    # builds.
-    if (NOT ${BUILD_SHARED_LIBS})
-        target_compile_definitions(gl PUBLIC REGISTER_SHADER_FILES)
-        target_link_libraries(gl INTERFACE user32 gdi32)
-    endif()
+    # Link required Windows libraries
+    target_link_libraries(gl INTERFACE user32 gdi32)
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS gl EXPORT glTargets
-    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # Install header files of library
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install shader files
-install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_PREFIX}/shader)
+install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_BINDIR}/../shader)
 
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also

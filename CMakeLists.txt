@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 project(cgv LANGUAGES CXX)
 
 option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
+option(REGISTER_SHADERS "Include shader resources in shared libraries" FALSE)
 
 if(UNIX AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     # Use a namespace directory for the whole cgv framework similar to the
