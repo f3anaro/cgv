@@ -25,7 +25,44 @@ add_custom_command(
         ${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl/gl_context_switch.h
     MAIN_DEPENDENCY include/cgv_gl/gl/gl_context_switch.ph)
 
-add_library(gl 
+set(SHADERS
+    shader/box.glfs
+    shader/box.glgs
+    shader/box.glpr
+    shader/box.glvs
+    shader/box_wire.glfs
+    shader/box_wire.glgs
+    shader/box_wire.glpr
+    shader/box_wire.glvs
+    shader/bump_map.glfs
+    shader/ellipsoid.glfs
+    shader/ellipsoid.glvs
+    shader/ellipsoid_base.glfs
+    shader/ellipsoid_base.glgs
+    shader/group.glsl
+    shader/lighting.glsl
+    shader/normal.glfs
+    shader/normal.glgs
+    shader/normal.glpr
+    shader/normal.glvs
+    shader/point.glfs
+    shader/point.glgs
+    shader/point.glpr
+    shader/point.glvs
+    shader/side.glsl
+    shader/sphere.glfs
+    shader/sphere.glpr
+    shader/sphere.glvs
+    shader/sphere.pglfs
+    shader/sphere.pglvs
+    shader/sphere_base.glfs
+    shader/sphere_base.glgs
+    shader/textured_material.glfs
+    shader/textured_material.glpr
+    shader/textured_material.glvs)
+
+add_library(gl
+    # Source Files
     src/box_renderer.cxx
     src/box_wire_renderer.cxx
     src/group_renderer.cxx
@@ -50,6 +87,29 @@ add_library(gl
     src/gl/gl_context.cxx
     src/gl/gl_image_drawable_base.cxx
 
+    # Public Headers
+    include/cgv_gl/box_renderer.h
+    include/cgv_gl/box_wire_renderer.h
+    include/cgv_gl/gl/gl.h
+    include/cgv_gl/gl/gl_context.h
+    include/cgv_gl/gl/gl_cursor.h
+    include/cgv_gl/gl/gl_depth_peeler.h
+    include/cgv_gl/gl/gl_image_drawable_base.h
+    include/cgv_gl/gl/gl_implicit_surface_drawable_base.h
+    include/cgv_gl/gl/gl_mesh_drawable_base.h
+    include/cgv_gl/gl/gl_performance_monitor.h
+    include/cgv_gl/gl/gl_tools.h
+    include/cgv_gl/gl/gl_transparent_renderer.h
+    include/cgv_gl/gl/gl_view.h
+    include/cgv_gl/gl/lib_begin.h
+    include/cgv_gl/gl/wgl.h
+    include/cgv_gl/group_renderer.h
+    include/cgv_gl/line_renderer.h
+    include/cgv_gl/normal_renderer.h
+    include/cgv_gl/point_renderer.h
+    include/cgv_gl/renderer.h
+    include/cgv_gl/surface_renderer.h
+
     # Generated headers
     ${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl/gl_context_switch.h)
 
@@ -60,6 +120,10 @@ add_library(cgv::gl ALIAS gl)
 set_target_properties(gl PROPERTIES
     # Append "cgv_" prefix to the library filename.
     OUTPUT_NAME "cgv_gl"
+
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "CGV_RENDER_GL_EXPORTS"
 
     # Set folder for Visual Studio
     FOLDER "Additional Libraries")

@@ -6,8 +6,14 @@ project(gamepad LANGUAGES CXX)
 find_package(cgv_config REQUIRED)
 
 add_library(gamepad
+    # Source Files
     src/gamepad.cxx
-    src/gamepad_driver.cxx)
+    src/gamepad_driver.cxx
+
+    # Header Files
+    include/gamepad/gamepad.h
+    include/gamepad/gamepad_driver.h
+    include/gamepad/lib_begin.h)
 
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -21,25 +27,24 @@ target_include_directories(gamepad
 # CGV uses C++11 standard
 target_compile_features(gamepad PUBLIC cxx_std_11)
 
-if(${BUILD_SHARED_LIBS})
-    # Compiler definitions for shared library
-    target_compile_definitions(gamepad PUBLIC GAMEPAD_EXPORTS)
-endif()
+set_target_properties(gamepad PROPERTIES
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "GAMEPAD_EXPORTS"
 
-if(WIN32)
-    # Add XInput driver. XInput is an API that allows applications to receive
-    # input from the Xbox 360 Controller for Windows.
-    target_sources(gamepad PRIVATE src/xinput_gamepad_driver.cxx)
-    target_compile_definitions(gamepad PUBLIC Xinput)
-endif()
+    # Set folder for Visual Studio
+    FOLDER "Additional Libraries")
 
 # Dependencies on other components and libraries
 target_link_libraries(gamepad
     cgv::config)
 
-# Set folder for Visual Studio
-set_target_properties(gamepad PROPERTIES
-    FOLDER "Additional Libraries")
+if(WIN32)
+    # Add XInput driver. XInput is an API that allows applications to receive
+    # input from the Xbox 360 Controller for Windows.
+    target_sources(gamepad PRIVATE src/xinput_gamepad_driver.cxx)
+    target_link_libraries(gamepad PUBLIC Xinput)
+endif()
 
 # Build library in directories matching the installation layout.
 if(WIN32)

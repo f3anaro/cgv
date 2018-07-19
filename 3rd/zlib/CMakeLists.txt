@@ -1,6 +1,17 @@
 project(zlib LANGUAGES C)
 
+set(PRIVATE_HEADERS
+    include/crc32.h
+    include/deflate.h
+    include/inffast.h
+    include/inffixed.h
+    include/inflate.h
+    include/inftrees.h
+    include/trees.h
+    include/zutil.h)
+
 add_library(zlib
+    # Source Files
     src/adler32.c
     src/compress.c
     src/crc32.c
@@ -12,7 +23,14 @@ add_library(zlib
     src/inftrees.c
     src/trees.c
     src/uncompr.c
-    src/zutil.c)
+    src/zutil.c
+
+    # Public Headers
+    include/zconf.h
+    include/zlib.h
+
+    # Private Headers
+    ${PRIVATE_HEADERS})
 
 # Add an alias target for the ZLIB:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -24,8 +42,15 @@ set_target_properties(zlib PROPERTIES
     VERSION "1.2.3"
     EXPORT_NAME "ZLIB"
 
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "ZLIB_INTERNAL"
+
     # Set folder for Visual Studio
     FOLDER "3rd-Party Libraries")
+
+# Move private headers into "Source Files" folder in Visual Studio.
+source_group("Source Files" FILES ${PRIVATE_HEADERS})
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build

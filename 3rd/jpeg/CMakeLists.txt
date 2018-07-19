@@ -1,6 +1,7 @@
 project(JPEG LANGUAGES C)
 
 add_library(JPEG
+    # Source Files
     src/jcapimin.c
     src/jcapistd.c
     src/jccoefct.c
@@ -46,7 +47,20 @@ add_library(JPEG
     src/jmemmgr.c
     src/jquant1.c
     src/jquant2.c
-    src/jutils.c)
+    src/jutils.c
+
+    # Public Headers
+    include/jchuff.h
+    include/jconfig.h
+    include/jdct.h
+    include/jdhuff.h
+    include/jerror.h
+    include/jinclude.h
+    include/jmemsys.h
+    include/jmorecfg.h
+    include/jpegint.h
+    include/jpeglib.h
+    include/jversion.h)
 
 # Add an alias target for the JPEG:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -55,7 +69,14 @@ add_library(JPEG::JPEG ALIAS JPEG)
 # Set lowercase library name and version
 set_target_properties(JPEG PROPERTIES
     OUTPUT_NAME "jpeg"
-    VERSION "6")
+    VERSION "6"
+
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "JPEG_DLL"
+
+    # Set folder for Visual Studio
+    FOLDER "3rd-Party Libraries")
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
@@ -65,17 +86,10 @@ target_include_directories(JPEG
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-if(${BUILD_SHARED_LIBS})
-    # Compiler definitions for shared library
-    target_compile_definitions(JPEG PUBLIC JPEG_DLL)
-else()
+if(NOT ${BUILD_SHARED_LIBS})
     # Compiler definitions for static library
     target_compile_definitions(JPEG PUBLIC JPEG_STATIC)
 endif()
-
-# Set folder for Visual Studio
-set_target_properties(JPEG PROPERTIES
-    FOLDER "3rd-Party Libraries")
 
 # Build library in directories matching the installation layout.
 if(WIN32)

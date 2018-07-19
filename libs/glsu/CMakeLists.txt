@@ -8,8 +8,18 @@ if (NOT TARGET OpenGL::GLU)
     message(FATAL_ERROR "GLU (OpenGL Utility Library) was not found")
 endif()
 
-add_library(glsu 
-    src/glsu.c)
+add_library(glsu
+    # Sources
+    src/glsu.c
+
+    # Public headers
+    include/GL/glsu.h)
+
+# Mark Windows build with preprocessor define
+if(WIN32)
+    target_compile_definitions(glsu PUBLIC
+        WIN32)
+endif()
 
 # Also add the .def-file to the sources. CMake will know what to do with it
 if(MSVC)

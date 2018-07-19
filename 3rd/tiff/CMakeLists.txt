@@ -4,7 +4,22 @@ project(TIFF LANGUAGES C)
 find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
 
+set(PRIVATE_HEADERS
+    src/t4.h
+    src/tif_config.h
+    src/tif_config.vc.h
+    src/tif_config.wince.h
+    src/tif_dir.h
+    src/tif_fax3.h
+    src/tiffconf.wince.h
+    src/tiffiop.h
+    src/tif_predict.h
+    src/tif_unix.h
+    src/tif_win32.h
+    src/uvcode.h)
+
 add_library(TIFF
+    # Source Files
     src/tif_aux.c
     src/tif_close.c
     src/tif_codec.c
@@ -41,7 +56,16 @@ add_library(TIFF
     src/tif_version.c
     src/tif_warning.c
     src/tif_write.c
-    src/tif_zip.c)
+    src/tif_zip.c
+
+    # Public Headers
+    include/tiff.h
+    include/tiffio.h
+    include/tiffvers.h
+    include/tiffconf.h
+
+    # Private Headers
+    ${PRIVATE_HEADERS})
 
 # Also add the .def-file to the sources. CMake will know what to do with it
 if(MSVC)
@@ -59,6 +83,9 @@ set_target_properties(TIFF PROPERTIES
 
     # Set folder for Visual Studio
     FOLDER "3rd-Party Libraries")
+
+# Move private headers into "Source Files" folder in Visual Studio.
+source_group("Source Files" FILES ${PRIVATE_HEADERS})
 
 # Build library in directories matching the installation layout.
 if(WIN32)

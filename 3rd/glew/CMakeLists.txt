@@ -4,7 +4,14 @@ project(GLEW LANGUAGES C)
 find_package(OpenGL REQUIRED)
 
 add_library(GLEW
-    src/glew.c)
+    # Source Files
+    src/glew.c
+
+    # Public headers
+    include/GL/eglew.h
+    include/GL/glew.h
+    include/GL/glxew.h
+    include/GL/wglew.h)
 
 # Add an alias target for the GLEW:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -18,17 +25,18 @@ target_include_directories(GLEW
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-if(${BUILD_SHARED_LIBS})
-    # Compiler definitions for shared library
-    target_compile_definitions(GLEW PRIVATE GLEW_BUILD)
-else()
+set_target_properties(GLEW PROPERTIES
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "GLEW_BUILD"
+
+    # Set folder for Visual Studio
+    FOLDER "3rd-Party Libraries")
+
+if(NOT ${BUILD_SHARED_LIBS})
     # Compiler definitions for static library
     target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
 endif()
-
-# Set folder for Visual Studio
-set_target_properties(GLEW PROPERTIES
-    FOLDER "3rd-Party Libraries")
 
 # Build library in directories matching the installation layout.
 if(WIN32)

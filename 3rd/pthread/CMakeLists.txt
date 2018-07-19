@@ -7,7 +7,22 @@
 # Win32 systems.
 project(pthread-w32 VERSION 1.11.0 LANGUAGES C)
 
-add_library(pthread pthread.c)
+set(PRIVATE_HEADERS
+    config.h
+    implement.h
+    need_errno.h
+    sched.h
+    semaphore.h)
+
+add_library(pthread
+    # Source Files
+    pthread.c
+
+    # Public Headers
+    pthread.h
+
+    # Private Headers
+    ${PRIVATE_HEADERS})
 
 # Add an alias target for the Threads:: namespace such that other components can
 # use this target like other imported targets with namespace prefixes. This is
@@ -25,9 +40,7 @@ target_include_directories(pthread
 # Windows-specific Compiler definitions
 target_compile_definitions(pthread
     PUBLIC
-        HAVE_STRUCT_TIMESPEC
-    PRIVATE
-        PTW32_BUILD)
+        HAVE_STRUCT_TIMESPEC)
 
 if(NOT ${BUILD_SHARED_LIBS})
     # Compiler definitions for static library
@@ -43,8 +56,15 @@ set_target_properties(pthread PROPERTIES
     # build directory.
     EXPORT_NAME Threads
 
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "PTW32_BUILD"
+
     # Set folder for Visual Studio
     FOLDER "3rd-Party Libraries")
+
+# Move private headers into "Source Files" folder in Visual Studio.
+source_group("Source Files" FILES ${PRIVATE_HEADERS})
 
 # Build library in directories matching the installation layout.
 if(WIN32)

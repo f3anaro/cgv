@@ -50,10 +50,8 @@ foreach(image LISTS ${IMAGES})
         MAIN_DEPENDENCY ${image})
 endforeach()
 
-add_library(cg_icons
-    src/main.cxx
-
-    # Generated inline resources
+# Generated inline resources
+set(RESOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/resources/append32.png.cxx
     ${CMAKE_CURRENT_BINARY_DIR}/resources/append64.png.cxx
     ${CMAKE_CURRENT_BINARY_DIR}/resources/copy_node48.png.cxx
@@ -87,23 +85,29 @@ add_library(cg_icons
     ${CMAKE_CURRENT_BINARY_DIR}/resources/unlock48.png.cxx
     ${CMAKE_CURRENT_BINARY_DIR}/resources/view20.png.cxx)
 
+add_library(cg_icons
+    src/main.cxx
+    ${RESOURCES})
+
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::cg_icons ALIAS cg_icons)
 
-if(${BUILD_SHARED_LIBS})
-    # Compiler definitions for shared library
-    target_compile_definitions(cg_icons PUBLIC ICON_EXPORTS)
-endif()
+set_target_properties(cg_icons PROPERTIES
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "ICON_EXPORTS"
+
+    # Set folder for Visual Studio
+    FOLDER "Standard Plugins")
+
+# Move generated inline resources into "Resources" folder in Visual Studio.
+source_group("Resources" FILES ${RESOURCES})
 
 # Dependencies on other components. cgv::base is only used in the implementation
 # and not the public API of cg_icons. Hence, it is marked as a PRIVATE
 # dependency.
 target_link_libraries(cg_icons PRIVATE cgv::base)
-
-# Set folder for Visual Studio
-set_target_properties(cg_icons PROPERTIES
-    FOLDER "Standard Plugins")
 
 # Build library in directories matching the installation layout.
 if(WIN32)

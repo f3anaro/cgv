@@ -12,19 +12,64 @@ find_package(cgv_gui REQUIRED)
 find_package(cgv_render REQUIRED)
 find_package(cgv_gl REQUIRED)
 
-add_library(plot 
+set(SHADERS
+    shader/plot1d.glfs
+    shader/plot1d.glpr
+    shader/plot1d.glvs
+    shader/plot1d_bar.glgs
+    shader/plot1d_bar.glpr
+    shader/plot1d_bar_outline.glgs
+    shader/plot1d_bar_outline.glpr
+    shader/plot1d_empty.glvs
+    shader/plot1d_lib.glsl
+    shader/plot1d_stick.glgs
+    shader/plot1d_stick.glpr
+    shader/plot2d_face.glfs
+    shader/plot2d_face.glgs
+    shader/plot2d_face.glpr
+    shader/plot2d_face.glvs
+    shader/plot2d_line.glfs
+    shader/plot2d_line.glgs
+    shader/plot2d_line.glpr
+    shader/plot2d_line.glvs
+    shader/plot2d_point.glfs
+    shader/plot2d_point.glpr
+    shader/plot2d_point.glvs)
+
+add_library(plot
+    # Sources
     src/plot1d.cxx
     src/plot2d.cxx
-    src/plot_base.cxx)
+    src/plot_base.cxx
+
+    # Public headers
+    include/plot/lib_begin.h
+    include/plot/plot1d.h
+    include/plot/plot2d.h
+    include/plot/plot_base.h
+
+    # Shader files
+    ${SHADERS})
 
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::plot ALIAS plot)
 
+# Move shader files into "Shaders" folder in Visual Studio.
+source_group("Shaders" FILES ${SHADERS})
+
 target_include_directories(plot
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
+
+set_target_properties(plot PROPERTIES
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "PLOT_EXPORTS"
+
+    # Set folder for Visual Studio
+    FOLDER "Additional Libraries")
 
 # FIXME: For unicode support the definitions _UNICODE and UNICODE have to be
 #     set. Can we do this better?

@@ -16,11 +16,27 @@ set(SOURCES
     src/kd_util.cpp
     src/perf.cpp)
 
+set(PUBLIC_HEADERS
+    include/ANN/ANN.h
+    include/ANN/ANNperf.h
+    include/ANN/ANNx.h)
+
+set(PRIVATE_HEADERS
+    src/bd_tree.h
+    src/kd_fix_rad_search.h
+    src/kd_pr_search.h
+    src/kd_search.h
+    src/kd_split.h
+    src/kd_tree.h
+    src/kd_util.h
+    src/pr_queue.h
+    src/pr_queue_k.h)
+
 add_library(ANN
-    ${SOURCES})
+    ${SOURCES} ${PUBLIC_HEADERS} ${PRIVATE_HEADERS})
 
 add_library(ANNf
-    ${SOURCES})
+    ${SOURCES} ${PUBLIC_HEADERS} ${PRIVATE_HEADERS})
 
 # Add an alias target for the ANN:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -42,7 +58,6 @@ foreach(lib IN ITEMS ANN ANNf)
     if(${BUILD_SHARED_LIBS})
         # Compiler definitions for shared library
         target_compile_definitions(${lib} PUBLIC
-            DLL_EXPORTS
             ANN_PERF)
     else()
         # Compiler definitions for static library
@@ -51,6 +66,10 @@ foreach(lib IN ITEMS ANN ANNf)
     endif()
 
     set_target_properties(${lib} PROPERTIES
+        # Set name of the preprocessor symbol defined when compiling as shared
+        # library. This will be used for the dllexport/dllimport declarations.
+        DEFINE_SYMBOL "DLL_EXPORTS"
+
         # Set folder for Visual Studio
         FOLDER "3rd-Party Libraries")
 
@@ -66,6 +85,9 @@ foreach(lib IN ITEMS ANN ANNf)
             LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
             RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
     endif()
+
+    # Move private headers into "Source Files" folder in Visual Studio.
+    source_group("Source Files" FILES ${PRIVATE_HEADERS})
 
 endforeach(${lib})
 

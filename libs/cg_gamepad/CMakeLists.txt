@@ -14,6 +14,10 @@ find_package(cgv_media REQUIRED)
 find_package(cgv_gui REQUIRED)
 find_package(gamepad REQUIRED)
 
+set(PUBLIC_HEADERS
+    include/cg_gamepad/gamepad_server.h
+    include/cg_gamepad/lib_begin.h)
+
 add_library(cg_gamepad 
     src/gamepad_server.cxx)
 
@@ -29,10 +33,13 @@ target_include_directories(cg_gamepad
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-if(${BUILD_SHARED_LIBS})
-    # Compiler definitions for shared library
-    target_compile_definitions(cg_gamepad PUBLIC CG_GAMEPAD_EXPORTS)
-endif()
+set_target_properties(cg_gamepad PROPERTIES
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "CG_GAMEPAD_EXPORTS"
+
+    # Set folder for Visual Studio
+    FOLDER "Additional Libraries")
 
 # Dependencies on other components and libraries
 target_link_libraries(cg_gamepad
@@ -48,10 +55,6 @@ target_link_libraries(cg_gamepad
     cgv::media
     cgv::gui
     cgv::gamepad)
-
-# Set folder for Visual Studio
-set_target_properties(cg_gamepad PROPERTIES
-    FOLDER "Additional Libraries")
 
 # Build library in directories matching the installation layout.
 if(WIN32)

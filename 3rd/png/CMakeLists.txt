@@ -4,6 +4,7 @@ project(PNG LANGUAGES C)
 find_package(ZLIB)
 
 add_library(PNG
+    # Sources
     src/png.c
     src/pngerror.c
     src/pnggccrd.c
@@ -20,7 +21,11 @@ add_library(PNG
     src/pngwio.c
     src/pngwrite.c
     src/pngwtran.c
-    src/pngwutil.c)
+    src/pngwutil.c
+
+    # Public Headers
+    include/png.h
+    include/pngconf.h)
 
 # Add an alias target for the PNG:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -29,7 +34,14 @@ add_library(PNG::PNG ALIAS PNG)
 # Set lowercase library name and version
 set_target_properties(PNG PROPERTIES
     OUTPUT_NAME "png"
-    VERSION "1.2.6")
+    VERSION "1.2.6"
+
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "PNG_BUILD_DLL"
+
+    # Set folder for Visual Studio
+    FOLDER "3rd-Party Libraries")
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
@@ -41,7 +53,7 @@ target_include_directories(PNG
 
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
-    target_compile_definitions(PNG PUBLIC PNG_BUILD_DLL PNG_NO_MODULEDEF)
+    target_compile_definitions(PNG PUBLIC PNG_NO_MODULEDEF)
 else()
     # Compiler definitions for static library
     target_compile_definitions(PNG PUBLIC PNG_STATIC)
@@ -51,10 +63,6 @@ endif()
 target_link_libraries(PNG
     PUBLIC
         ZLIB::ZLIB)
-
-# Set folder for Visual Studio
-set_target_properties(PNG PROPERTIES
-    FOLDER "3rd-Party Libraries")
 
 # Build library in directories matching the installation layout.
 if(WIN32)

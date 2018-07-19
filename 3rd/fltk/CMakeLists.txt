@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.8)
 project(FLTK2 VERSION 2.0)
 
 # Load required imported targets
+find_package(OpenGL REQUIRED)
+find_package(GLEW REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(PNG REQUIRED)
 
@@ -16,8 +18,81 @@ if(NOT TARGET JPEG::JPEG)
     endforeach()
 endif()
 
-add_library(FLTK2
-    # Images
+set(PRIVATE_HEADERS
+    src/ARRAY.h
+    src/colormap.h
+    src/fastarrow.h
+    src/mediumarrow.h
+    src/slowarrow.h
+    src/win32/pktdef.h
+    src/win32/wintab.h
+    src/x11/IFont.h
+    src/x11/XColorMap.h)
+
+set(COMPAT_SOURCES
+    compat/FL/Enumerations.H
+    compat/FL/Fl.H
+    compat/FL/Fl_Adjuster.H
+    compat/FL/Fl_Box.H
+    compat/FL/Fl_Browser.H
+    compat/FL/Fl_Button.H
+    compat/FL/Fl_Chart.H
+    compat/FL/Fl_Check_Button.H
+    compat/FL/Fl_Choice.H
+    compat/FL/Fl_Clock.H
+    compat/FL/Fl_Color_Chooser.H
+    compat/FL/Fl_Counter.H
+    compat/FL/Fl_Dial.H
+    compat/FL/Fl_Double_Window.H
+    compat/FL/Fl_File_Chooser.H
+    compat/FL/Fl_Gl_Window.H
+    compat/FL/Fl_Group.H
+    compat/FL/Fl_Hold_Browser.H
+    compat/FL/Fl_Hor_Slider.H
+    compat/FL/Fl_Hor_Value_Slider.H
+    compat/FL/Fl_Input.H
+    compat/FL/Fl_Int_Input.H
+    compat/FL/Fl_Light_Button.H
+    compat/FL/Fl_Menu_.H
+    compat/FL/Fl_Menu_Bar.H
+    compat/FL/Fl_Menu_Button.H
+    compat/FL/Fl_Menu_Item.H
+    compat/FL/Fl_Output.H
+    compat/FL/Fl_Overlay_Window.H
+    compat/FL/Fl_Pack.H
+    compat/FL/Fl_Pixmap.H
+    compat/FL/Fl_Return_Button.H
+    compat/FL/Fl_Roller.H
+    compat/FL/Fl_Scroll.H
+    compat/FL/Fl_Scrollbar.H
+    compat/FL/Fl_Select_Browser.H
+    compat/FL/Fl_Shared_Image.H
+    compat/FL/Fl_Single_Window.H
+    compat/FL/Fl_Slider.H
+    compat/FL/Fl_Tabs.H
+    compat/FL/Fl_Text_Buffer.H
+    compat/FL/Fl_Text_Editor.H
+    compat/FL/Fl_Tile.H
+    compat/FL/Fl_Toggle_Button.H
+    compat/FL/Fl_Toggle_Light_Button.H
+    compat/FL/Fl_Valuator.H
+    compat/FL/Fl_Value_Input.H
+    compat/FL/Fl_Value_Output.H
+    compat/FL/Fl_Value_Slider.H
+    compat/FL/Fl_Widget.H
+    compat/FL/Fl_Window.H
+    compat/FL/filename.H
+    compat/FL/fl_ask.H
+    compat/FL/fl_draw.H
+    compat/FL/fl_message.H
+    compat/FL/forms.H
+    compat/FL/gl.h
+    compat/FL/glut.H
+    compat/FL/math.h
+    compat/FL/menubar.h
+    compat/FL/x.H)
+
+set(IMAGES_SOURCES
     images/FileIcon2.cxx
     images/Fl_Guess_Image.cxx
     images/fl_jpeg.cxx
@@ -27,17 +102,18 @@ add_library(FLTK2
     images/images_core.cxx
     images/Makefile
     images/pnmImage.cxx
-    images/xpmFileImage.cxx
+    images/xpmFileImage.cxx)
 
-    # OpenGL
+set(OpenGL_SOURCES
     OpenGL/Fl_Gl_Choice.cxx
     OpenGL/Fl_Gl_Overlay.cxx
     OpenGL/Fl_Gl_Window.cxx
     OpenGL/GlChoice.h
     OpenGL/gl_draw.cxx
-    OpenGL/gl_start.cxx
+    OpenGL/gl_start.cxx)
 
-    # FLTK
+add_library(FLTK2
+    # Source Files
     src/addarc.cxx
     src/addcurve.cxx
     src/add_idle.cxx
@@ -178,7 +254,143 @@ add_library(FLTK2
     src/Window_iconize.cxx
     src/WizardGroup.cxx
     src/xbmImage.cxx
-    src/xpmImage.cxx)
+    src/xpmImage.cxx
+
+    # Public Headers
+    include/fltk/Adjuster.h
+    include/fltk/AlignGroup.h
+    include/fltk/AnsiWidget.h
+    include/fltk/BarGroup.h
+    include/fltk/Box.h
+    include/fltk/Browser.h
+    include/fltk/Button.h
+    include/fltk/CheckButton.h
+    include/fltk/Choice.h
+    include/fltk/Clock.h
+    include/fltk/Color.h
+    include/fltk/ColorChooser.h
+    include/fltk/ComboBox.h
+    include/fltk/Cursor.h
+    include/fltk/CycleButton.h
+    include/fltk/Dial.h
+    include/fltk/Divider.h
+    include/fltk/DoubleBufferWindow.h
+    include/fltk/FL_API.h
+    include/fltk/FL_VERSION.h
+    include/fltk/FileBrowser.h
+    include/fltk/FileChooser.h
+    include/fltk/FileIcon.h
+    include/fltk/FileInput.h
+    include/fltk/FillDial.h
+    include/fltk/FillSlider.h
+    include/fltk/Flags.h
+    include/fltk/FloatInput.h
+    include/fltk/Font.h
+    include/fltk/GlWindow.h
+    include/fltk/Group.h
+    include/fltk/HelpDialog.h
+    include/fltk/HelpView.h
+    include/fltk/HighlightButton.h
+    include/fltk/Image.h
+    include/fltk/Input.h
+    include/fltk/InputBrowser.h
+    include/fltk/IntInput.h
+    include/fltk/InvisibleBox.h
+    include/fltk/Item.h
+    include/fltk/ItemGroup.h
+    include/fltk/LabelType.h
+    include/fltk/LightButton.h
+    include/fltk/LineDial.h
+    include/fltk/Menu.h
+    include/fltk/MenuBar.h
+    include/fltk/MenuBuild.h
+    include/fltk/MenuWindow.h
+    include/fltk/Monitor.h
+    include/fltk/MultiBrowser.h
+    include/fltk/MultiImage.h
+    include/fltk/MultiLineInput.h
+    include/fltk/MultiLineOutput.h
+    include/fltk/NumericInput.h
+    include/fltk/Output.h
+    include/fltk/PackedGroup.h
+    include/fltk/PixelType.h
+    include/fltk/PopupMenu.h
+    include/fltk/Preferences.h
+    include/fltk/ProgressBar.h
+    include/fltk/RadioButton.h
+    include/fltk/RadioItem.h
+    include/fltk/RadioLightButton.h
+    include/fltk/Rectangle.h
+    include/fltk/RepeatButton.h
+    include/fltk/ReturnButton.h
+    include/fltk/ScrollGroup.h
+    include/fltk/Scrollbar.h
+    include/fltk/SecretInput.h
+    include/fltk/ShapedWindow.h
+    include/fltk/SharedImage.h
+    include/fltk/Slider.h
+    include/fltk/StatusBarGroup.h
+    include/fltk/StringList.h
+    include/fltk/Style.h
+    include/fltk/StyleSet.h
+    include/fltk/Symbol.h
+    include/fltk/SystemMenuBar.h
+    include/fltk/TabGroup.h
+    include/fltk/TextBuffer.h
+    include/fltk/TextDisplay.h
+    include/fltk/TextEditor.h
+    include/fltk/Threads.h
+    include/fltk/ThumbWheel.h
+    include/fltk/TiledGroup.h
+    include/fltk/TiledImage.h
+    include/fltk/ToggleButton.h
+    include/fltk/ToggleItem.h
+    include/fltk/Tooltip.h
+    include/fltk/Valuator.h
+    include/fltk/ValueInput.h
+    include/fltk/ValueOutput.h
+    include/fltk/ValueSlider.h
+    include/fltk/Widget.h
+    include/fltk/WidgetAssociation.h
+    include/fltk/Window.h
+    include/fltk/WizardGroup.h
+    include/fltk/WordwrapInput.h
+    include/fltk/WordwrapOutput.h
+    include/fltk/ask.h
+    include/fltk/damage.h
+    include/fltk/dirent.h
+    include/fltk/draw.h
+    include/fltk/error.h
+    include/fltk/events.h
+    include/fltk/file_chooser.h
+    include/fltk/filename.h
+    include/fltk/fltk_cairo.h
+    include/fltk/forms.h
+    include/fltk/gl.h
+    include/fltk/gl2opengl.h
+    include/fltk/glut.h
+    include/fltk/layout.h
+    include/fltk/load_plugin.h
+    include/fltk/math.h
+    include/fltk/osx.h
+    include/fltk/pnmImage.h
+    include/fltk/rgbImage.h
+    include/fltk/run.h
+    include/fltk/show_colormap.h
+    include/fltk/string.h
+    include/fltk/utf.h
+    include/fltk/visual.h
+    include/fltk/win32.h
+    include/fltk/x.h
+    include/fltk/x11.h
+    include/fltk/xbmImage.h
+    include/fltk/xpmImage.h
+
+    # Private Headers
+    ${PRIVATE_HEADERS}
+    ${COMPAT_SOURCES}
+    ${IMAGES_SOURCES}
+    ${OpenGL_SOURCES})
 
 # Add an alias target for the FLTK2:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -189,6 +401,16 @@ set_target_properties(FLTK2 PROPERTIES
     OUTPUT_NAME "fltk"
     VERSION "2.0"
 
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    #
+    # Note:
+    #    FLTK2 uses multiple export/import declarations based on different
+    #    pre-processor definitions. Hence, we have use a list of definitions
+    #    here.
+    #
+    DEFINE_SYMBOL "FL_LIBRARY;FL_GL_LIBRARY;FL_GLUT_LIBRARY;FL_IMAGES_LIBRARY"
+
     # Set folder for Visual Studio
     FOLDER "3rd-Party Libraries")
 
@@ -198,9 +420,9 @@ set_target_properties(FLTK2 PROPERTIES
 target_include_directories(FLTK2
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/compat>
         $<INSTALL_INTERFACE:include>
     PRIVATE
+        compat
         visualc)
 
 # Ignore narrowing on Unix platforms
@@ -217,12 +439,7 @@ target_compile_definitions(FLTK2
 if(${BUILD_SHARED_LIBS})
     target_compile_definitions(FLTK2
         PUBLIC
-            FL_SHARED
-        PRIVATE
-            FL_LIBRARY
-            FL_GL_LIBRARY
-            FL_GLUT_LIBRARY
-            FL_IMAGES_LIBRARY)
+            FL_SHARED)
 endif()
 
 # Build library in directories matching the installation layout.
@@ -238,11 +455,24 @@ else()
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
+# Move private headers into "Source Files" folder and create extra folder for
+# "Compat", Images" and "OpenGL" in Visual Studio.
+source_group("Source Files" FILES ${PRIVATE_HEADERS})
+source_group("Compat" FILES ${COMPAT_SOURCES})
+source_group("Images" FILES ${IMAGES_SOURCES})
+source_group("OpenGL" FILES ${OpenGL_SOURCES})
+
 # ------------
 # Dependencies
 # ------------
 
-find_package(OpenGL REQUIRED)
+# The imported targets are loaded specifically for the platform.
+target_link_libraries(FLTK2
+    PUBLIC
+        OpenGL::GL
+        GLEW::GLEW
+        JPEG::JPEG
+        PNG::PNG)
 
 if (WIN32)
     # Compiler definitions for Windows builds
@@ -252,6 +482,15 @@ if (WIN32)
             WIN32_LEAN_AND_MEAN
             VC_EXTRA_LEAN
             WIN32_EXTRA_LEAN)
+
+    # Required Windows libraries
+    target_link_libraries(FLTK2
+        PUBLIC
+            ws2_32
+        INTERFACE
+            user32
+            gdi32
+            msimg32)
 else()
     # Use X11 on Unix systems
     find_package(X11 REQUIRED)
@@ -281,30 +520,9 @@ else()
 
     # FLTK2 depends on X11
     target_link_libraries(FLTK2
-        X11::X11
-        X11::Xi)
-endif()
-
-# The imported targets are loaded specifically for the platform.
-target_link_libraries(FLTK2
-    PUBLIC
-        OpenGL::GL
-        JPEG::JPEG
-        PNG::PNG)
-
-if(WIN32)
-    # Needed for "Fl_Gl_Choice"
-    find_package(GLEW REQUIRED)
-
-    # Required Windows libraries
-    target_link_libraries(FLTK2
         PUBLIC
-            GLEW::GLEW
-            ws2_32
-        INTERFACE
-            user32
-            gdi32
-            msimg32)
+            X11::X11
+            X11::Xi)
 endif()
 
 # -----------------------

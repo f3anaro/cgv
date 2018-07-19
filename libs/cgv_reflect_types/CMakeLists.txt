@@ -9,7 +9,8 @@ find_package(cgv_math REQUIRED)
 find_package(cgv_render REQUIRED)
 find_package(cgv_gui REQUIRED)
 
-add_library(reflect_types 
+add_library(reflect_types
+    # Source Files
     src/gui/shortcut.cxx
     src/math/perm_mat.cxx
     src/media/color.cxx
@@ -17,7 +18,34 @@ add_library(reflect_types
     src/media/illum/obj_material.cxx
     src/media/illum/phong_material.cxx
     src/render/context.cxx
-    src/render/view.cxx)
+    src/render/view.cxx
+
+    # Public Headers
+    include/cgv_reflect_types/gui/shortcut.h
+    include/cgv_reflect_types/lib_begin.h
+    include/cgv_reflect_types/math/diag_mat.h
+    include/cgv_reflect_types/math/fmat.h
+    include/cgv_reflect_types/math/fvec.h
+    include/cgv_reflect_types/math/interval.h
+    include/cgv_reflect_types/math/low_tri_mat.h
+    include/cgv_reflect_types/math/mat.h
+    include/cgv_reflect_types/math/perm_mat.h
+    include/cgv_reflect_types/math/qem.h
+    include/cgv_reflect_types/math/quaternion.h
+    include/cgv_reflect_types/math/thin_plate_spline.h
+    include/cgv_reflect_types/math/tri_diag_mat.h
+    include/cgv_reflect_types/math/up_tri_mat.h
+    include/cgv_reflect_types/math/vec.h
+    include/cgv_reflect_types/media/axis_aligned_box.h
+    include/cgv_reflect_types/media/color.h
+    include/cgv_reflect_types/media/illum/light_source.h
+    include/cgv_reflect_types/media/illum/obj_material.h
+    include/cgv_reflect_types/media/illum/phong_material.h
+    include/cgv_reflect_types/media/plane.h
+    include/cgv_reflect_types/media/ray.h
+    include/cgv_reflect_types/media/sphere.h
+    include/cgv_reflect_types/render/context.h
+    include/cgv_reflect_types/render/view.h)
 
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -26,6 +54,10 @@ add_library(cgv::reflect_types ALIAS reflect_types)
 set_target_properties(reflect_types PROPERTIES
     # Set full qualified name for the library filename
     OUTPUT_NAME "cgv_reflect_types"
+
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "CGV_REFLECT_TYPES_EXPORTS"
 
     # Set folder for Visual Studio
     FOLDER "Additional Libraries")
@@ -54,11 +86,6 @@ target_compile_definitions(reflect_types
     PUBLIC
         UNICODE
         _UNICODE)
-
-if(${BUILD_SHARED_LIBS})
-    # Compiler definitions for shared library
-    target_compile_definitions(reflect_types PUBLIC CGV_REFLECT_TYPES_EXPORTS)
-endif()
 
 # Dependencies on other components and libraries
 target_link_libraries(reflect_types

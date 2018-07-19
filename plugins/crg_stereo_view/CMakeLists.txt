@@ -15,9 +15,13 @@ find_package(cg_gamepad REQUIRED)
 
 # TODO: Compile as shared library without interaction "crg_stereo_view_lib" with
 #     "NO_STEREO_VIEW_INTERACTOR" define
-
 add_library(crg_stereo_view
-    src/stereo_view_interactor.cxx)
+    # Source Files
+    src/stereo_view_interactor.cxx
+
+    # Public Headers
+    include/crg_stereo_view/lib_begin.h
+    include/crg_stereo_view/stereo_view_interactor.h)
 
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -34,12 +38,13 @@ target_include_directories(crg_stereo_view
 # CGV uses C++11 standard
 target_compile_features(crg_stereo_view PUBLIC cxx_std_11)
 
-if(${BUILD_SHARED_LIBS})
-    # Compiler definitions for shared library
-    target_compile_definitions(crg_stereo_view
-        PUBLIC
-            CGV_RENDER_STEREO_VIEW_EXPORTS)
-endif()
+set_target_properties(crg_stereo_view PROPERTIES
+    # Set name of the preprocessor symbol defined when compiling as shared
+    # library. This will be used for the dllexport/dllimport declarations.
+    DEFINE_SYMBOL "CGV_RENDER_STEREO_VIEW_EXPORTS"
+
+    # Set folder for Visual Studio
+    FOLDER "Standard Plugins")
 
 # Dependencies on other components, plugins and libraries.
 target_link_libraries(crg_stereo_view
@@ -54,10 +59,6 @@ target_link_libraries(crg_stereo_view
     cgv::glsu
     cgv::gl
     cgv::cg_gamepad)
-
-# Set folder for Visual Studio
-set_target_properties(crg_stereo_view PROPERTIES
-    FOLDER "Standard Plugins")
 
 # Build library in directories matching the installation layout.
 if(WIN32)
