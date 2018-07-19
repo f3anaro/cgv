@@ -220,7 +220,7 @@ namespace cgv {
 		{
 			//open for read
 			F(file) = fopen64(filename.c_str(), "rb");
-		} if (m == WRITE) else
+		} else if (m == WRITE)
 		{
 			//open for write
 			F(file) = fopen64(filename.c_str(), "wb");
@@ -312,7 +312,7 @@ namespace cgv {
 		return false;
 	}
 
-	bool big_binary_file::write(unsigned char *sourcebuffer,unsigned long num, unsigned long *numwrote)
+	bool big_binary_file::write(const unsigned char *sourcebuffer, unsigned long num, unsigned long *numwrote)
 	{
 		if(fileopened && access_mode == WRITE)
 		{
