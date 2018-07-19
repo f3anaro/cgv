@@ -23,8 +23,25 @@ add_library(reflect_types
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::reflect_types ALIAS reflect_types)
 
-# Set full qualified name for the library filename
-set_target_properties(reflect_types PROPERTIES OUTPUT_NAME "cgv_reflect_types")
+set_target_properties(reflect_types PROPERTIES
+    # Set full qualified name for the library filename
+    OUTPUT_NAME "cgv_reflect_types"
+
+    # Set folder for Visual Studio
+    FOLDER "Additional Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(reflect_types PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(reflect_types PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 target_include_directories(reflect_types
     PUBLIC
@@ -52,10 +69,6 @@ target_link_libraries(reflect_types
     cgv::math
     cgv::render
     cgv::gui)
-
-# Build the library in the lib/ directory inside the build directory.
-set_target_properties(reflect_types PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS reflect_types EXPORT cgv_reflect_typesTargets

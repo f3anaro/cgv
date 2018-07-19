@@ -1,5 +1,8 @@
 project(PNG LANGUAGES C)
 
+# Load required imported targets
+find_package(ZLIB)
+
 add_library(PNG
     src/png.c
     src/pngerror.c
@@ -38,15 +41,33 @@ target_include_directories(PNG
 
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
-    target_compile_definitions(PNG PUBLIC PNG_NO_MODULEDEF)
+    target_compile_definitions(PNG PUBLIC PNG_BUILD_DLL PNG_NO_MODULEDEF)
 else()
     # Compiler definitions for static library
     target_compile_definitions(PNG PUBLIC PNG_STATIC)
 endif()
 
-# Build the library in the lib/ directory inside the build directory.
+# Dependencies on other libraries
+target_link_libraries(PNG
+    PUBLIC
+        ZLIB::ZLIB)
+
+# Set folder for Visual Studio
 set_target_properties(PNG PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    FOLDER "3rd-Party Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(PNG PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(PNG PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS PNG EXPORT PNGTargets

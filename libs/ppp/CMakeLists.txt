@@ -22,12 +22,26 @@ add_library(libppp ${SOURCES})
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::libppp ALIAS libppp)
 
-# Remove the redundant "lib" prefix from the output name. Otherwise the CMake
-# target "libppp" would produce a library called "liblibppp". Build the library
-# in the lib/ directory inside the build directory.
 set_target_properties(libppp PROPERTIES
+    # Remove the redundant "lib" prefix from the output name. Otherwise the
+    # CMake target "libppp" would produce a library called "liblibppp".
     OUTPUT_NAME "ppp"
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+    # Set folder for Visual Studio
+    FOLDER "Additional Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(libppp PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(libppp PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 if(${BUILD_SHARED_LIBS})
     # Explicit static version of libppp that is used to produce a statically linked
@@ -37,11 +51,34 @@ if(${BUILD_SHARED_LIBS})
     # Add an namespace alias
     add_library(cgv::libppp_static ALIAS libppp_static)
 
-    # Remove "lib" prefix from filename and "_static" suffix and build the
-    # library in the lib/ directory.
+    # Make library static
+    target_compile_definitions(libppp_static
+        PUBLIC
+            CGV_UTILS_FORCE_STATIC
+            CGV_RENDER_FORCE_STATIC
+            CGV_MEDIA_TEXT_FORCE_STATIC
+            CGV_MEDIA_TEXT_PPP_FORCE_STATIC)
+
     set_target_properties(libppp_static PROPERTIES
+        # Remove "lib" prefix from filename and "_static" suffix.
         OUTPUT_NAME "ppp"
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+        
+        # Set folder for Visual Studio
+        FOLDER "Additional Libraries")
+
+    # Build library in directories matching the installation layout.
+    if(WIN32)
+        set_target_properties(libppp_static PROPERTIES
+            ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+            LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+    else()
+        set_target_properties(libppp_static PROPERTIES
+            ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+            LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+    endif()
+
 endif()
 
 if(${BUILD_SHARED_LIBS})
@@ -79,9 +116,9 @@ endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS ${exported_targets} EXPORT libpppTargets
-    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # Install header files of library.
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

@@ -13,8 +13,25 @@ add_library(math
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::math ALIAS math)
 
-# Append "cgv_" prefix to the library filename.
-set_target_properties(math PROPERTIES OUTPUT_NAME "cgv_math")
+set_target_properties(math PROPERTIES
+    # Append "cgv_" prefix to the library filename.
+    OUTPUT_NAME "cgv_math"
+    
+    # Set folder for Visual Studio
+    FOLDER "CGV-Framework")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(math PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(math PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
@@ -34,16 +51,6 @@ target_compile_features(math PUBLIC cxx_std_11)
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
     target_compile_definitions(math PUBLIC CGV_MATH_EXPORTS)
-endif()
-
-if(WIN32)
-    # Build the library in build directory
-    set_target_properties(math PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-else()
-    # Build the library in the lib/ directory inside the build directory.
-    set_target_properties(math PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).

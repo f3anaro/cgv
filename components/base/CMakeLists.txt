@@ -39,8 +39,25 @@ add_library(base
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::base ALIAS base)
 
-# Append "cgv_" prefix to the library filename.
-set_target_properties(base PROPERTIES OUTPUT_NAME "cgv_base")
+set_target_properties(base PROPERTIES
+    # Append "cgv_" prefix to the library filename.
+    OUTPUT_NAME "cgv_base"
+
+    # Set folder for Visual Studio
+    FOLDER "CGV-Framework")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(base PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(base PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
@@ -54,18 +71,19 @@ target_include_directories(base
 
 # Dependencies on other components
 target_link_libraries(base
-    cgv::utils
-    cgv::type
-    cgv::data
-    cgv::reflect
-    cgv::signal)
+    PUBLIC
+        cgv::utils
+        cgv::type
+        cgv::data
+        cgv::reflect
+        cgv::signal)
 
 if(WIN32)
     # Add additional dependencies for Windows builds
     target_link_libraries(base INTERFACE user32)
 else()
     # On Unix systems, tell the linker where to find "dlopen" and friends 
-    target_link_libraries(base ${CMAKE_DL_LIBS})
+    target_link_libraries(base PUBLIC ${CMAKE_DL_LIBS})
 endif()
 
 # CGV uses C++11 standard
@@ -74,16 +92,6 @@ target_compile_features(base PUBLIC cxx_std_11)
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
     target_compile_definitions(base PUBLIC CGV_BASE_EXPORTS)
-endif()
-
-if(WIN32)
-    # Build the library in build directory
-    set_target_properties(base PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-else()
-    # Build the library in the lib/ directory inside the build directory.
-    set_target_properties(base PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).

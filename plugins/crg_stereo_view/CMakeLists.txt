@@ -55,9 +55,22 @@ target_link_libraries(crg_stereo_view
     cgv::gl
     cgv::cg_gamepad)
 
-# Build the library in the plugins/ directory inside the build directory.
+# Set folder for Visual Studio
 set_target_properties(crg_stereo_view PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
+    FOLDER "Standard Plugins")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(crg_stereo_view PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(crg_stereo_view PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS crg_stereo_view EXPORT crg_stereo_viewTargets

@@ -15,14 +15,14 @@ target_compile_definitions(ppp PUBLIC CGV_FORCE_STATIC)
 # CGV uses C++11 standard
 target_compile_features(ppp PUBLIC cxx_std_11)
 
+# Write executables in bin/ directory inside build directory matching the
+# installation layout
 if(WIN32)
-    # Write executables in build directory
     set_target_properties(ppp PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    # Write executables in bin/ directory inside build directory
     set_target_properties(ppp PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # Always link against a static version of libppp. If the target "libppp_static"
@@ -35,6 +35,9 @@ else()
     target_link_libraries(ppp
         cgv::libppp)
 endif()
+
+# Set folder for Visual Studio
+set_target_properties(ppp PROPERTIES FOLDER "Core Tools")
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS ppp EXPORT cgv_pppTargets

@@ -13,7 +13,7 @@ add_library(glsu
 
 # Also add the .def-file to the sources. CMake will know what to do with it
 if(MSVC)
-    target_sources(glsu src/glsu.def)
+    target_sources(glsu PRIVATE src/glsu.def)
 endif()
 
 # Add an alias target for the cgv:: namespace such that other components can use
@@ -29,9 +29,22 @@ target_include_directories(glsu
 target_link_libraries(glsu
     OpenGL::GLU)
 
-# Build the library in the lib/ directory inside the build directory.
+# Set folder for Visual Studio
 set_target_properties(glsu PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    FOLDER "Additional Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(glsu PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(glsu PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS glsu EXPORT glsuTargets

@@ -22,8 +22,12 @@ target_include_directories(pthread
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<INSTALL_INTERFACE:include>)
 
-# Enable Windows build of pthread
-target_compile_definitions(pthread PUBLIC PTW32_BUILD)
+# Windows-specific Compiler definitions
+target_compile_definitions(pthread
+    PUBLIC
+        HAVE_STRUCT_TIMESPEC
+    PRIVATE
+        PTW32_BUILD)
 
 if(NOT ${BUILD_SHARED_LIBS})
     # Compiler definitions for static library
@@ -31,13 +35,29 @@ if(NOT ${BUILD_SHARED_LIBS})
 endif()
 
 # Winsock (Windows sockets) library
-target_link_libraries(pthread INTERFACE ws2_32)
+target_link_libraries(pthread PUBLIC ws2_32)
 
-# Rename the exported target to "Threads" to match the "FindThreads" module
-# interface. Build the library in the lib/ directory inside the build directory.
 set_target_properties(pthread PROPERTIES
+    # Rename the exported target to "Threads" to match the "FindThreads"
+    # module interface. Build the library in the lib/ directory inside the
+    # build directory.
     EXPORT_NAME Threads
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+    # Set folder for Visual Studio
+    FOLDER "3rd-Party Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(pthread PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(pthread PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS pthread EXPORT pthreadTargets

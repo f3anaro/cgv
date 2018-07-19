@@ -18,14 +18,14 @@ target_compile_features(res_prep PUBLIC cxx_std_11)
 # We do not need the exports because we statically linking against libppp
 target_compile_definitions(res_prep PUBLIC CGV_FORCE_STATIC)
 
+# Write executables in bin/ directory inside build directory matching the
+# installation layout
 if(WIN32)
-    # Write executables in build directory
-    set_target_properties(res_prep PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+    set_target_properties(ppp PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    # Write executables in bin/ directory inside build directory
-    set_target_properties(res_prep PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    set_target_properties(ppp PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # Dependencies on other components and libraries
@@ -33,6 +33,9 @@ target_link_libraries(res_prep
     # We need headers from the utils component
     PRIVATE
         cgv::utils)
+
+# Set folder for Visual Studio
+set_target_properties(res_prep PROPERTIES FOLDER "Core Tools")
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS res_prep EXPORT cgv_res_prepTargets

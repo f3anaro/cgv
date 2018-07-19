@@ -20,15 +20,28 @@ target_include_directories(GLEW
 
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
-    target_compile_definitions(GLEW PUBLIC GLEW_BUILD)
+    target_compile_definitions(GLEW PRIVATE GLEW_BUILD)
 else()
     # Compiler definitions for static library
     target_compile_definitions(GLEW PUBLIC GLEW_STATIC)
 endif()
 
-# Build the library in the lib/ directory inside the build directory.
+# Set folder for Visual Studio
 set_target_properties(GLEW PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    FOLDER "3rd-Party Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(GLEW PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(GLEW PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # Dependencies on other libraries
 target_link_libraries(GLEW

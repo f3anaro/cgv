@@ -57,11 +57,25 @@ add_library(gl
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::gl ALIAS gl)
 
-# Append "cgv_" prefix to the library filename. Build the library in the lib/
-# directory inside the build directory.
 set_target_properties(gl PROPERTIES
+    # Append "cgv_" prefix to the library filename.
     OUTPUT_NAME "cgv_gl"
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+    # Set folder for Visual Studio
+    FOLDER "Additional Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(gl PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(gl PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 target_include_directories(gl
     PUBLIC

@@ -41,7 +41,24 @@ add_library(utils
 add_library(cgv::utils ALIAS utils)
 
 # Append "cgv_" prefix to the library filename.
-set_target_properties(utils PROPERTIES OUTPUT_NAME "cgv_utils")
+set_target_properties(utils PROPERTIES
+    OUTPUT_NAME "cgv_utils"
+
+    # Set folder for Visual Studio
+    FOLDER "CGV-Framework")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(utils PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(utils PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
@@ -63,16 +80,6 @@ target_compile_features(utils PUBLIC cxx_std_11)
 if(${BUILD_SHARED_LIBS})
     # Compiler definitions for shared library
     target_compile_definitions(utils PUBLIC CGV_UTILS_EXPORTS)
-endif()
-
-if(WIN32)
-    # Build the library in build directory
-    set_target_properties(utils PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-else()
-    # Build the library in the lib/ directory inside the build directory.
-    set_target_properties(utils PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).

@@ -45,17 +45,33 @@ add_library(TIFF
 
 # Also add the .def-file to the sources. CMake will know what to do with it
 if(MSVC)
-    target_sources(TIFF src/tiff.def)
+    target_sources(TIFF PRIVATE src/libtiff.def)
 endif()
 
 # Add an alias target for the TIFF:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
 add_library(TIFF::TIFF ALIAS TIFF)
 
-# Set lowercase library name and version
 set_target_properties(TIFF PROPERTIES
+    # Set lowercase library name and version
     OUTPUT_NAME "tiff"
-    VERSION "4.0.3")
+    VERSION "4.0.3"
+
+    # Set folder for Visual Studio
+    FOLDER "3rd-Party Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(TIFF PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(TIFF PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build

@@ -29,8 +29,25 @@ add_library(render
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::render ALIAS render)
 
-# Append "cgv_" prefix to the library filename.
-set_target_properties(render PROPERTIES OUTPUT_NAME "cgv_render")
+set_target_properties(render PROPERTIES
+    # Append "cgv_" prefix to the library filename.
+    OUTPUT_NAME "cgv_render"
+
+    # Set folder for Visual Studio
+    FOLDER "CGV-Framework")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(render PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(render PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
@@ -73,16 +90,6 @@ else()
         # Add additional dependencies for static Windows builds
         target_link_libraries(render INTERFACE user32)
     endif()
-endif()
-
-if(WIN32)
-    # Build the library in build directory
-    set_target_properties(render PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-else()
-    # Build the library in the lib/ directory inside the build directory.
-    set_target_properties(render PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).

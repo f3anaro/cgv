@@ -1,6 +1,20 @@
 cmake_minimum_required(VERSION 3.8)
-
 project(FLTK2 VERSION 2.0)
+
+# Load required imported targets
+find_package(JPEG REQUIRED)
+find_package(PNG REQUIRED)
+
+# Define CMake imported targets for packages that does not support
+# imported targets yet.
+if(NOT TARGET JPEG::JPEG)
+    message(STATUS "Create imported target JPEG::JPEG")
+    add_library(JPEG::JPEG SHARED IMPORTED)
+    set_target_properties(JPEG::JPEG PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${JPEG_INCLUDE_DIR})
+    foreach(lib ${JPEG_LIBRARIES})
+        set_target_properties(JPEG::JPEG PROPERTIES IMPORTED_LOCATION ${lib})
+    endforeach()
+endif()
 
 add_library(FLTK2
     # Images
@@ -170,8 +184,13 @@ add_library(FLTK2
 # this target like other imported targets with namespace prefixes.
 add_library(FLTK2::FLTK2 ALIAS FLTK2)
 
-# Library filename is in lowercase and uses version information.
-set_target_properties(FLTK2 PROPERTIES OUTPUT_NAME "fltk" VERSION "2.0")
+set_target_properties(FLTK2 PROPERTIES
+    # Library filename is in lowercase and uses version information.
+    OUTPUT_NAME "fltk"
+    VERSION "2.0"
+
+    # Set folder for Visual Studio
+    FOLDER "3rd-Party Libraries")
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
@@ -184,24 +203,40 @@ target_include_directories(FLTK2
     PRIVATE
         visualc)
 
-target_compile_options(FLTK2
-    PRIVATE
-        -Wno-narrowing)
+# Ignore narrowing on Unix platforms
+if(UNIX)
+    target_compile_options(FLTK2 PRIVATE -Wno-narrowing)
+endif()
+
+# Add common compiler definitions
+target_compile_definitions(FLTK2
+    PUBLIC
+        USE_GLEW)
 
 # Compiler definitions for shared library
 if(${BUILD_SHARED_LIBS})
     target_compile_definitions(FLTK2
         PUBLIC
             FL_SHARED
+        PRIVATE
             FL_LIBRARY
             FL_GL_LIBRARY
             FL_GLUT_LIBRARY
             FL_IMAGES_LIBRARY)
 endif()
 
-# Build the library in the lib/ directory inside the build directory.
-set_target_properties(FLTK2 PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(FLTK2 PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(FLTK2 PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # ------------
 # Dependencies
@@ -210,8 +245,6 @@ set_target_properties(FLTK2 PROPERTIES
 find_package(OpenGL REQUIRED)
 
 if (WIN32)
-    # TODO: JPEG::JPEG and PNG::PNG for Windows
-    
     # Compiler definitions for Windows builds
     target_compile_definitions(FLTK2
         PUBLIC
@@ -222,12 +255,9 @@ if (WIN32)
 else()
     # Use X11 on Unix systems
     find_package(X11 REQUIRED)
-    find_package(JPEG REQUIRED)
-    find_package(PNG REQUIRED)
 
     # Define CMake imported targets for packages that does not support imported
     # targets yet.
-
     if (NOT TARGET X11::X11)
         message(STATUS "Create imported target X11::X11")
         add_library(X11::X11 SHARED IMPORTED)
@@ -249,15 +279,6 @@ else()
         set_target_properties(X11::Xi PROPERTIES IMPORTED_LOCATION ${X11_Xi_LIB})
     endif()
 
-    if(NOT TARGET JPEG::JPEG)
-        message(STATUS "Create imported target JPEG::JPEG")
-        add_library(JPEG::JPEG SHARED IMPORTED)
-        set_target_properties(JPEG::JPEG PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${JPEG_INCLUDE_DIR})
-        foreach(lib ${JPEG_LIBRARIES})
-            set_target_properties(JPEG::JPEG PROPERTIES IMPORTED_LOCATION ${lib})
-        endforeach()
-    endif()
-
     # FLTK2 depends on X11
     target_link_libraries(FLTK2
         X11::X11
@@ -266,9 +287,25 @@ endif()
 
 # The imported targets are loaded specifically for the platform.
 target_link_libraries(FLTK2
-    OpenGL::GL
-    JPEG::JPEG
-    PNG::PNG)
+    PUBLIC
+        OpenGL::GL
+        JPEG::JPEG
+        PNG::PNG)
+
+if(WIN32)
+    # Needed for "Fl_Gl_Choice"
+    find_package(GLEW REQUIRED)
+
+    # Required Windows libraries
+    target_link_libraries(FLTK2
+        PUBLIC
+            GLEW::GLEW
+            ws2_32
+        INTERFACE
+            user32
+            gdi32
+            msimg32)
+endif()
 
 # -----------------------
 # Installation and Export

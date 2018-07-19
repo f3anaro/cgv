@@ -1,6 +1,6 @@
 project(cgv_defines LANGUAGES CXX)
 
-# Define header-only (interface) library
+# Define header-only library
 add_library(defines INTERFACE)
 
 # Add an alias target for the cgv:: namespace such that other components can use
@@ -15,6 +15,23 @@ target_include_directories(defines
 
 # CGV uses C++11 standard
 target_compile_features(defines INTERFACE cxx_std_11)
+
+# HACK: Currently, CMake does not generate any IDE project for interface
+#   libraries. We use a custom target to create a pseudo-target called
+#   "defines_ide".
+if (MSVC)
+    add_custom_target(defines_ide SOURCES
+        include/cgv/defines/assert.h
+        include/cgv/defines/join.h
+        include/cgv/defines/quote.h)
+
+    set_target_properties(defines_ide PROPERTIES
+        # Set name of the target in an Visual Studio
+        PROJECT_LABEL "defines"
+
+        # Set folder for Visual Studio
+        FOLDER "CGV-Framework")
+endif()
 
 # Install header files of component
 install(DIRECTORY include/

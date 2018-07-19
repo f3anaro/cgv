@@ -50,9 +50,23 @@ foreach(lib IN ITEMS ANN ANNf)
             ANN_STATIC)
     endif()
 
-    # Build the library in the lib/ directory inside the build directory.
     set_target_properties(${lib} PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+        # Set folder for Visual Studio
+        FOLDER "3rd-Party Libraries")
+
+    # Build library in directories matching the installation layout.
+    if(WIN32)
+        set_target_properties(${lib} PROPERTIES
+            ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+            LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+    else()
+        set_target_properties(${lib} PROPERTIES
+            ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+            LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+    endif()
+
 endforeach(${lib})
 
 # ANN library with floats

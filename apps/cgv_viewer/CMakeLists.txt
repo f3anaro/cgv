@@ -11,14 +11,14 @@ add_executable(cgv_viewer
 # CGV uses C++11 standard
 target_compile_features(cgv_viewer PUBLIC cxx_std_11)
 
+# Write executables in bin/ directory inside build directory matching the
+# installation layout
 if(WIN32)
-    # Write executables in build directory
     set_target_properties(cgv_viewer PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    # Write executables in bin/ directory inside build directory
     set_target_properties(cgv_viewer PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # Define the libraries this project depends upon
@@ -26,6 +26,9 @@ target_link_libraries(cgv_viewer
     cgv::signal
     cgv::base
     cgv::gui)
+
+# Set folder for Visual Studio
+set_target_properties(cgv_viewer PROPERTIES FOLDER "Applications")
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS cgv_viewer EXPORT cgv_viewerTargets

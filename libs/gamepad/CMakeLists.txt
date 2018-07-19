@@ -29,7 +29,7 @@ endif()
 if(WIN32)
     # Add XInput driver. XInput is an API that allows applications to receive
     # input from the Xbox 360 Controller for Windows.
-    target_sources(gamepad src/xinput_gamepad_driver.cxx)
+    target_sources(gamepad PRIVATE src/xinput_gamepad_driver.cxx)
     target_compile_definitions(gamepad PUBLIC Xinput)
 endif()
 
@@ -37,9 +37,22 @@ endif()
 target_link_libraries(gamepad
     cgv::config)
 
-# Build the library in the lib/ directory inside the build directory.
+# Set folder for Visual Studio
 set_target_properties(gamepad PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+    FOLDER "Additional Libraries")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(gamepad PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(gamepad PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS gamepad EXPORT gamepadTargets

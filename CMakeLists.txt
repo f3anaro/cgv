@@ -19,6 +19,12 @@ if (UNIX)
     set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR} CACHE PATH "rpath for installed targets" FORCE)
 endif()
 
+# Enable organization of targets in folders (solution folders in Visual Studio)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+# CMakes predefined targets (e.g. "ALL_BUILD") should appear top level in the project
+set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
+
 # Wraps the original "find_package" command (now accessible via
 # "_find_package"). The macro inhibits calls to "_find_package" if the variable
 # contains the name of the package

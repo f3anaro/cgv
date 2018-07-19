@@ -83,22 +83,36 @@ endif()
 
 # Dependencies on other components, plugins and libraries.
 target_link_libraries(cg_fltk
-    cgv::gui
-    cgv::render
-    cgv::media
-    cgv::utils
-    cgv::os
-    cgv::base
-    cgv::data
-    cgv::type
-    cgv::signal
-    cgv::reflect
-    cgv::gl
-    FLTK2::FLTK2)
+    PUBLIC
+        cgv::gui
+        cgv::render
+        cgv::media
+        cgv::utils
+        cgv::os
+        cgv::base
+        cgv::data
+        cgv::type
+        cgv::signal
+        cgv::reflect
+        cgv::gl
+        FLTK2::FLTK2)
 
-# Build the library in the plugins/ directory inside the build directory.
+# Set folder for Visual Studio
 set_target_properties(cg_fltk PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
+    FOLDER "Standard Plugins")
+
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(cg_fltk PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(cg_fltk PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS cg_fltk EXPORT cg_fltkTargets

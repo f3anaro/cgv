@@ -18,11 +18,14 @@ add_library(zlib
 # this target like other imported targets with namespace prefixes.
 add_library(ZLIB::ZLIB ALIAS zlib)
 
-# Library filename is in lowercase and uses version information.
 set_target_properties(zlib PROPERTIES
-    OUTPUT_NAME "z"
+    # Library filename is in lowercase and uses version information.
+    OUTPUT_NAME "zlib"
     VERSION "1.2.3"
-    EXPORT_NAME "ZLIB")
+    EXPORT_NAME "ZLIB"
+
+    # Set folder for Visual Studio
+    FOLDER "3rd-Party Libraries")
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
@@ -37,9 +40,18 @@ if(${BUILD_SHARED_LIBS})
     target_compile_definitions(zlib PUBLIC ZLIB_DLL)
 endif()
 
-# Build the library in the lib/ directory inside the build directory.
-set_target_properties(zlib PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+# Build library in directories matching the installation layout.
+if(WIN32)
+    set_target_properties(zlib PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+else()
+    set_target_properties(zlib PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS zlib EXPORT ZLIBTargets

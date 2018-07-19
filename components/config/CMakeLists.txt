@@ -16,6 +16,23 @@ target_include_directories(config
 # CGV uses C++11 standard
 target_compile_features(config INTERFACE cxx_std_11)
 
+# HACK: Currently, CMake does not generate any IDE project for interface
+#   libraries. We use a custom target to create a pseudo-target called
+#   "config_ide".
+if (MSVC)
+    add_custom_target(config_ide SOURCES
+        include/cgv/config/cpp_version.h
+        include/cgv/config/lib_begin.h
+        include/cgv/config/lib_end.h)
+
+    set_target_properties(config_ide PROPERTIES
+        # Set name of the target in an Visual Studio
+        PROJECT_LABEL "config"
+
+        # Set folder for Visual Studio
+        FOLDER "CGV-Framework")
+endif()
+
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS config EXPORT cgv_configTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
