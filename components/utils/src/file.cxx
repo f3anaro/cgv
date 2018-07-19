@@ -534,7 +534,7 @@ std::string get_full_path(const std::string& path)
 #ifdef _WIN32
 	// Use GetFullPathName() in Windows
 	TCHAR resolved[MAX_PATH];
-	GetFullPathName(_T(path.c_str()), MAX_PATH, resolved, NULL);
+	GetFullPathName(path.c_str(), MAX_PATH, resolved, NULL);
 	return std::string(resolved);
 #else
 	// Use realpath() on Unix

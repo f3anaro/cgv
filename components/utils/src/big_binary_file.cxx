@@ -5,29 +5,16 @@
 #include <windows.h>
 HANDLE& F(void*& file) { return (HANDLE&) file; }
 const HANDLE& F(const void*& file) { return (const HANDLE&) file; }
-std::wstring str2wstr(const std::string& s)
-{
-	std::wstring ws;
-	ws.resize(s.size());
-	int n = MultiByteToWideChar(CP_ACP,0,s.c_str(),(int)s.size(),&ws[0],(int)ws.size());
-	ws.resize(n);
-	return ws;
-}
 #else
 FILE*& F(void*& file) { return (FILE*&) file; }
 const FILE*& F(const void*& file) { return (const FILE*&) file; }
-std::string str2wstr(const std::string& s)
-{
-	std::cerr << "str2wstr(const std::string& s) not implemented" << std::endl;
-	return s;
-}
 #endif
 
 
 namespace cgv {
 	namespace utils{
 
-	#ifdef _MSC_VER
+#ifdef _MSC_VER
 
 	big_binary_file::big_binary_file(const std::string &filename)
 	{
@@ -43,13 +30,10 @@ namespace cgv {
 			if (!file_name.empty())
 				filename = file_name;
 
-			std::wstring wfile_name = str2wstr(file_name);
-			const wchar_t* name = wfile_name.c_str();
-
 			access_mode = m;
 			if(m == READ) {
 				//open for read
-				F(file) = CreateFile(name,						
+				F(file) = CreateFileA(file_name.c_str(),
 						GENERIC_READ,					
 							FILE_SHARE_READ,            
 							NULL,                       
@@ -60,7 +44,7 @@ namespace cgv {
 			} 
 			else if (m == WRITE) {
 				//open for write
-				F(file) = CreateFile(name,           
+				F(file) = CreateFileA(file_name.c_str(),
 						 GENERIC_WRITE,               
 						0,                           
 						NULL,                        
@@ -70,7 +54,7 @@ namespace cgv {
 			}
 			else {
 				//open for write
-				F(file) = CreateFile(name,           
+				F(file) = CreateFileA(file_name.c_str(),
 						GENERIC_READ|GENERIC_WRITE,
 						0,                           
 						NULL,                        
@@ -212,9 +196,9 @@ namespace cgv {
 	}
 
 
-	#else
+#else
 
-/*
+
 	// Linux-Implementation
 	
 	big_binary_file::big_binary_file(const std::string &filename)
@@ -378,8 +362,8 @@ namespace cgv {
 		if(fileopened)
 			fclose(F(file));
 	}
-*/
-	#endif
+
+#endif
 
 	}
 }

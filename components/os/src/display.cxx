@@ -147,17 +147,17 @@ public:
 	/// return the name of the display
 	std::string get_name() const 
 	{
-		return cgv::utils::wstr2str(dd.DeviceName);
+		return dd.DeviceName;
 	}
 	/// return the description string of the display
 	std::string get_description() const
 	{
-		return cgv::utils::wstr2str(dd.DeviceString);
+		return dd.DeviceString;
 	}
 	/// return the unique ID string of the display
 	std::string get_ID() const
 	{
-		return cgv::utils::wstr2str(dd.DeviceID);
+		return dd.DeviceID;
 	}
 	/// return whether display is a mirrored display
 	bool is_mirror() const
