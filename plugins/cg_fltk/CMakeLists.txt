@@ -124,7 +124,7 @@ target_link_libraries(cg_fltk
         cgv::type
         cgv::signal
         cgv::reflect
-        cgv::gl
+        cgv::cgv_gl
         FLTK2::FLTK2)
 
 # Build library in directories matching the installation layout. If

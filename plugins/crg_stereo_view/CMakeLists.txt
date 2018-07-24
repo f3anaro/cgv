@@ -57,7 +57,7 @@ target_link_libraries(crg_stereo_view
     cgv::base
     cgv::signal
     cgv::glsu
-    cgv::gl
+    cgv::cgv_gl
     cgv::cg_gamepad)
 
 # Build library in directories matching the installation layout. If

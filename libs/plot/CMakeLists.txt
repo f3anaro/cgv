@@ -148,7 +148,7 @@ target_link_libraries(plot
 	cgv::os
 	cgv::gui
 	cgv::render
-	cgv::gl)
+	cgv::cgv_gl)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS plot EXPORT plotTargets

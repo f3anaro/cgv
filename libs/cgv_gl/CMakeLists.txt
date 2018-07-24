@@ -61,7 +61,7 @@ set(SHADERS
 	shader/textured_material.glpr
 	shader/textured_material.glvs)
 
-add_library(gl
+add_library(cgv_gl
 	# Source Files
 	src/box_renderer.cxx
 	src/box_wire_renderer.cxx
@@ -118,9 +118,9 @@ add_library(gl
 
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
-add_library(cgv::gl ALIAS gl)
+add_library(cgv::cgv_gl ALIAS cgv_gl)
 
-set_target_properties(gl PROPERTIES
+set_target_properties(cgv_gl PROPERTIES
 	# Append "cgv_" prefix to the library filename.
 	OUTPUT_NAME "cgv_gl"
 
@@ -135,12 +135,12 @@ set_target_properties(gl PROPERTIES
 # multi-config generators are used, build targets in a config-specific
 # subdirectory.
 if(CMAKE_CONFIGURATION_TYPES)
-	set_target_properties(gl PROPERTIES
+	set_target_properties(cgv_gl PROPERTIES
 		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
 		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-	set_target_properties(gl PROPERTIES
+	set_target_properties(cgv_gl PROPERTIES
 		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
 		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
@@ -177,23 +177,23 @@ if(REGISTER_SHADERS OR NOT ${BUILD_SHARED_LIBS})
 	endforeach()
 
 	# Add generated shader resources to library target.
-	target_sources(gl PRIVATE ${RESOURCES})
+	target_sources(cgv_gl PRIVATE ${RESOURCES})
 else()
 	# Get the output directory for executables. By using the property of the
 	# target, we do not need to distinguish different platforms.
-	get_target_property(RUNTIME_OUTPUT gl RUNTIME_OUTPUT_DIRECTORY)
+	get_target_property(RUNTIME_OUTPUT cgv_gl RUNTIME_OUTPUT_DIRECTORY)
 
 	# Just copy all shader files after successful build into shader/ next to
 	# bin/ directory.
 	foreach(shader IN LISTS SHADERS)
-		add_custom_command(TARGET gl POST_BUILD
+		add_custom_command(TARGET cgv_gl POST_BUILD
 			COMMAND ${CMAKE_COMMAND} -E copy_if_different
 				${CMAKE_CURRENT_SOURCE_DIR}/${shader}
 				${RUNTIME_OUTPUT}/../${shader})
 	endforeach()
 endif()
 
-target_include_directories(gl
+target_include_directories(cgv_gl
 	PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 		# Adding the build directory for generated header files
@@ -202,24 +202,24 @@ target_include_directories(gl
 
 # FIXME: For unicode support the definitions _UNICODE and UNICODE have to be
 #     set. Can we do this better?
-target_compile_definitions(gl
+target_compile_definitions(cgv_gl
 	PUBLIC
 		UNICODE
 		_UNICODE)
 
 if(${BUILD_SHARED_LIBS})
 	# Compiler definitions for shared library
-	target_compile_definitions(gl PUBLIC CGV_RENDER_GL_EXPORTS)
+	target_compile_definitions(cgv_gl PUBLIC CGV_RENDER_GL_EXPORTS)
 else()
 	# Compiler definitions for static library
-	target_compile_definitions(gl PUBLIC CGV_RENDER_GL_FORCE_STATIC)
+	target_compile_definitions(cgv_gl PUBLIC CGV_RENDER_GL_FORCE_STATIC)
 endif()
 
 # CGV uses C++11 standard
-target_compile_features(gl PUBLIC cxx_std_11)
+target_compile_features(cgv_gl PUBLIC cxx_std_11)
 
 # Dependencies on other components and libraries
-target_link_libraries(gl
+target_link_libraries(cgv_gl
 	PUBLIC
 		cgv::render
 		cgv::gui
@@ -230,11 +230,11 @@ target_link_libraries(gl
 
 if(WIN32)
 	# Link required Windows libraries
-	target_link_libraries(gl INTERFACE user32 gdi32)
+	target_link_libraries(cgv_gl INTERFACE user32 gdi32)
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS gl EXPORT glTargets
+install(TARGETS cgv_gl EXPORT cgv_glTargets
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -248,9 +248,9 @@ install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_BINDIR}/../shader)
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
-install(EXPORT glTargets NAMESPACE cgv:: DESTINATION cmake/cgv_gl)
+install(EXPORT cgv_glTargets NAMESPACE cgv:: DESTINATION cmake/cgv_gl)
 install(FILES cgv_glConfig.cmake DESTINATION cmake/cgv_gl)
 
 # This makes the project importable from the build directory
-export(TARGETS gl NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_glTargets.cmake)
+export(TARGETS cgv_gl NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/cgv_glTargets.cmake)
 file(COPY cgv_glConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)
