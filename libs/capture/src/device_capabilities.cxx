@@ -1,10 +1,8 @@
-#pragma once
-
-#include "capture_format.h"
+#include "capture/capture_format.h"
 
 #include <vector>
 
-#include "lib_begin.h"
+#include "capture/lib_begin.h"
 
 namespace capture {
 

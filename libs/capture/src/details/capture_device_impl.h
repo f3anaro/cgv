@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../capture_result.h"
-#include "../device_capabilities.h"
-#include "../device_status.h"
-#include "../capture_processor.h"
+#include "capture/capture_result.h"
+#include "capture/device_capabilities.h"
+#include "capture/device_status.h"
+#include "capture/capture_processor.h"
 
-#include "../lib_begin.h"
+#include "capture/lib_begin.h"
 
 namespace capture {
 

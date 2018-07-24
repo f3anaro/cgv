@@ -1,4 +1,4 @@
-#include "capture_result.h"
+#include "capture/capture_result.h"
 #include <iostream>
 
 namespace capture {

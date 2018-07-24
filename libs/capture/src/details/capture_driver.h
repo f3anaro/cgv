@@ -1,8 +1,9 @@
 #pragma once
 
 #include "capture_device_impl.h"
+#include <algorithm>
 
-#include "../lib_begin.h"
+#include "capture/lib_begin.h"
 
 namespace capture {
 

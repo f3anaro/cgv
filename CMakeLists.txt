@@ -130,7 +130,7 @@ add_subdirectory(3rd/fltk)
 
 # Libraries
 add_subdirectory(libs/ann_wrapper)
-# add_subdirectory(libs/capture)
+add_subdirectory(libs/capture)
 add_subdirectory(libs/cg_gamepad)
 add_subdirectory(libs/cgv_gl)
 add_subdirectory(libs/cgv_reflect_types)
