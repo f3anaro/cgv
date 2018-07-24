@@ -4,6 +4,9 @@ project(cgv LANGUAGES CXX)
 option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
 option(REGISTER_SHADERS "Include shader resources in shared libraries" FALSE)
 
+# Include our custom CMake Find* modules
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+
 if(UNIX AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     # Use a namespace directory for the whole cgv framework similar to the
     # golang project.
@@ -126,7 +129,7 @@ endif()
 add_subdirectory(3rd/fltk)
 
 # Libraries
-# add_subdirectory(libs/ann_wrapper)
+add_subdirectory(libs/ann_wrapper)
 # add_subdirectory(libs/capture)
 add_subdirectory(libs/cg_gamepad)
 add_subdirectory(libs/cgv_gl)

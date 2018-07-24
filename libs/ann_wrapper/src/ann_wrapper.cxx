@@ -1,4 +1,4 @@
-#include "ann.h"
+#include "ann_wrapper/ann.h"
 
 namespace cgv{
 	namespace math {
@@ -115,10 +115,10 @@ int ann::query_num_points_in_FR(double x, double y, double z,double radius)
 
 int ann::query_num_points_in_FR(const math::vec<double> &query_point, double radius)
 {
-	ANNpoint queryPt  = &((double)query_point(0));
-		
+	ANNcoord queryPt  = query_point(0);
+
 	int num = kdTree->annkFRSearch(
-		queryPt, // query point
+		&queryPt, // query point
 		radius*radius,			// squared radius of query ball
 		0,				// number of neighbors to return
 			NULL,	// nearest neighbor array (modified)
@@ -166,10 +166,10 @@ void ann::query_fixed_radius(const math::vec<double> &query_point,double radius,
 		sqrdists = new double[k];
 	}
 
-	ANNpoint queryPt  = &((double)query_point(0));
+	ANNcoord queryPt  = query_point(0);
 	
 	kdTree->annkFRSearch(
-		queryPt, // query point
+		&queryPt, // query point
 		radius*radius,			// squared radius of query ball
 		k,				// number of neighbors to return
 			indices,	// nearest neighbor array (modified)
@@ -191,9 +191,9 @@ void ann::query_knn(const math::vec<double> &query_point, int k, int *indices, d
 		nodist = true;
 		sqrdists = new double[k];
 	}
-	ANNpoint queryPt  = &((double)query_point(0));
+	ANNcoord queryPt  = query_point(0);
 	kdTree->annkSearch( // search
-		queryPt, // query point
+		&queryPt, // query point
 		k, // number of near neighbors
 		indices, // nearest neighbors (returned)
 		sqrdists, // distance (returned)

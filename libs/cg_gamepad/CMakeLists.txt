@@ -14,12 +14,12 @@ find_package(cgv_media REQUIRED)
 find_package(cgv_gui REQUIRED)
 find_package(gamepad REQUIRED)
 
-set(PUBLIC_HEADERS
+add_library(cg_gamepad 
+    src/gamepad_server.cxx
+
+    # Public headers
     include/cg_gamepad/gamepad_server.h
     include/cg_gamepad/lib_begin.h)
-
-add_library(cg_gamepad 
-    src/gamepad_server.cxx)
 
 # CGV uses C++11 standard
 target_compile_features(cg_gamepad PUBLIC cxx_std_11)
