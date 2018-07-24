@@ -1,21 +1,31 @@
 project(TIFF LANGUAGES C)
 
+include(TestBigEndian)
+include(CheckTypeSize)
+include(CheckIncludeFile)
+include(CheckSymbolExists)
+
 # Load required imported targets
 find_package(ZLIB REQUIRED)
 find_package(JPEG REQUIRED)
 
+# The imported target for JPEG is only available on CMake >= 3.12
+if(NOT TARGET JPEG::JPEG)
+    message(STATUS "Create imported target JPEG::JPEG")
+    add_library(JPEG::JPEG SHARED IMPORTED)
+    set_target_properties(JPEG::JPEG PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${JPEG_INCLUDE_DIR})
+    foreach(lib ${JPEG_LIBRARIES})
+        set_target_properties(JPEG::JPEG PROPERTIES IMPORTED_LOCATION ${lib})
+    endforeach()
+endif()
+
 set(PRIVATE_HEADERS
     src/t4.h
-    src/tif_config.h
-    src/tif_config.vc.h
-    src/tif_config.wince.h
+    src/tif_config.h.in
     src/tif_dir.h
     src/tif_fax3.h
-    src/tiffconf.wince.h
     src/tiffiop.h
     src/tif_predict.h
-    src/tif_unix.h
-    src/tif_win32.h
     src/uvcode.h)
 
 add_library(TIFF
@@ -60,17 +70,24 @@ add_library(TIFF
 
     # Public Headers
     include/tiff.h
+    include/tiffconf.h
     include/tiffio.h
     include/tiffvers.h
-    include/tiffconf.h
 
     # Private Headers
     ${PRIVATE_HEADERS})
 
-# Also add the .def-file to the sources. CMake will know what to do with it
-if(MSVC)
-    target_sources(TIFF PRIVATE src/libtiff.def)
-endif()
+# Add OS-specific implementation
+if(WIN32)
+    target_sources(TIFF PRIVATE src/tif_win32.c)
+
+	# Also add the .def-file to the sources. CMake will know what to do with it.
+	if(MSVC)
+	    target_sources(TIFF PRIVATE src/libtiff.def)
+	endif()
+else()
+    target_sources(TIFF PRIVATE src/tif_unix.c)
+endif(WIN32)
 
 # Add an alias target for the TIFF:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -106,56 +123,103 @@ endif()
 target_include_directories(TIFF
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        # Adding the build directory for generated header files
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src>
         $<INSTALL_INTERFACE:include>)
 
-target_compile_definitions(TIFF
-    PUBLIC
-        _CRT_SECURE_NO_DEPRECATE
-        AVOID_WIN32_FILEIO
-        CHECK_JPEG_YCBCR_SUBSAMPLING
-        DEFAULT_EXTRASAMPLE_AS_ALPHA
-        STRIPCHOP_DEFAULT=TIFF_STRIPCHOP
-        STRIP_SIZE_DEFAULT=8192
-        LOGLUV_SUPPORT
-        NEXT_SUPPORT
-        THUNDER_SUPPORT
-        LZW_SUPPORT
-        JPEG_SUPPORT
-        ZIP_SUPPORT
-        PACKBITS_SUPPORT
-        CCITT_SUPPORT
-        TIF_PLATFORM_CONSOLE
-        FILLODER_LSB2MSB)
+# ---------
+# Configure
+# ---------
+# 
+# Generate 
+test_big_endian(HOST_BIGENDIAN)
 
-if(NOT ${BUILD_SHARED_LIBS})
-    # Compiler definitions for static library
-    target_compile_definitions(TIFF PUBLIC JPEG_STATIC)
-endif()
+check_type_size("int" SIZEOF_INT)
+check_type_size("long" SIZEOF_LONG)
+check_type_size("int8" HAVE_INT8)
+check_type_size("int16" HAVE_INT16)
+check_type_size("int32" HAVE_INT32)
 
-# The imported target for JPEG is only available on CMake >= 3.12
-if(NOT TARGET JPEG::JPEG)
-    message(STATUS "Create imported target JPEG::JPEG")
-    add_library(JPEG::JPEG SHARED IMPORTED)
-    set_target_properties(JPEG::JPEG PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${JPEG_INCLUDE_DIR})
-    foreach(lib ${JPEG_LIBRARIES})
-        set_target_properties(JPEG::JPEG PROPERTIES IMPORTED_LOCATION ${lib})
-    endforeach()
-endif()
-
-# Detect system endianess
-include(TestBigEndian)
-test_big_endian(is_big_endian)
-if(is_big_endian)
-    target_compile_definitions(TIFF PUBLIC HOST_BIGENDIAN=1)
+# Detect 32/64bit architecture
+check_type_size("void*" SIZEOF_VOIDPTR)
+if(SIZEOF_VOIDPTR EQUAL 8)
+	set(TIFF_SSIZE_T "int64_t")
+	set(TIFF_SSIZE_FORMAT "\"%\" PRId64")
 else()
-    target_compile_definitions(TIFF PUBLIC HOST_BIGENDIAN=0)
+	set(TIFF_SSIZE_T "int32_t")
+	set(TIFF_SSIZE_FORMAT "\"%\" PRId32")
+endif()
+
+check_include_file("assert.h" HAVE_ASSERT_H)
+check_include_file("fcntl.h" HAVE_FCNTL_H)
+check_include_file("string.h" HAVE_STRING_H)
+check_include_file("sys_types.h" HAVE_SYS_TYPES_H)
+check_include_file("io.h" HAVE_IO_H)
+check_include_file("search.h" HAVE_SEARCH_H)
+
+set(HAVE_IEEEFP ON)
+set(HOST_FILLORDER "FILLORDER_LSB2MSB")
+set(CCITT_SUPPORT ON)
+set(JPEG_SUPPORT ON)
+set(LOGLUV_SUPPORT ON)
+set(LZW_SUPPORT ON)
+set(NEXT_SUPPORT ON)
+set(OJPEG_SUPPORT ON)
+set(PACKBITS_SUPPORT ON)
+set(THUNDER_SUPPORT ON)
+set(ZIP_SUPPORT ON)
+set(STRIP_SIZE_DEFAULT "8192")
+set(STRIPCHOP_DEFAULT "TIFF_STRIPCHOP")
+set(SUBIFD_SUPPORT ON)
+set(DEFAULT_EXTRASAMPLE_AS_ALPHA ON)
+set(CHECK_JPEG_YCBCR_SUBSAMPLING ON)
+set(TIF_PLATFORM_CONSOLE ON)
+
+# Feature support
+set(COLORIMETRY_SUPPORT ON)
+set(YCBCR_SUPPORT ON)
+set(CMYK_SUPPORT ON)
+set(ICC_SUPPORT ON)
+set(PHOTOSHOP_SUPPORT ON)
+set(IPTC_SUPPORT ON)
+
+# Generate public configuration header
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/tiffconf.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/include/tiffconf.h)
+
+# Generate private configuration header
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/tif_config.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/src/tif_config.h)
+
+if(WIN32)
+	# Windows prefixes POSIX functions with an underscore.
+	check_symbol_exists("snprintf" "stdio.h" HAVE_SNPRINTF)
+	check_symbol_exists("lfind" "search.h" HAVE_LFIND)
+
+	# If function "snprintf" was not found, use the Windows prefixed variant
+	if(NOT HAVE_SNPRINTF)
+		target_compile_definitions(TIFF PRIVATE snprintf=_snprintf)
+	endif()
+
+	# If function "lfind" was not found, use the Windows prefixed variant
+	if(NOT HAVE_LFIND)
+		target_compile_definitions(TIFF PRIVATE lfind=_lfind)
+	endif()
+
+	# Disable deprecation warnings
+	if(MSVC)
+		target_compile_definitions(TIFF PUBLIC _CRT_SECURE_NO_DEPRECATE)
+	endif()
+
+	# Enable Windows-specific IO
+	target_compile_definitions(TIFF PUBLIC USE_WIN32_FILEIO)
 endif()
 
 # Dependencies on other libraries
 target_link_libraries(TIFF
     PUBLIC
         ZLIB::ZLIB
-    INTERFACE
         JPEG::JPEG)
 
 # Build the library in the lib/ directory inside the build directory.
