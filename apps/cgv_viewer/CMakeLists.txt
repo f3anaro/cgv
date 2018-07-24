@@ -4,9 +4,31 @@ find_package(cgv_signal REQUIRED)
 find_package(cgv_base REQUIRED)
 find_package(cgv_gui REQUIRED)
 
+set(IMAGES
+    resources/cgv_logo.png)
+
 # Define cgv_viewer executable
 add_executable(cgv_viewer
     src/main.cxx)
+
+# Ensure that the output directory exists.
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/resources)
+
+foreach(image IN LISTS IMAGES)
+	# Add a generation command for each image
+    add_custom_command(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${image}.cxx
+        COMMAND res_prep
+            ${CMAKE_CURRENT_SOURCE_DIR}/${image}
+            ${CMAKE_CURRENT_BINARY_DIR}/${image}.cxx
+        MAIN_DEPENDENCY ${image})
+
+    # Add generated inline resource to executable
+    target_sources(cgv_viewer PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/${image}.cxx)
+endforeach()
+
+# Move resources into "Resources" folder in Visual Studio.
+source_group("Resources" FILES ${IMAGES})
 
 # CGV uses C++11 standard
 target_compile_features(cgv_viewer PUBLIC cxx_std_11)
