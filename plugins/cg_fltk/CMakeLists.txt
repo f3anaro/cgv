@@ -101,13 +101,13 @@ set_target_properties(cg_fltk PROPERTIES
     FOLDER "Standard Plugins")
 
 if(WIN32)
-    # Add additional dependencies for Windows builds
-    target_link_libraries(cg_fltk INTERFACE Comdlg32)
-
-    # Mark the shared library as regular DLL for Windows. Otherwise it would be
-    # treated as Extension DLL.
     if(${BUILD_SHARED_LIBS})
+        # Mark the shared library as regular DLL for Windows. Otherwise it would be
+        # treated as Extension DLL.
         target_compile_definitions(cg_fltk PUBLIC _USRDLL)
+    else()
+        # Add additional dependencies for static Windows builds
+        target_link_libraries(cg_fltk INTERFACE Comdlg32)
     endif()
 endif()
 
