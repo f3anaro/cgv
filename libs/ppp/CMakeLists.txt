@@ -139,15 +139,8 @@ foreach(lib libppp libppp_static)
 	endif()
 endforeach()
 
-# The target "libppp_static" is only built if shared libraries are enabled
-if (TARGET libppp_static)
-	set(exported_targets libppp libppp_static)
-else()
-	set(exported_targets libppp)
-endif()
-
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS ${exported_targets} EXPORT libpppTargets
+install(TARGETS libppp EXPORT libpppTargets
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -162,5 +155,5 @@ install(EXPORT libpppTargets NAMESPACE cgv:: DESTINATION cmake/libppp)
 install(FILES libpppConfig.cmake DESTINATION cmake/libppp)
 
 # This makes the project importable from the build directory
-export(TARGETS ${exported_targets} NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/libpppTargets.cmake)
+export(TARGETS libppp libppp_static NAMESPACE cgv:: FILE ${CMAKE_BINARY_DIR}/cmake/libpppTargets.cmake)
 file(COPY libpppConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)
