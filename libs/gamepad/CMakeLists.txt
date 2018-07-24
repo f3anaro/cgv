@@ -37,7 +37,8 @@ set_target_properties(gamepad PROPERTIES
 
 # Dependencies on other components and libraries
 target_link_libraries(gamepad
-    cgv::config)
+    PUBLIC
+        cgv::config)
 
 if(WIN32)
     # Add XInput driver. XInput is an API that allows applications to receive
