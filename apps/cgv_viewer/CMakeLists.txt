@@ -13,7 +13,7 @@ target_compile_features(cgv_viewer PUBLIC cxx_std_11)
 
 # Write executables in bin/ directory inside build directory matching the
 # installation layout
-if(WIN32)
+if(CMAKE_CONFIGURATION_TYPES)
     set_target_properties(cgv_viewer PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()

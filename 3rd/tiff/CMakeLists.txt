@@ -104,8 +104,10 @@ set_target_properties(TIFF PROPERTIES
 # Move private headers into "Source Files" folder in Visual Studio.
 source_group("Source Files" FILES ${PRIVATE_HEADERS})
 
-# Build library in directories matching the installation layout.
-if(WIN32)
+# Build library in directories matching the installation layout. If
+# multi-config generators are used, build targets in a config-specific
+# subdirectory.
+if(CMAKE_CONFIGURATION_TYPES)
     set_target_properties(TIFF PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}

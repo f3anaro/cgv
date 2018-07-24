@@ -19,8 +19,9 @@ target_compile_features(res_prep PUBLIC cxx_std_11)
 target_compile_definitions(res_prep PUBLIC CGV_FORCE_STATIC)
 
 # Write executables in bin/ directory inside build directory matching the
-# installation layout
-if(WIN32)
+# installation layout. If multi-config generators are used, build targets in a
+# config-specific subdirectory.
+if(CMAKE_CONFIGURATION_TYPES)
     set_target_properties(ppp PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()

@@ -60,8 +60,10 @@ target_link_libraries(crg_stereo_view
     cgv::gl
     cgv::cg_gamepad)
 
-# Build library in directories matching the installation layout.
-if(WIN32)
+# Build library in directories matching the installation layout. If
+# multi-config generators are used, build targets in a config-specific
+# subdirectory.
+if(CMAKE_CONFIGURATION_TYPES)
     set_target_properties(crg_stereo_view PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}

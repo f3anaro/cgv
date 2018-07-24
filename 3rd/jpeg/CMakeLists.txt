@@ -91,8 +91,10 @@ if(NOT ${BUILD_SHARED_LIBS})
     target_compile_definitions(JPEG PUBLIC JPEG_STATIC)
 endif()
 
-# Build library in directories matching the installation layout.
-if(WIN32)
+# Build library in directories matching the installation layout. If
+# multi-config generators are used, build targets in a config-specific
+# subdirectory.
+if(CMAKE_CONFIGURATION_TYPES)
     set_target_properties(JPEG PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
