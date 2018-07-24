@@ -94,7 +94,7 @@ if(WIN32)
         JPEG
         PNG
         GLEW
-        pthreadW32
+        Threads
         TIFF
         ZLIB)
 endif()
@@ -108,7 +108,8 @@ endmacro()
 # Enable testing for current directory and below
 enable_testing()
 
-# 3rd party libraries
+# 3rd party libraries required for Windows builds. Unix platforms will use the
+# system installation of these libraries.
 if(WIN32)
     add_subdirectory(3rd/ANN)
     add_subdirectory(3rd/jpeg)
