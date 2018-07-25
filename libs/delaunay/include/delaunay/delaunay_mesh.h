@@ -20,6 +20,20 @@ public:
 	typedef typename triangle_mesh_type::coord_type coord_type;
 	///
 	typedef typename triangle_mesh_type::vertex_insertion_info vertex_insertion_info;
+
+	using triangle_mesh_type::p_of_vi;
+	using triangle_mesh_type::vi_of_ci;
+	using triangle_mesh_type::sqr_dist;
+	using triangle_mesh_type::inv;
+	using triangle_mesh_type::prev;
+	using triangle_mesh_type::next;
+	using triangle_mesh_type::prev_on_border;
+	using triangle_mesh_type::next_on_border;
+	using triangle_mesh_type::is_opposite_to_border;
+	using triangle_mesh_type::get_nr_triangles;
+	using triangle_mesh_type::get_nr_vertices;
+	using triangle_mesh_type::is_flipable;
+	using triangle_mesh_type::flip_edge;
 public:
 	/**@name construction*/
 	//@{

@@ -3,7 +3,8 @@
 #include "delaunay/mesh_geometry_reference.h"
 #include <iostream>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
+#include <climits>
 
 /// construct empty triangle mesh
 template <class G, class C>
@@ -23,8 +24,8 @@ triangle_mesh<G,C>::~triangle_mesh()
 template <class G, class C>
 void triangle_mesh<G,C>::clear() 
 {
-	clear_triangles();
-	clear_geometry();
+	connectivity_type::clear_triangles();
+	geometry_type::clear_geometry();
 }
 
 /// add a triangle with all edges boundary edges
@@ -104,13 +105,13 @@ typename triangle_mesh<G,C>::point_location_info
 	if (this->C.empty()) {
 		std::cerr << "cannot locate the given point because no triangle has been specified" << std::endl;
 		pli.is_outside = true;
-		pli.ci = -1;
+		pli.ci = 0x7fffffff; // 2^31 - 1
 		return pli;
 	}
 	unsigned int ci = start_ci;
 	unsigned int k = 3;
 	while (true) {
-		unsigned int border_exit_ci = -1;
+		unsigned int border_exit_ci = std::numeric_limits<unsigned int>::max();
 		unsigned int i;
 		for (i=0; i<k; ++i) {
 			bool is_border = is_opposite_to_border(ci); 
@@ -151,7 +152,7 @@ template <class G, class C>
 void triangle_mesh<G,C>::build_convex_fan_on_border(unsigned int ci, unsigned int vi)
 {
 //	std::cout << "build_convex_fan_on_border(" << ci << "," << vi << ")" << std::endl;
-	build_triangle_on_border_edge(ci,vi);
+	connectivity_type::build_triangle_on_border_edge(ci,vi);
 	unsigned int cj = ci;
 	while (true) {
 		cj = next(inv(cj));
@@ -160,7 +161,7 @@ void triangle_mesh<G,C>::build_convex_fan_on_border(unsigned int ci, unsigned in
 //		std::cout << "   check vertex " << vb << " to edge (" << vi_of_ci(next(cj)) << "," << vi_of_ci(prev(cj)) << ")" << std::endl;
 		if (!is_outside(p_of_vi(vb), cj))
 			break;
-		build_triangle_connection_to_next_border_edge(cj);
+		connectivity_type::build_triangle_connection_to_next_border_edge(cj);
 		cj = cb;
 	}
 	cj = ci;
@@ -171,7 +172,7 @@ void triangle_mesh<G,C>::build_convex_fan_on_border(unsigned int ci, unsigned in
 //		std::cout << "   check vertex " << vb << " to edge (" << vi_of_ci(next(cj)) << "," << vi_of_ci(prev(cj)) << ")" << std::endl;
 		if (!is_outside(p_of_vi(vb), cj))
 			break;
-		build_triangle_connection_to_prev_border_edge(cj);
+		connectivity_type::build_triangle_connection_to_prev_border_edge(cj);
 		cj = cb;
 	}
 }

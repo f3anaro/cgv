@@ -18,7 +18,7 @@ double gen_rand()
 double gen_rand_high_res()
 {
 	const double rand_scale = (2.0/RAND_MAX)/RAND_MAX;
-	return rand_scale*((double)rand()*(RAND_MAX+1)+rand())-1.0;
+	return rand_scale*((double)rand()*((double)RAND_MAX+1)+rand())-1.0;
 }
 
 template <typename C, class P>
@@ -78,7 +78,7 @@ void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, SamplingType s
 	}
 
 
-	if (sampling == DT_UNIFORM) {
+	if (dt == DT_UNIFORM) {
 		if (shape == ST_SPIRAL) {
 			double scale = 20.0/n;
 			for (unsigned i=0; i<n; ++i) {
@@ -101,14 +101,14 @@ void mesh_geometry<C,P>::generate_sample_data_set(unsigned int n, SamplingType s
 		if (shape == ST_SPIRAL) {
 			double scale = 10.0/n;
 			for (unsigned i=0; i<n; ++i) {
-				coord_type a = 10.0*(coord_type)(sampling == GT_RANDOM ? gen_rand() : gen_rand_high_res());
+				coord_type a = 10.0*(coord_type)(gt == GT_RANDOM ? gen_rand() : gen_rand_high_res());
 				coord_type r = 0.1*a;
 				p_of_vi(N+i) = point_type(r*cos(a), r*sin(a));
 			}
 		}
 		else {
 			for (unsigned int i=0; i<n; ++i) {
-				point_type p((coord_type)(sampling == GT_RANDOM ? gen_rand() : gen_rand_high_res()),(coord_type)(sampling == GT_RANDOM ? gen_rand() : gen_rand_high_res()));
+				point_type p((coord_type)(gt == GT_RANDOM ? gen_rand() : gen_rand_high_res()),(coord_type)(gt == GT_RANDOM ? gen_rand() : gen_rand_high_res()));
 				p_of_vi(N+i) = transform(p,shape);
 			}
 		}

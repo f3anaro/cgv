@@ -18,6 +18,28 @@ public:
 	typedef typename connectivity_type::corner corner;
 	///
 	typedef typename geometry_type::point_type point_type;
+
+	using geometry_type::p_of_vi;
+	using geometry_type::get_nr_vertices;
+	using geometry_type::sqr_dist;
+	using geometry_type::is_incident;
+	using geometry_type::is_between;
+
+	using connectivity_type::inv;
+	using connectivity_type::prev;
+	using connectivity_type::next;
+	using connectivity_type::next_on_border;
+	using connectivity_type::prev_on_border;
+	using connectivity_type::is_opposite_to_border;
+	using connectivity_type::ci_of_vi;
+	using connectivity_type::vi_of_ci;
+	using connectivity_type::get_nr_triangles;
+	using connectivity_type::get_nbr_cycler;
+	using connectivity_type::get_corner_cycler;
+	using connectivity_type::is_flipable;
+	using connectivity_type::flip_edge;
+	using connectivity_type::split_triangle_at_vertex;
+
 	/** information resulting from a point location query. Either
 	    the point is outside of the triangulation. In this case the
 		 corner index specifies a corner opposite to a border edge

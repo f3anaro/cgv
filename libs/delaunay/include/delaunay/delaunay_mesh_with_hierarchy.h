@@ -24,6 +24,9 @@ public:
 	typedef typename delaunay_mesh_type::vertex_insertion_info vertex_insertion_info;
 	///
 	typedef delaunay_mesh<triangle_mesh<mesh_geometry_reference<coord_type,point_type> > > hierarchy_level_type;
+
+	using ta_delaunay_mesh::get_nr_vertices;
+	using ta_delaunay_mesh::ci_of_vi;
 protected:
 	/// hierarchy of delaunay triangulations used to speed up nearest neighbor search
 	std::vector<hierarchy_level_type*> H;

@@ -25,13 +25,6 @@ add_library(delaunay
 # CGV uses C++11 standard
 target_compile_features(delaunay PUBLIC cxx_std_11)
 
-# FIXME: Setting "-fpermissive" flag to prevent errors of the form "[...] was
-#     not declared in this scope, and no declarations were found by
-#     argument-dependent lookup at the point of instantiation".
-if(UNIX)
-	target_compile_options(delaunay PRIVATE -fpermissive)
-endif()
-
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::delaunay ALIAS delaunay)
