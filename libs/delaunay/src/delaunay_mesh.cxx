@@ -1,7 +1,7 @@
-#include "delaunay_mesh.h"
+#include "delaunay/delaunay_mesh.h"
 #include <iostream>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 /// construct empty triangle mesh
 template <class T>

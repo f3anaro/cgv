@@ -1,7 +1,7 @@
-#include "epsilon.h"
-#include "mesh_geometry.h"
+#include "delaunay/epsilon.h"
+#include "delaunay/mesh_geometry.h"
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 /// construct empty triangle mesh
 template <typename C, class P>
@@ -208,7 +208,7 @@ typename mesh_geometry<C,P>::point_type mesh_geometry<C,P>::compute_circum_cente
 }
 
 
-#include "lib_begin.h"
+#include "delaunay/lib_begin.h"
 #ifndef CGV_IS_STATIC
 
 /// return the number of vertices

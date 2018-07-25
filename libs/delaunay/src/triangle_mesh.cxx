@@ -1,6 +1,6 @@
-#include "epsilon.h"
-#include "triangle_mesh.h"
-#include "mesh_geometry_reference.h"
+#include "delaunay/epsilon.h"
+#include "delaunay/triangle_mesh.h"
+#include "delaunay/mesh_geometry_reference.h"
 #include <iostream>
 #include <algorithm>
 #include <math.h>

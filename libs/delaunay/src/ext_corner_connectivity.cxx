@@ -1,4 +1,4 @@
-#include "ext_corner_connectivity.h"
+#include "delaunay/ext_corner_connectivity.h"
 #include <iostream>
 
 /// construct empty triangle mesh
