@@ -99,7 +99,10 @@ if(WIN32)
         GLEW
         Threads
         TIFF
-        ZLIB)
+        ZLIB
+
+        # Additional libraries
+        multi_mouse)
 endif()
 
 macro(find_package ARG0)
@@ -138,12 +141,16 @@ add_subdirectory(libs/cgv_reflect_types)
 add_subdirectory(libs/delaunay)
 add_subdirectory(libs/gamepad)
 add_subdirectory(libs/glsu)
-# add_subdirectory(libs/multi_mouse)
 add_subdirectory(libs/plot)
 # add_subdirectory(libs/point_cloud)
 add_subdirectory(libs/ppp)
 # add_subdirectory(libs/rect_pack)
 # add_subdirectory(libs/space_pilot)
+
+# Multi-mouse support is currently only available on Windows platforms.
+if(WIN32)
+	add_subdirectory(libs/multi_mouse)
+endif()
 
 # Tools
 add_subdirectory(tool/ppp)

@@ -1,4 +1,4 @@
-#include "multi_mouse_detail.h"
+#include "multi_mouse/multi_mouse_detail.h"
 
 #include <algorithm>
 
