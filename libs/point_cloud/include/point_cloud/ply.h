@@ -66,7 +66,7 @@ extern "C" {
 
 typedef struct PlyProperty {    /* description of a property */
 
-  char *name;                   /* property name */
+  const char *name;             /* property name */
   int external_type;            /* file's data type */
   int internal_type;            /* program's data type */
   int offset;                   /* offset bytes of prop in a struct */
@@ -176,7 +176,7 @@ extern void ply_get_element(PlyFile *, void *);
 
 void printtime();
 void gohome();
-PlyFile* open_ply_for_write(const char*, int, char**, int);
+PlyFile* open_ply_for_write(const char*, int, const char**, int);
 PlyFile* open_ply_for_read(const char*);
 
 
@@ -185,8 +185,8 @@ PlyFile* open_ply_for_read(const char*);
 PlyOtherElems *get_other_element_ply (PlyFile *);
 
 PlyFile *read_ply(FILE *);
-PlyFile *write_ply(FILE *, int, char **, int);
-extern PlyFile *open_for_writing_ply(const char *, int, char **, int);
+PlyFile *write_ply(FILE *, int, const char **, int);
+extern PlyFile *open_for_writing_ply(const char *, int, const char **, int);
 void close_ply(PlyFile *);
 void free_ply(PlyFile *);
 
@@ -207,7 +207,7 @@ char *setup_element_read_ply (PlyFile *, int, int *);
 PlyOtherProp *get_other_properties_ply(PlyFile *, int);
 
 void element_count_ply(PlyFile *, char *, int);
-void describe_element_ply(PlyFile *, char *, int);
+void describe_element_ply(PlyFile *, const char *, int);
 void describe_property_ply(PlyFile *, PlyProperty *);
 void describe_other_properties_ply(PlyFile *, PlyOtherProp *, int);
 void describe_other_elements_ply ( PlyFile *, PlyOtherElems *);
@@ -216,7 +216,7 @@ PlyProperty **get_element_description_ply(PlyFile *, char *, int*, int*);
 void element_layout_ply(PlyFile *, char *, int, int, PlyProperty *);
 
 void header_complete_ply(PlyFile *);
-void put_element_setup_ply(PlyFile *, char *);
+void put_element_setup_ply(PlyFile *, const char *);
 void put_element_ply(PlyFile *, void *);
 void put_other_elements_ply(PlyFile *);
 

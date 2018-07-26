@@ -1,5 +1,5 @@
 #include <cgv/math/permute.h>
-#include "point_cloud.h"
+#include "point_cloud/point_cloud.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/stopwatch.h>
 #include <cgv/utils/scan.h>
@@ -827,7 +827,7 @@ bool point_cloud::read_obj(const string& _file_name)
 		return false;
 	return true;
 }
-#include "ply.h"
+#include "point_cloud/ply.h"
 
 struct PlyVertex 
 {
@@ -858,7 +858,7 @@ static PlyProperty face_props[] = { /* list of property information for a face *
 {"vertex_indices", Int32, Int32, offsetof(PlyFace,verts), 1, Uint8, Uint8, offsetof(PlyFace,nverts)},
 };
 
-static char* propNames[] = { "vertex", "face" };
+static const char* propNames[] = { "vertex", "face" };
 
 bool point_cloud::read_ply(const string& _file_name) 
 {

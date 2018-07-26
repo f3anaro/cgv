@@ -1,6 +1,4 @@
-#pragma once
-
-#include "surface_reconstructor.h"
+#include "point_cloud/surface_reconstructor.h"
 #include <cgv/utils/progression.h>
 
 void surface_reconstructor::find_consistent_edges(std::vector<unsigned int>& E)

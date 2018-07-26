@@ -1,4 +1,4 @@
-#include "ply_writer.h"
+#include "point_cloud/ply_writer.h"
 
 template <typename T>
 struct PlyVertex 
@@ -50,7 +50,7 @@ static PlyProperty face_props[] = { /* list of property information for a face *
 	  1, Uint8, Uint8, offsetof(PlyFace,nverts) },
 };
 
-static char* propNames[] = { "vertex", "face" };
+static const char* propNames[] = { "vertex", "face" };
 
 template <typename T>
 typename ply_writer<T>::Nml ply_writer<T>::dummy_normal(0,0,1);
@@ -178,5 +178,5 @@ void ply_writer<T>::close()
 	ply_file = 0;
 }
 
-template ply_writer<float>;
-template ply_writer<double>;
+template class ply_writer<float>;
+template class ply_writer<double>;

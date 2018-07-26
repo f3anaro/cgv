@@ -1,6 +1,5 @@
-#include "ann_tree.h"
+#include "point_cloud/ann_tree.h"
 
-#define ANN_USE_FLOAT
 #include <ANN/ANN.h>
 
 struct ann_struct

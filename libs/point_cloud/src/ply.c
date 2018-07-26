@@ -35,7 +35,7 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include "ply.h"
+#include "point_cloud/ply.h"
 
 /* for printtime only */
 #include <sys/timeb.h>
@@ -64,13 +64,13 @@ int ply_type_size[] = {
 #define NAMED_PROP       1
 
 /* returns 1 if strings are equal, 0 if not */
-int equal_strings(char *, char *);
+int equal_strings(const char *, const char *);
 
 /* find an element in a plyfile's list */
-PlyElement *find_element(PlyFile *, char *);
+PlyElement *find_element(PlyFile *, const char *);
 
 /* find a property in an element's list */
-PlyProperty *find_property(PlyElement *, char *, int *);
+PlyProperty *find_property(PlyElement *, const char *, int *);
 
 /* write to a file the word describing a PLY file data type */
 void write_scalar_type (FILE *, int);
@@ -216,7 +216,7 @@ Exit:
 PlyFile *ply_write(
   FILE *fp,
   int nelems,
-  char **elem_names,
+  const char **elem_names,
   int file_type
 )
 {
@@ -271,7 +271,7 @@ Exit:
 PlyFile *open_for_writing_ply(
   const char *filename,
   int nelems,
-  char **elem_names,
+  const char **elem_names,
   int file_type
 )
 {
@@ -516,7 +516,7 @@ Entry:
   elem_name - name of element we're talking about
 ******************************************************************************/
 
-void put_element_setup_ply(PlyFile *plyfile, char *elem_name)
+void put_element_setup_ply(PlyFile *plyfile, const char *elem_name)
 {
   PlyElement *elem;
 
@@ -1395,7 +1395,7 @@ void get_info_ply(PlyFile *ply, float *version, int *file_type)
 Compare two strings.  Returns 1 if they are the same, 0 if not.
 ******************************************************************************/
 
-int equal_strings(char *s1, char *s2)
+int equal_strings(const char *s1, const char *s2)
 {
   while (*s1 && *s2)
     if (*s1++ != *s2++)
@@ -1452,7 +1452,7 @@ Exit:
   returns the element, or NULL if not found
 ******************************************************************************/
 
-PlyElement *find_element(PlyFile *plyfile, char *element)
+PlyElement *find_element(PlyFile *plyfile, const char *element)
 {
   int i;
 
@@ -2803,7 +2803,7 @@ Exit:
 PlyFile *write_ply(
   FILE *fp,
   int nelems,
-  char **elem_names,
+  const char **elem_names,
   int file_type
 )
 {
@@ -3084,7 +3084,7 @@ Entry:
 
 void describe_element_ply(
   PlyFile *plyfile,
-  char *elem_name,
+  const char *elem_name,
   int nelems
 )
 {

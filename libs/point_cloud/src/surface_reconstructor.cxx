@@ -1,8 +1,6 @@
-#pragma once
-
-#include "surface_reconstructor.h"
+#include "point_cloud/surface_reconstructor.h"
 #include <cgv/reflect/reflect_enum.h>
-#include "ply_writer.h"
+#include "point_cloud/ply_writer.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
 #include <cgv/utils/tokenizer.h>

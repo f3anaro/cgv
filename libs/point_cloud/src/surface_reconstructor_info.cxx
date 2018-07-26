@@ -1,6 +1,4 @@
-#pragma once
-
-#include "surface_reconstructor.h"
+#include "point_cloud/surface_reconstructor.h"
 
 int surface_reconstructor::find_corner(unsigned int vi, unsigned int vj, unsigned int vk) const
 {

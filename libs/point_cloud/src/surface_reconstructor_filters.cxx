@@ -1,9 +1,6 @@
-#pragma once
-
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
-#include "surface_reconstructor.h"
+#include "point_cloud/surface_reconstructor.h"
 #include <cgv/utils/progression.h>
 
 struct angle_sort_pred 

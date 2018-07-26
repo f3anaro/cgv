@@ -1,4 +1,4 @@
-#include "normal_estimator.h"
+#include "point_cloud/normal_estimator.h"
 #include <cgv/math/normal_estimation.h>
 #include <cmath>
 #include <cgv/math/functions.h>

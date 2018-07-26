@@ -1,5 +1,5 @@
 #include <cgv/render/shader_program.h>
-#include "gl_point_cloud_drawable_base.h"
+#include "point_cloud/gl_point_cloud_drawable_base.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/scan.h>
 #include <cgv_gl/gl/wgl.h>

@@ -1,8 +1,6 @@
-#pragma once
-
-#include "surface_reconstructor.h"
-#include <libs/cgv_gl/gl/gl.h>
-#include <libs/cgv_gl/gl/gl_tools.h>
+#include "point_cloud/surface_reconstructor.h"
+#include <cgv_gl/gl/gl.h>
+#include <cgv_gl/gl/gl_tools.h>
 
 
 void surface_reconstructor::draw_colored_point(const Pnt& p, float size, float r, float g, float b) const

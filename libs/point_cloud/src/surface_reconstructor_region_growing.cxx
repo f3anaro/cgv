@@ -1,10 +1,7 @@
-#pragma once
-
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <algorithm>
 #include <set>
-#include "surface_reconstructor.h"
+#include "point_cloud/surface_reconstructor.h"
 #include <cgv/math/functions.h>
 #include <cgv/utils/progression.h>
 
@@ -51,7 +48,7 @@ float surface_reconstructor::compute_triangle_quality(unsigned int vi,unsigned i
 			}
 		}
 	}
-	float min_angle = (float)__min(__min(as[0],as[1]),as[2]);
+	float min_angle = std::min(std::min(as[0],as[1]),as[2]);
 //	if (min_angle < 0.05f)
 //		return 0;
 

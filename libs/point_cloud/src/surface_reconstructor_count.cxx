@@ -1,6 +1,4 @@
-#pragma once
-
-#include "surface_reconstructor.h"
+#include "point_cloud/surface_reconstructor.h"
 #include <cgv/utils/progression.h>
 #include <set>
 

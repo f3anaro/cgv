@@ -4,9 +4,6 @@ project(cgv LANGUAGES CXX)
 option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
 option(REGISTER_SHADERS "Include shader resources in shared libraries" FALSE)
 
-# Include our custom CMake Find* modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
-
 if(UNIX AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     # Use a namespace directory for the whole cgv framework similar to the
     # golang project.
@@ -55,8 +52,10 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
 set(as_subproject
     # 3rd party libraries (available for all platforms)
     FLTK2
+    ANN
 
     # Libraries
+    ann_wrapper
     cg_gamepad
     cgv_gl
     cgv_reflect_types
@@ -93,7 +92,6 @@ set(as_subproject
 if(WIN32)
     list(APPEND as_subproject
         # 3rd party libraries
-        ANN
         JPEG
         PNG
         GLEW
@@ -117,7 +115,6 @@ enable_testing()
 # 3rd party libraries required for Windows builds. Unix platforms will use the
 # system installation of these libraries.
 if(WIN32)
-    add_subdirectory(3rd/ANN)
     add_subdirectory(3rd/jpeg)
     add_subdirectory(3rd/glew)
     add_subdirectory(3rd/png)
@@ -125,6 +122,10 @@ if(WIN32)
     add_subdirectory(3rd/tiff)
     add_subdirectory(3rd/zlib)
 endif()
+
+# The "point cloud" library uses a custom "float" build of the ANN library
+# (ANNf). Hence, we need to compile ANN ourself on all platforms.
+add_subdirectory(3rd/ANN)
 
 # FLTK 2.0 is an experimental new version of the library which is currently
 # inactive. Hence, there is no stable release that can be installed system-wide
@@ -142,7 +143,7 @@ add_subdirectory(libs/delaunay)
 add_subdirectory(libs/gamepad)
 add_subdirectory(libs/glsu)
 add_subdirectory(libs/plot)
-# add_subdirectory(libs/point_cloud)
+add_subdirectory(libs/point_cloud)
 add_subdirectory(libs/ppp)
 # add_subdirectory(libs/rect_pack)
 # add_subdirectory(libs/space_pilot)

@@ -1,4 +1,4 @@
-#include "neighbor_graph.h"
+#include "point_cloud/neighbor_graph.h"
 #include <cgv/utils/progression.h>
 #include <algorithm>
 

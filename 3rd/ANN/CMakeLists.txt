@@ -98,7 +98,7 @@ target_compile_definitions(ANNf PUBLIC
     ANN_USE_FLOAT)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
-install(TARGETS ANN EXPORT ANNTargets
+install(TARGETS ANN ANNf EXPORT ANNTargets
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
@@ -113,5 +113,5 @@ install(EXPORT ANNTargets NAMESPACE ANN:: DESTINATION cmake/ANN)
 install(FILES ANNConfig.cmake DESTINATION cmake/ANN)
 
 # This makes the project importable from the build directory
-export(TARGETS ANN NAMESPACE ANN:: FILE ${CMAKE_BINARY_DIR}/cmake/ANNTargets.cmake)
+export(TARGETS ANN ANNf NAMESPACE ANN:: FILE ${CMAKE_BINARY_DIR}/cmake/ANNTargets.cmake)
 file(COPY ANNConfig.cmake DESTINATION ${CMAKE_BINARY_DIR}/cmake)
