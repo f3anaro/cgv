@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 #include "lib_begin.h"
 
 namespace rect_pack {
@@ -18,7 +19,7 @@ namespace rect_pack {
 	};
 
 	/// randomly construct a vector of rectangle sizes with the given number of rectangles
-	extern CGV_API void construct_random_rectangles(unsigned nr_rectangles, std::vector<rectangle_size>& rectangle_sizes_out);
+	CGV_API void construct_random_rectangles(unsigned nr_rectangles, std::vector<rectangle_size>& rectangle_sizes_out);
 
 	/// different strategies for comparing rectangles during sorting
 	enum CompareStrategy
@@ -45,7 +46,7 @@ namespace rect_pack {
 
 	/** compute a sorted order of the input rectangle sizes in the permutation
 		output vector for the given sort strategy in ascending or descending (default) order */
-	extern CGV_API void compute_rectangle_permutation(
+	CGV_API void compute_rectangle_permutation(
 		const std::vector<rectangle_size>& rectangle_sizes,
 		std::vector<unsigned>& permutation_out,
 		CompareStrategy compare_strategy = CS_ShorterSideFirst,
@@ -54,7 +55,7 @@ namespace rect_pack {
 	/** suggest a size width_out X height_out of the output texture by computing the total rectangle area and adding percentual_safety percent
 		return the total rectangle area. Restriction to power of 2 dimensions is possible. The percentual_safty allows to iteratively adapt the
 		size of the output texture, if the first guess was too small */
-	extern CGV_API unsigned suggest_output_size(
+	CGV_API unsigned suggest_output_size(
 		const std::vector<rectangle_size>& rectangle_sizes,
 		unsigned& width_out, unsigned& height_out,
 		bool restrict_to_power_of_two = true,
@@ -64,7 +65,7 @@ namespace rect_pack {
 		The function returns the number of rectangles that did not fit into the output texture. For each rectangle that did not fit in,
 		the corresponding entry in rectangles_out contains only zeros and if print_warnings is set to true, also a message is printed to
 		std::cout. */
-	extern CGV_API unsigned pack_rectangles(
+	CGV_API unsigned pack_rectangles(
 		const std::vector<rectangle_size>& rectangle_sizes,
 		const std::vector<unsigned>& permutation,
 		std::vector<rectangle>& rectangles_out,
@@ -77,7 +78,7 @@ namespace rect_pack {
 		pack_rectangles function fails, the percentual safety is increased until all rectangles fit. In case of print_progress being
 		true, an asterix is streamed out to std::cout for any failed packing iteration
 		*/
-	extern CGV_API float pack_rectangles_interatively(
+	CGV_API float pack_rectangles_interatively(
 		const std::vector<rectangle_size>& rectangle_sizes,
 		unsigned& width_out, unsigned& height_out,
 		std::vector<rectangle>& rectangles_out,
@@ -89,13 +90,13 @@ namespace rect_pack {
 		bool print_progress = false);
 
 	/// save an svg graphics to the given stream that shows the rectangles in a drawing area with the given dimensions
-	extern CGV_API bool save_svg(std::ofstream& os, unsigned width, unsigned height, const std::vector<rectangle>& rectangles);
+	CGV_API bool save_svg(std::ofstream& os, unsigned width, unsigned height, const std::vector<rectangle>& rectangles);
 
 	/// save rectangle packing into a web page with an svg graphics
-	extern CGV_API bool save_rectangles_html(const std::string& file_name, unsigned width, unsigned height, const std::vector<rectangle>& rectangles);
+	CGV_API bool save_rectangles_html(const std::string& file_name, unsigned width, unsigned height, const std::vector<rectangle>& rectangles);
 
 	/// generate a packing with the given parameters, measure the time and save result to web page with a file name starting with the given prefix
-	extern CGV_API void analyze_pack_rectangles_interatively(
+	CGV_API void analyze_pack_rectangles_interatively(
 		const std::string& file_name_prefix,
 		std::vector<rectangle_size>& rectangle_sizes,
 		CompareStrategy compare_strategy = CS_ShorterSideFirst,
@@ -106,7 +107,7 @@ namespace rect_pack {
 		bool print_progress = false);
 
 	/// call analyze_pack_rectangles_iteratively for all packing strategies
-	extern CGV_API void compare_packing_strategies(
+	CGV_API void compare_packing_strategies(
 		const std::string& file_name_prefix,
 		std::vector<rectangle_size>& rectangle_sizes,
 		CompareStrategy compare_strategy = CS_ShorterSideFirst,

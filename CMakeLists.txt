@@ -63,6 +63,7 @@ set(as_subproject
     gamepad
     glsu
     plot
+	rect_pack
 
     # Tools
     cgv_p_p_p
@@ -145,7 +146,7 @@ add_subdirectory(libs/glsu)
 add_subdirectory(libs/plot)
 add_subdirectory(libs/point_cloud)
 add_subdirectory(libs/ppp)
-# add_subdirectory(libs/rect_pack)
+add_subdirectory(libs/rect_pack)
 # add_subdirectory(libs/space_pilot)
 
 # Multi-mouse support is currently only available on Windows platforms.

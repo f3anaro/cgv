@@ -1,4 +1,4 @@
-#include "rect_pack.h"
+#include "rect_pack/rect_pack.h"
 #include "RectangleBinPack/MaxRectsBinPack.h"
 #include "RectangleBinPack/GuillotineBinPack.h"
 #include "RectangleBinPack/SkylineBinPack.h"
