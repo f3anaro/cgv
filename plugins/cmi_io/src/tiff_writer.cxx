@@ -1,4 +1,4 @@
-#include "tiff_writer.h"
+#include "cmi_io/tiff_writer.h"
 #include <cgv/base/register.h>
 #include <cgv/reflect/reflect_enum.h>
 #include <iostream>

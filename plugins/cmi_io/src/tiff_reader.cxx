@@ -1,6 +1,7 @@
-#include "tiff_reader.h"
+#include "cmi_io/tiff_reader.h"
 #include <cgv/base/register.h>
 #include <iostream>
+#include <cstring>
 
 #pragma warning (disable:4996)
 

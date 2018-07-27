@@ -1,4 +1,4 @@
-#include "png_reader.h"
+#include "cmi_io/png_reader.h"
 #include <cgv/base/register.h>
 #include <cgv/base/import.h>
 #include <iostream>
@@ -51,7 +51,7 @@ bool png_reader::open(const std::string& file_name, data_format& df, std::vector
 	* was compiled with a compatible version of the library.  REQUIRED
 	*/
 	png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING,
-				png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
+				nullptr, nullptr, nullptr);
 
 	if (png_ptr == NULL) {
 		fclose(fp);
@@ -64,7 +64,7 @@ bool png_reader::open(const std::string& file_name, data_format& df, std::vector
 	if (info_ptr == NULL) {
 		fclose(fp);
 		fp = 0;
-		png_destroy_read_struct(&png_ptr, png_infopp_NULL, png_infopp_NULL);
+		png_destroy_read_struct(&png_ptr, nullptr, nullptr);
 		return false;
 	}
 
@@ -75,7 +75,7 @@ bool png_reader::open(const std::string& file_name, data_format& df, std::vector
 
 	if (setjmp(png_jmpbuf(png_ptr))) {
 		/* Free all of the memory associated with the png_ptr and info_ptr */
-		png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+		png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
 		fclose(fp);
 		fp = 0;
 		/* If we get here, we had a problem reading the file */
@@ -100,7 +100,7 @@ bool png_reader::open(const std::string& file_name, data_format& df, std::vector
    int bit_depth, color_type, interlace_type;
 
    png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
-       &interlace_type, int_p_NULL, int_p_NULL);
+       &interlace_type, nullptr, nullptr);
 
    interlacing = interlace_type != PNG_INTERLACE_NONE;
 
@@ -117,7 +117,7 @@ bool png_reader::open(const std::string& file_name, data_format& df, std::vector
 		has_alpha = true;
 	}
 	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8) 
-		png_set_gray_1_2_4_to_8(png_ptr);
+		png_set_expand_gray_1_2_4_to_8(png_ptr);
 
 	ComponentFormat cf;
 	if (has_alpha)
@@ -179,7 +179,7 @@ bool png_reader::close()
 		fp = 0;
 		return false;
 	}
-	png_destroy_read_struct(&png_ptr, &info_ptr, png_infopp_NULL);
+	png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
 
 	int res = fclose(fp);
 	fp = 0;

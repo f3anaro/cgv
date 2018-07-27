@@ -1,4 +1,4 @@
-#include "jpg_reader.h"
+#include "cmi_io/jpg_reader.h"
 #include <cgv/base/register.h>
 #include <cgv/base/import.h>
 #include <iostream>

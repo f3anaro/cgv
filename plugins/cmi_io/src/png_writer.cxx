@@ -1,4 +1,5 @@
-#include "png_writer.h"
+#include "cmi_io/png_writer.h"
+#include <zlib.h>
 #include <cgv/base/register.h>
 #include <iostream>
 
@@ -116,7 +117,7 @@ bool png_writer::write_image(const const_data_view& dv, const std::vector<const_
 		return false;
 
 	png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, 
-		png_voidp_NULL, png_error_ptr_NULL, png_error_ptr_NULL);
+		nullptr, nullptr, nullptr);
 	if (!png_ptr) {
 		last_error = "could not create png write struct";
 		return false;

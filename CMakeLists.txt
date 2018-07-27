@@ -90,6 +90,7 @@ set(as_subproject
     cg_fltk
     cg_icons
     cg_meta
+    cmi_io
     crg_stereo_view)
 
 # Subprojects that are only build on Windows platforms
@@ -185,7 +186,7 @@ add_subdirectory(plugins/cg_ext)
 add_subdirectory(plugins/cg_fltk)
 add_subdirectory(plugins/cg_icons)
 add_subdirectory(plugins/cg_meta)
-# add_subdirectory(plugins/cmi_io)
+add_subdirectory(plugins/cmi_io)
 # add_subdirectory(plugins/cmv_avi)
 # add_subdirectory(plugins/co_web)
 # add_subdirectory(plugins/crg_antialias)
