@@ -1,5 +1,5 @@
-#include <multi_mouse_fltk.h>
-#include <multi_mouse.h>
+#include <multi_mouse/multi_mouse_fltk.h>
+#include <multi_mouse/multi_mouse.h>
 #include <cgv/gui/application.h>
 #include <cgv/gui/gui_driver.h>
 #include <iostream>
