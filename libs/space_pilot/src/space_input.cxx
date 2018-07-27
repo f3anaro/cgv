@@ -1,4 +1,5 @@
-#include "space_input.h"
+#include "space_pilot/space_input.h"
+#include <cstring>
 
 space_input::space_input() {
 	handle = -1;

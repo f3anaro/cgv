@@ -1,18 +1,18 @@
 
 /*****************************************************************************
  *       X11-Specific implementation                                         *
- *       (for WIN32-Implementation see below)                                *
  *****************************************************************************/
 
-#include "space_pilot.h"
+#include "space_pilot/space_pilot.h"
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 #include <X11/keysym.h>
 #include <pthread.h>
-#include <string.h>
-#include <math.h>
+#include <unistd.h>
+#include <cstring>
+#include <cmath>
 #include <vector>
 
 

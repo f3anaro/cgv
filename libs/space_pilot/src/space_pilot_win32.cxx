@@ -1,6 +1,28 @@
-#include "space_pilot_inc.h"
-#include "space_pilot.h"
+
+/*****************************************************************************
+ *       WIN32-Specific implementation                                         *
+ *****************************************************************************/
+
+#include "space_pilot/space_pilot.h"
+
+// Standard includes
+#include <cstdio>
+#include <tchar.h>
+
+// Headers for ATL
+#include <atlbase.h>
+#include <atlcom.h>
+#include <atlwin.h>
+#include <atltypes.h>
+#include <atlctl.h>
+#include <atlhost.h>
+
 #include <vector>
+
+using namespace ATL;
+
+// Import interfaces from TdxInput.dll (ISimpleDevice, IKeyboard, ISensor ...)
+#import "progid:TDxInput.Device" embedded_idl no_namespace
 
 [module(name="SpacePilotLow")];
 

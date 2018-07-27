@@ -64,6 +64,7 @@ set(as_subproject
     glsu
     plot
 	rect_pack
+	space_pilot
 
     # Tools
     cgv_p_p_p
@@ -147,7 +148,7 @@ add_subdirectory(libs/plot)
 add_subdirectory(libs/point_cloud)
 add_subdirectory(libs/ppp)
 add_subdirectory(libs/rect_pack)
-# add_subdirectory(libs/space_pilot)
+add_subdirectory(libs/space_pilot)
 
 # Multi-mouse support is currently only available on Windows platforms.
 if(WIN32)
