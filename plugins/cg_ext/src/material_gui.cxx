@@ -44,7 +44,7 @@ struct phong_material_gui_creator : public gui_creator
 		return true;
 	}
 };
-#include "lib_begin.h"
+#include "cg_ext/lib_begin.h"
 
 extern CGV_API cgv::gui::gui_creator_registration<phong_material_gui_creator> material_gc_reg("material_gui_creator");
 

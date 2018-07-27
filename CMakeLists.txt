@@ -86,6 +86,7 @@ set(as_subproject
     cgv_utils
 
     # Plugins
+    cg_ext
     cg_fltk
     cg_icons
     crg_stereo_view)
@@ -176,7 +177,7 @@ add_subdirectory(components/type)
 add_subdirectory(components/utils)
 
 # Plugins
-# add_subdirectory(plugins/cg_ext)
+add_subdirectory(plugins/cg_ext)
 add_subdirectory(plugins/cg_fltk)
 # add_subdirectory(plugins/cg_fltk/include)
 # add_subdirectory(plugins/cg_fltk/include/cg_flk)

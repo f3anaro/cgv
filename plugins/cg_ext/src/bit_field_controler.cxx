@@ -1,4 +1,4 @@
-#include "bit_field_controler.h"
+#include "cg_ext/bit_field_controler.h"
 #include <cgv/utils/scan_enum.h>
 #include <cgv/base/base_generator.h>
 
@@ -89,7 +89,7 @@ struct bit_field_controler_gui_creator : public cgv::gui::gui_creator
 	}
 };
 
-#include "lib_begin.h"
+#include "cg_ext/lib_begin.h"
 
 extern CGV_API cgv::gui::gui_creator_registration<bit_field_controler_gui_creator> bfc_gc_reg("bit_field_gui_creator");
 	
