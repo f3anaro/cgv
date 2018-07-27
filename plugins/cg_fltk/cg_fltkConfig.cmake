@@ -20,5 +20,5 @@ find_dependency(FLTK2 REQUIRED)
 
 # Prevents importing that same targets multiple times
 if(NOT TARGET cgv::cg_fltk)
-    include("${CMAKE_CURRENT_LIST_DIR}/cgv_fltkTargets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/cg_fltkTargets.cmake")
 endif()

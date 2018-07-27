@@ -228,8 +228,8 @@ target_link_libraries(cgv_gl
 		OpenGL::GLU
 		cgv::reflect_types)
 
-if(WIN32)
-	# Link required Windows libraries
+if(WIN32 AND NOT ${BUILD_SHARED_LIBS})
+	# Libraries required for static Windows builds
 	target_link_libraries(cgv_gl INTERFACE user32 gdi32)
 endif()
 
