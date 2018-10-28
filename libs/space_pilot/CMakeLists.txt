@@ -89,9 +89,6 @@ install(TARGETS space_pilot EXPORT space_pilotTargets
 # Install header files of library
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
-# Install shader files
-install(DIRECTORY shader/ DESTINATION ${CMAKE_INSTALL_BINDIR}/../shader)
-
 # This makes the project importable from the install directory
 # Put config file in per-project dir (name MUST match), can also
 # just go into 'cmake'.
