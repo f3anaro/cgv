@@ -424,6 +424,9 @@ target_include_directories(FLTK2
 		compat
 		visualc)
 
+# FLTK2 uses C++11 standard
+target_compile_features(FLTK2 PUBLIC cxx_std_11)
+
 # Ignore narrowing on Unix platforms
 if(UNIX)
 	target_compile_options(FLTK2 PRIVATE -Wno-narrowing)

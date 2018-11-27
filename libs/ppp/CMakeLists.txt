@@ -67,6 +67,9 @@ else()
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
+# CGV uses C++11 standard
+target_compile_features(libppp PUBLIC cxx_std_11)
+
 if(${BUILD_SHARED_LIBS})
 	target_compile_definitions(libppp
 		# Set preprocessor symbols for dllexport/dllimport declarations.
@@ -98,9 +101,12 @@ if(${BUILD_SHARED_LIBS})
 		# Set folder for Visual Studio
 		FOLDER "Additional Libraries")
 
+	# CGV uses C++11 standard
+	target_compile_features(libppp_static PUBLIC cxx_std_11)
+
 	# Build library in directories matching the installation layout. If
-# multi-config generators are used, build targets in a config-specific
-# subdirectory.
+	# multi-config generators are used, build targets in a config-specific
+	# subdirectory.
 	if(WIN32)
 		set_target_properties(libppp_static PROPERTIES
 			ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
