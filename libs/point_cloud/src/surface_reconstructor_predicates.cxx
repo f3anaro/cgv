@@ -250,7 +250,7 @@ void surface_reconstructor::smooth_normals()
 			Crd w   = w_x*w_n;
 
 			// compute area weighted normal
-			dij = (1/sqrt(lij_sqr))*dij;
+			dij = dij*(1/sqrt(lij_sqr));
 			Nml nml_ij = cross(dij,cross(nml_i,dij));
 
 			// add contributions
