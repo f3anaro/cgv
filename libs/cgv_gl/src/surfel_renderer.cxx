@@ -1,4 +1,4 @@
-#include "surfel_renderer.h"
+#include <cgv_gl/surfel_renderer.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 
@@ -210,9 +210,9 @@ namespace cgv {
 			}
 		};
 
-#include "gl/lib_begin.h"
+#include "cgv_gl/gl/lib_begin.h"
 
-		extern CGV_API cgv::gui::gui_creator_registration<surfel_render_style_gui_creator> prs_gc_reg("surfel_render_style_gui_creator");
+		static CGV_API cgv::gui::gui_creator_registration<surfel_render_style_gui_creator> prs_gc_reg("surfel_render_style_gui_creator");
 
 	}
 }

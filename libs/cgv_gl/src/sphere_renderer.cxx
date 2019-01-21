@@ -1,4 +1,4 @@
-#include "sphere_renderer.h"
+#include <cgv_gl/sphere_renderer.h>
 #include <cgv_gl/gl/gl.h>
 #include <cgv_gl/gl/gl_tools.h>
 
@@ -154,9 +154,9 @@ namespace cgv {
 			}
 		};
 
-#include "gl/lib_begin.h"
+#include "cgv_gl/gl/lib_begin.h"
 
-		extern CGV_API cgv::gui::gui_creator_registration<sphere_render_style_gui_creator> prs_gc_reg("sphere_render_style_gui_creator");
+		static cgv::gui::gui_creator_registration<sphere_render_style_gui_creator> prs_gc_reg("sphere_render_style_gui_creator");
 
 	}
 }

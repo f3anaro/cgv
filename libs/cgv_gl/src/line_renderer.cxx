@@ -69,7 +69,7 @@ namespace cgv {
 
 #include <cgv_gl/gl/lib_begin.h>
 
-		const cgv::gui::gui_creator_registration<line_render_style_gui_creator> frs_gc_reg("line_render_style_gui_creator");
+		static cgv::gui::gui_creator_registration<line_render_style_gui_creator> frs_gc_reg("line_render_style_gui_creator");
 
 	}
 }

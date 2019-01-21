@@ -1,5 +1,5 @@
 #include <cgv/base/base.h>
-#include "mesh_drawable.h"
+#include <cgv_gl/gl/mesh_drawable.h>
 #include <cgv/base/import.h>
 
 namespace cgv {

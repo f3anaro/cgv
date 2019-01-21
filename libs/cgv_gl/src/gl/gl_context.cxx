@@ -19,6 +19,7 @@
 #include <cgv/gui/event_handler.h>
 #include <cgv/math/vec.h>
 #include <cgv/math/mat.h>
+#include <cgv/math/ftransform.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/os/clipboard.h>
 

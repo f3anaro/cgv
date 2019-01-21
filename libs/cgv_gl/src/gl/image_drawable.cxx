@@ -1,4 +1,4 @@
-#include "image_drawable.h"
+#include <cgv_gl/gl/image_drawable.h>
 
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/image/image_writer.h>

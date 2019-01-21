@@ -1,5 +1,5 @@
 #include <cgv/base/base.h>
-#include "mesh_render_info.h"
+#include <cgv_gl/gl/mesh_render_info.h>
 #include <cgv/render/shader_program.h>
 #include <cgv_gl/gl/gl.h>
 
