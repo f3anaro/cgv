@@ -1,8 +1,8 @@
 #include <algorithm>
-#include "point_cloud_interactable.h"
+#include <point_cloud/point_cloud_interactable.h>
 #include <cgv/gui/trigger.h>
 #include <cgv/gui/key_event.h>
-#include <libs/point_cloud/ann_tree.h>
+#include <point_cloud/ann_tree.h>
 #include <cgv/base/find_action.h>
 #include <cgv/signal/rebind.h>
 #include <cgv/base/import.h>

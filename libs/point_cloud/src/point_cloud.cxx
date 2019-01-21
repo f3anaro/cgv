@@ -954,7 +954,7 @@ static PlyProperty face_props[] = { /* list of property information for a face *
 {"vertex_indices", Int32, Int32, offsetof(PlyFace,verts), 1, Uint8, Uint8, offsetof(PlyFace,nverts)},
 };
 
-static char* propNames[] = { "vertex", "face" };
+static const char* propNames[] = { "vertex", "face" };
 
 bool point_cloud::read_ply(const string& _file_name) 
 {

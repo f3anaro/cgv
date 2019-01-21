@@ -16,12 +16,13 @@ find_package(ANN REQUIRED)
 add_library(point_cloud 
 	# Source Files
 	src/ann_tree.cxx
-	src/gl_point_cloud_drawable_base.cxx
+	src/gl_point_cloud_drawable.cxx
 	src/gl_surface_reconstructor_drawable.cxx
 	src/neighbor_graph.cxx
 	src/normal_estimator.cxx
 	src/ply_writer.cxx
 	src/point_cloud.cxx
+	src/point_cloud_interactable.cxx
 	src/surface_reconstructor_consistent.cxx
 	src/surface_reconstructor_count.cxx
 	src/surface_reconstructor.cxx
@@ -34,7 +35,7 @@ add_library(point_cloud
 
 	# Public headers
 	include/point_cloud/ann_tree.h
-	include/point_cloud/gl_point_cloud_drawable_base.h
+	include/point_cloud/gl_point_cloud_drawable.h
 	include/point_cloud/gl_surface_reconstructor_drawable.h
 	include/point_cloud/lib_begin.h
 	include/point_cloud/neighbor_graph.h
@@ -42,6 +43,7 @@ add_library(point_cloud
 	include/point_cloud/ply.h
 	include/point_cloud/ply_writer.h
 	include/point_cloud/point_cloud.h
+	include/point_cloud/point_cloud_interactable.h
 	include/point_cloud/surface_reconstructor.h)
 
 # CGV uses C++11 standard
