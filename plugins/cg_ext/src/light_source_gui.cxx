@@ -60,7 +60,7 @@ struct light_source_gui_creator : public gui_creator
 
 #include "cg_ext/lib_begin.h"
 
-extern CGV_API cgv::gui::gui_creator_registration<light_source_gui_creator> light_source_gc_reg("light_source_gui_creator");
+static CGV_API cgv::gui::gui_creator_registration<light_source_gui_creator> light_source_gc_reg("light_source_gui_creator");
 
 
 	}
