@@ -24,6 +24,7 @@
 
 // Shortcuts are stored in the association table
 
+#include <cstdint>
 #include <config.h>
 #include <fltk/events.h>
 #include <fltk/Widget.h>
@@ -89,8 +90,8 @@ static shortcutAssociationType shortcutAssociation;
   they are interested in).  */
 bool Widget::add_shortcut(unsigned key) {
   if (!key) return false;
-  if (find(shortcutAssociation, (void*)key)) return false;
-  add(shortcutAssociation, (void*)key);
+  if (find(shortcutAssociation, (void*)(uintptr_t)key)) return false;
+  add(shortcutAssociation, (void*)(uintptr_t)key);
   return true;
 }
 
@@ -99,7 +100,7 @@ bool Widget::add_shortcut(unsigned key) {
   Delete a shortcut assignment. Returns true if it actually existed.
 */
 bool Widget::remove_shortcut(unsigned key) {
-  return remove(shortcutAssociation, (void*)key);
+  return remove(shortcutAssociation, (void*)(uintptr_t)key);
 }
 
 
@@ -128,7 +129,7 @@ unsigned Widget::shortcut() const {
   The result is exactly one shortcut (or none if \a key is zero).
 */
 void Widget::shortcut(unsigned key) {
-  set(shortcutAssociation, (void*)key);
+  set(shortcutAssociation, (void*)(uintptr_t)key);
 }
 
 

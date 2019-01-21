@@ -161,7 +161,7 @@ void fltk_enum_dropdown_control::update_enums()
 	while (C->size() > 0)
 		C->remove(0);
 
-	for (unsigned int i = 0; i < enum_strings.size(); ++i)
+	for (uintptr_t i = 0; i < enum_strings.size(); ++i)
 		C->add(enum_strings[i].c_str(), (void*)i);
 	
 	if (idx >= (int)enum_strings.size())
