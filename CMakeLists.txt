@@ -4,6 +4,14 @@ project(cgv LANGUAGES CXX)
 option(BUILD_SHARED_LIBS "Create shared libraries" TRUE)
 option(REGISTER_SHADERS "Include shader resources in shared libraries" FALSE)
 
+# Specify the preferred way to provide legacy GL interfaces in case multiple
+# choices are available.
+#
+# Prefer GLVND OpenGL and GLX libraries if available.
+#
+# @see CMP0072
+set(OpenGL_GL_PREFERENCE "GLVND")
+
 if(UNIX AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     # Use a namespace directory for the whole cgv framework similar to the
     # golang project.
