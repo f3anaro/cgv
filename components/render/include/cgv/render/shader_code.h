@@ -61,11 +61,9 @@ public:
 	/** Check if file exists. If not, check if a resource file of this
 	    file_name has been registered. If not search it recursively in the 
 	    shader_path of the shader_config that can be accessed with the
-		 function get_shader_config(). This path is initialized depending
-		 on the operating system: On Windows the path is the shader/ directory
-		 next to the current executable. On Unix, the path is the shader/
-		 directory next to bin/ directory. The shader path can be overwritten
-		 by the environment variable CGV_SHADER_PATH. */
+		 function get_shader_config(). This path is initialized to the 
+		 environment variable CGV_SHADER_PATH or empty if that is not 
+		 defined. */
 	static std::string find_file(const std::string& file_name);
 	/** format given last error in a way that developer environments can locate errors in the source file */
 	static std::string get_last_error(const std::string& file_name, const std::string& last_error);
@@ -79,21 +77,21 @@ public:
 	*/
 	static ShaderType detect_shader_type(const std::string& file_name);
 	/// destruct shader code
-	void destruct(context& ctx);
+	void destruct(const context& ctx);
 	/** read shader code from file that is searched for with find_file.
 	    If the shader type defaults to ST_DETECT, the detect_shader_type()
 		 method is applied to the file name.*/
-	bool read_code(context& ctx, const std::string &file_name, ShaderType st = ST_DETECT);
+	bool read_code(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT);
 	/// set shader code from string
-	bool set_code(context& ctx, const std::string &source, ShaderType st);
+	bool set_code(const context& ctx, const std::string &source, ShaderType st);
 	/// return the shader type of this code
 	ShaderType get_shader_type() const;
 	///compile attached source; returns true if successful
-	bool compile(context& ctx);
+	bool compile(const context& ctx);
 	/** read shader code with read_code and compile. If show_error is true
 	    print error messages formated with the get_last_error method in case
 		 an error arose. */
-	bool read_and_compile(context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true);
+	bool read_and_compile(const context& ctx, const std::string &file_name, ShaderType st = ST_DETECT, bool show_error = true);
 	/// return whether shader has been compiled successfully
 	bool is_compiled() const;
 };

@@ -10,10 +10,13 @@ namespace cgv {
 		namespace gl {
 
 //! base class of drawables that show static or animated images
-class CGV_API gl_image_drawable_base : public drawable
+class CGV_API image_drawable : public drawable
 {
 public:
-	typedef cgv::math::fvec<float, 4> vec4;
+	/// type of pixel coordinates
+	typedef cgv::math::fvec<cgv::type::int32_type, 2> vec2i;
+	/// type of a pixel box
+	typedef cgv::media::axis_aligned_box<cgv::type::int32_type, 2> box2i;
 protected:
 	std::vector<unsigned> tex_ids;
 	std::vector<float> durations;
@@ -27,12 +30,12 @@ protected:
 
 	bool animate;
 	bool use_blending;
-	bool use_shader_program;
 
-	/// extent of rectangle of pixel selection
-	int x,y,w,h;
+	/// extent selection box
+	box2i selection;
+
 	/// whether to show the selection rectangle
-	bool show_rectangle;
+	bool show_selection;
 	
 	/// extent of image
 	int W,H;
@@ -41,10 +44,15 @@ protected:
 	vec4 max_value;
 	vec4 gamma;
 
+	// mixing 
+	bool use_mixing;
+	unsigned mix_with;
+	float mix_param;
+
 	cgv::render::shader_program prog;
 public:
 	/// construct base image drawable
-	gl_image_drawable_base();
+	image_drawable();
 	/// timer event that can be used for animation, connect this to some animation trigger
 	void timer_event(double t, double dt);
 	/// function to read a single image

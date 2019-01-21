@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <cgv/base/named.h>
 #include <cgv/gui/provider.h>
 #include <cgv/render/drawable.h>
@@ -61,6 +62,69 @@ public:
 	{
 		return "tree_group";
 	}
+=======
+#include <cgv/base/named.h>
+#include <cgv/gui/provider.h>
+#include <cgv/media/color.h>
+#include <cgv/utils/scan.h>
+#include <cgv_gl/gl/gl.h>
+#include <cgv/utils/file.h>
+
+using namespace cgv::base;
+using namespace cgv::reflect;
+using namespace cgv::gui;
+using namespace cgv::media;
+using namespace cgv::utils;
+using namespace cgv::utils::file;
+using namespace std;
+
+class browser_test : public named, public provider
+{
+protected:
+	std::string file_path;
+	bool incremental_build;
+	void scan_dir(const std::string& path, const std::string& dir, vector<string>& dirs, vector<string>& files)
+	{
+		string p = path+"/";
+		if (!dir.empty())
+			p += dir+"/";
+		p += "*";
+		void* h = find_first(p);
+		while (h) {
+			string p = dir;
+			if (!p.empty())
+				p += "/";
+			p = find_name(h);
+			if (find_directory(h)) {
+				if (find_name(h) != ".." && find_name(h) != ".")
+					dirs.push_back(p);
+			}
+			else
+				files.push_back(p);
+			h = find_next(h);
+		}
+	}
+	string split_path(const string& path)
+	{
+		string p(path);
+		replace(p, '\\', '/');
+		return p;
+	}
+public:
+	browser_test()
+	{
+		incremental_build = true;
+		file_path = "C:";
+	}
+	std::string get_type_name() const
+	{
+		return "browser_test";
+	}
+	std::string get_parent_type() const
+	{
+		return "tree_group";
+	}
+>>>>>>> develop_core
 	bool self_reflect(reflection_handler& rh)
 	{
 		return rh.reflect_member("file_path", file_path);

@@ -17,12 +17,12 @@ plot1d_config::plot1d_config()
 /// construct empty plot with default domain [0..1,0..1]
 plot1d::plot1d()
 {
-	domain.ref_min_pnt() = P2D(0,0);
-	domain.ref_max_pnt() = P2D(1,1);
-	extent               = V2D(1,1);
-	axis_directions[0]   = V3D(1,0,0);
-	axis_directions[1]   = V3D(0,1,0);
-	center_location      = P3D(0,0,0);
+	domain.ref_min_pnt() = P2D(0.0f,0.0f);
+	domain.ref_max_pnt() = P2D(1.0f,1.0f);
+	extent               = V2D(1.0f,1.0f);
+	axis_directions[0]   = V3D(1.0f,0.0f,0.0f);
+	axis_directions[1]   = V3D(0.0f,1.0f,0.0f);
+	center_location      = P3D(0.0f,0.0f,0.0f);
 	tick_line_width[1]   = 1;
 	axes[0].ticks[1].type = TT_LINE;
 	axes[1].ticks[1].type = TT_LINE;
@@ -60,12 +60,22 @@ void plot1d::set_uniforms(cgv::render::context& ctx, cgv::render::shader_program
 /// adjust the domain with respect to \c ai th axis to the data
 void plot1d::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjust_max)
 {
-	// compute bounding box
-	if (adjust_min)
-		domain.ref_min_pnt()(ai) = samples.front().front()(ai);
-	if (adjust_max)
-		domain.ref_max_pnt()(ai) = samples.front().front()(ai);
+	if (samples.empty())
+		return;
+	bool found_samples = false;
+
 	for (unsigned i = 0; i<samples.size(); ++i) {
+		if (samples[i].empty())
+			continue;
+		if (!found_samples) {
+			found_samples = true;
+			// compute bounding box
+			if (adjust_min)
+				domain.ref_min_pnt()(ai) = samples[i].front()(ai);
+			if (adjust_max)
+				domain.ref_max_pnt()(ai) = samples[i].front()(ai);
+
+		}
 		for (unsigned j = 0; j<samples[i].size(); ++j) {
 			if (adjust_min) {
 				if (samples[i][j](ai) < domain.ref_min_pnt()(ai))
@@ -77,8 +87,10 @@ void plot1d::adjust_domain_axis_to_data(unsigned ai, bool adjust_min, bool adjus
 			}
 		}
 	}
-	if (domain.ref_min_pnt()(ai) == domain.ref_max_pnt()(ai))
-		domain.ref_max_pnt()(ai) += 1;
+	if (found_samples) {
+		if (domain.ref_min_pnt()(ai) == domain.ref_max_pnt()(ai))
+			domain.ref_max_pnt()(ai) += 1;
+	}
 }
 
 /// adjust the domain with respect to \c ai th axis to the data
@@ -116,6 +128,9 @@ void plot1d::adjust_tick_marks_to_domain(unsigned max_nr_primary_ticks)
 	V2D de = domain.get_extent();
 
 	for (int ai=0; ai<2; ++ai) {
+		if (axes[ai].log_scale)
+			de(ai) = (log(domain.get_max_pnt()(ai)) - log(domain.get_min_pnt()(ai))) / log(10.0f);
+
 		Crd step = de(ai) / max_nr_primary_ticks;
 		Crd step2;
 		Crd scale = (Crd)pow(10,-floor(log10(step)));
@@ -277,6 +292,7 @@ unsigned plot1d::add_sub_plot(const std::string& name)
 
 	// create new point container
 	samples.push_back(std::vector<plot1d::P2D>());
+	strips.push_back(std::vector<unsigned>());
 
 	// return sub plot index
 	return i;
@@ -288,6 +304,7 @@ void plot1d::delete_sub_plot(unsigned i)
 	configs[i] = 0;
 	configs.erase(configs.begin() + i);
 	samples.erase(samples.begin() + i);
+	strips.erase(strips.begin() + i);
 }
 
 /// return a reference to the plot base configuration of the i-th plot
@@ -299,6 +316,12 @@ plot1d_config& plot1d::ref_sub_plot1d_config(unsigned i)
 std::vector<plot1d::P2D>& plot1d::ref_sub_plot_samples(unsigned i)
 {
 	return samples[i];
+}
+
+/// return the strip definition of the i-th sub plot
+std::vector<unsigned>& plot1d::ref_sub_plot_strips(unsigned i)
+{
+	return strips[i];
 }
 
 /// create the gui for the plot independent of the sub plots
@@ -345,9 +368,13 @@ void plot1d::clear(cgv::render::context& ctx)
 
 plot1d::P3D plot1d::transform_to_world(const P2D& domain_point) const
 {
-	V2D delta = domain_point - domain.get_center();
-	delta /= domain.get_extent();
-	delta *= extent;
+	V2D delta;
+	for (unsigned ai=0; ai<2; ++ai)
+		if (axes[ai].log_scale)
+			delta[ai] = extent[ai]*(log(domain_point[ai]) - 0.5f*(log(domain.get_min_pnt()[ai])+ log(domain.get_max_pnt()[ai])))/(log(domain.get_max_pnt()[ai])- log(domain.get_min_pnt()[ai]));
+		else
+			delta[ai] = extent[ai] * (domain_point[ai] - 0.5f*(domain.get_min_pnt()[ai] + domain.get_max_pnt()[ai])) / (domain.get_max_pnt()[ai] - domain.get_min_pnt()[ai]);
+
 	return center_location + delta(0) * axis_directions[0] + delta(1) * axis_directions[1];
 }
 
@@ -379,9 +406,9 @@ void plot1d::draw(cgv::render::context& ctx)
 	}
 	glEnable(GL_LINE_SMOOTH);
 	glEnable(GL_POINT_SMOOTH);
-//	glEnable(GL_BLEND);
-//	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-//	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDepthFunc(GL_LEQUAL);
 
 	for (unsigned i = 0; i<samples.size(); ++i) {
 		if (!ref_sub_plot1d_config(i).show_plot || samples[i].size() == 0)
@@ -428,7 +455,15 @@ void plot1d::draw(cgv::render::context& ctx)
 		if (ref_sub_plot1d_config(i).show_lines) {
 			glColor3fv(&ref_sub_plot1d_config(i).line_color[0]);
 			glLineWidth(ref_sub_plot1d_config(i).line_width);
-			glDrawArrays(GL_LINE_STRIP, 0, samples[i].size());
+			if (strips[i].empty())
+				glDrawArrays(GL_LINE_STRIP, 0, samples[i].size());
+			else {
+				unsigned fst = 0;
+				for (unsigned j = 0; j < strips[i].size(); ++j) {
+					glDrawArrays(GL_LINE_STRIP, fst, strips[i][j]);
+					fst += strips[i][j];
+				}
+			}
 		}
 
 		if (ref_sub_plot1d_config(i).show_points) {
@@ -477,13 +512,17 @@ void plot1d::draw(cgv::render::context& ctx)
 				if (axes[ai].ticks[ti].type != TT_NONE) {
 					Crd min_val = domain.get_min_pnt()(ai);
 					Crd max_val = domain.get_max_pnt()(ai);
+					if (axes[ai].log_scale) {
+						min_val = log(min_val) / log(10.0f);
+						max_val = log(max_val) / log(10.0f);
+					}
 					int min_i = (int) ((min_val - fmod(min_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
 					int max_i = (int) ((max_val - fmod(max_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
 
 					// ignore ticks on domain boundary
-					if (fabs(min_i * axes[ai].ticks[ti].step - min_val) < std::numeric_limits<Crd>::epsilon())
+					if (min_i * axes[ai].ticks[ti].step - min_val < std::numeric_limits<Crd>::epsilon())
 						++min_i;
-					if (fabs(max_i * axes[ai].ticks[ti].step - max_val) < std::numeric_limits<Crd>::epsilon())
+					if (max_i * axes[ai].ticks[ti].step - max_val > -std::numeric_limits<Crd>::epsilon())
 						--max_i;
 					
 					glLineWidth(tick_line_width[ti]);
@@ -502,24 +541,42 @@ void plot1d::draw(cgv::render::context& ctx)
 					}
 					Crd s_min = domain.get_min_pnt()(1-ai);
 					Crd s_max = domain.get_max_pnt()(1-ai);
-					
+
 					glBegin(GL_LINES);
 					for (int i=min_i; i<=max_i; ++i) {
 						Crd c[2];
 						c[ai] = (Crd) (i*axes[ai].ticks[ti].step);
+						if (axes[ai].log_scale)
+							c[ai] = pow(10.0f, c[ai]);
+						else // ignore ticks on axes
+							if (fabs(c[ai]) < std::numeric_limits<Crd>::epsilon())
+								continue;
 
-						// ignore ticks on axes
-						if (fabs(c[ai]) < std::numeric_limits<Crd>::epsilon())
-							continue;
 						switch (axes[ai].ticks[ti].type) {
 						case TT_DASH :
-							c[1-ai] = s_min; glVertex2fv(c);
-							c[1-ai] = s_min + dash_length; glVertex2fv(c);
-							c[1-ai] = s_max; glVertex2fv(c);
-							c[1-ai] = s_max - dash_length; glVertex2fv(c);
-							if (s_min + dash_length < 0 && s_max - dash_length > 0) {
-								c[1-ai] = -dash_length; glVertex2fv(c);
-								c[1-ai] =  dash_length; glVertex2fv(c);
+							c[1-ai] = s_min; 
+							glVertex2fv(c);
+							c[1 - ai] = s_min + dash_length;
+							if (axes[1 - ai].log_scale) {
+								float q = (c[1 - ai] - domain.get_center()(1 - ai)) / domain.get_extent()(1 - ai);
+								c[1 - ai] = pow(10.0f, (q*(log(domain.get_max_pnt()(1-ai)) - log(domain.get_min_pnt()(1-ai))) + 0.5f*(log(domain.get_min_pnt()(1-ai)) + log(domain.get_max_pnt()(1-ai)))) / log(10.0f));
+							}
+							glVertex2fv(c);
+							c[1-ai] = s_max; 
+							glVertex2fv(c);
+							c[1 - ai] = s_max - dash_length;
+							if (axes[1 - ai].log_scale) {
+								float q = (c[1 - ai] - domain.get_center()(1 - ai)) / domain.get_extent()(1 - ai);
+								c[1 - ai] = pow(10.0f, (q*(log(domain.get_max_pnt()(1 - ai)) - log(domain.get_min_pnt()(1 - ai))) + 0.5f*(log(domain.get_min_pnt()(1 - ai)) + log(domain.get_max_pnt()(1 - ai)))) / log(10.0f));
+							}
+							glVertex2fv(c);
+							
+							// draw tick mark on axis
+							if (!axes[1-ai].log_scale && s_min + dash_length < 0 && s_max - dash_length > 0) {
+								c[1-ai] = -dash_length; 
+								glVertex2fv(c);
+								c[1-ai] =  dash_length; 
+								glVertex2fv(c);
 							}
 							break;
 						case TT_LINE : 
@@ -540,8 +597,17 @@ void plot1d::draw(cgv::render::context& ctx)
 				if (axes[ai].ticks[ti].type != TT_NONE) {
 					Crd min_val = domain.get_min_pnt()(ai);
 					Crd max_val = domain.get_max_pnt()(ai);
+					if (axes[ai].log_scale) {
+						min_val = log(min_val) / log(10.0f);
+						max_val = log(max_val) / log(10.0f);
+					}
 					int min_i = (int) ((min_val - fmod(min_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
 					int max_i = (int) ((max_val - fmod(max_val, axes[ai].ticks[ti].step) ) / axes[ai].ticks[ti].step);
+
+					if (min_i * axes[ai].ticks[ti].step - min_val < -std::numeric_limits<Crd>::epsilon())
+						++min_i;
+					if (max_i * axes[ai].ticks[ti].step - max_val > std::numeric_limits<Crd>::epsilon())
+						--max_i;
 
 					glLineWidth(tick_line_width[ti]);
 					Crd dash_length = tick_length[0]*0.01f*domain.get_extent()(1-domain.get_max_extent_coord_index());
@@ -563,6 +629,11 @@ void plot1d::draw(cgv::render::context& ctx)
 					for (int i=min_i; i<=max_i; ++i) {
 						V2D c;
 						c(ai) = (Crd) (i*axes[ai].ticks[ti].step);
+						if (axes[ai].log_scale)
+							c(ai) = pow(10.0f, c(ai));
+
+						if (c(ai) < domain.get_min_pnt()(ai))
+							c(ai) = domain.get_min_pnt()(ai);
 						std::string label = cgv::utils::to_string(c(ai));
 
 
@@ -571,7 +642,11 @@ void plot1d::draw(cgv::render::context& ctx)
 							// ignore ticks on axes
 							if (fabs(c[ai]) > std::numeric_limits<Crd>::epsilon()) {
 								if (s_min + dash_length < 0 && s_max - dash_length > 0) {
-									c(1-ai) = -1.5f*dash_length; 
+									c(1-ai) = -1.5f*dash_length;
+									if (axes[1 - ai].log_scale) {
+										float q = (c[1 - ai] - domain.get_center()(1 - ai)) / domain.get_extent()(1 - ai);
+										c[1 - ai] = pow(10.0f, (q*(log(domain.get_max_pnt()(1 - ai)) - log(domain.get_min_pnt()(1 - ai))) + 0.5f*(log(domain.get_min_pnt()(1 - ai)) + log(domain.get_max_pnt()(1 - ai)))) / log(10.0f));
+									}
 									ctx.set_cursor(transform_to_world(c).to_vec(), label, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT);
 									ctx.output_stream() << label;
 									ctx.output_stream().flush();
@@ -580,11 +655,19 @@ void plot1d::draw(cgv::render::context& ctx)
 						case TT_LINE : 
 						case TT_PLANE : 
 							c(1-ai) = s_min - 0.5f*dash_length;
+							if (axes[1 - ai].log_scale) {
+								float q = (c[1 - ai] - domain.get_center()(1 - ai)) / domain.get_extent()(1 - ai);
+								c[1 - ai] = pow(10.0f, (q*(log(domain.get_max_pnt()(1 - ai)) - log(domain.get_min_pnt()(1 - ai))) + 0.5f*(log(domain.get_min_pnt()(1 - ai)) + log(domain.get_max_pnt()(1 - ai)))) / log(10.0f));
+							}
 							ctx.set_cursor(transform_to_world(c).to_vec(), label, ai == 0 ? cgv::render::TA_TOP : cgv::render::TA_RIGHT);
 							ctx.output_stream() << label;
 							ctx.output_stream().flush();
 
 							c(1-ai) = s_max + 0.5f*dash_length;
+							if (axes[1 - ai].log_scale) {
+								float q = (c[1 - ai] - domain.get_center()(1 - ai)) / domain.get_extent()(1 - ai);
+								c[1 - ai] = pow(10.0f, (q*(log(domain.get_max_pnt()(1 - ai)) - log(domain.get_min_pnt()(1 - ai))) + 0.5f*(log(domain.get_min_pnt()(1 - ai)) + log(domain.get_max_pnt()(1 - ai)))) / log(10.0f));
+							}
 							ctx.set_cursor(transform_to_world(c).to_vec(), label, ai == 0 ? cgv::render::TA_BOTTOM : cgv::render::TA_LEFT);
 							ctx.output_stream() << label;
 							ctx.output_stream().flush();

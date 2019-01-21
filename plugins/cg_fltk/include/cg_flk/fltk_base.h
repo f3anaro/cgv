@@ -2,6 +2,7 @@
 
 #include <string>
 #include <cgv/base/named.h>
+#include <cgv/base/named.h>
 
 namespace fltk {
 	class Widget;

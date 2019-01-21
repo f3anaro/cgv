@@ -127,7 +127,7 @@ shader_code::shader_code()
 /// calls the destruct method
 shader_code::~shader_code()
 {
-	if (ctx_ptr)
+	if (ctx_ptr && ctx_ptr->make_current())
 		destruct(*ctx_ptr);
 	else
 		if (handle)
@@ -135,7 +135,7 @@ shader_code::~shader_code()
 }
 
 /// destruct shader
-void shader_code::destruct(context& ctx)
+void shader_code::destruct(const context& ctx)
 {
 	if (!handle)
 		return;
@@ -172,9 +172,6 @@ std::string shader_code::find_file(const std::string& file_name)
 		if (exists(try_name))
 			return try_name;
 		try_name = cgv::base::ref_prog_path_prefix() + "shader/" + file_name;
-		std::cerr << "ref_prog_name(): " << ref_prog_name() << std::endl;
-		std::cerr << "cgv::base::ref_prog_path_prefix():" << cgv::base::ref_prog_path_prefix() << std::endl;
-		std::cerr << "cgv::base::ref_prog_path_prefix() + ...:" << (cgv::base::ref_prog_path_prefix() + "/shader/") << std::endl;
 		if (exists(try_name))
 			return try_name;
 		return "";
@@ -238,7 +235,7 @@ std::string shader_code::read_code_file(const std::string &file_name, std::strin
 }
 
 /// read shader code from file
-bool shader_code::read_code(context& ctx, const std::string &file_name, ShaderType st)
+bool shader_code::read_code(const context& ctx, const std::string &file_name, ShaderType st)
 {
 	if (st == ST_DETECT)
 		st = detect_shader_type(file_name);
@@ -250,7 +247,7 @@ bool shader_code::read_code(context& ctx, const std::string &file_name, ShaderTy
 }
 
 /// set shader code from string
-bool shader_code::set_code(context& ctx, const std::string &source, ShaderType _st)
+bool shader_code::set_code(const context& ctx, const std::string &source, ShaderType _st)
 {
 	st = _st;
 	destruct(ctx);
@@ -259,7 +256,7 @@ bool shader_code::set_code(context& ctx, const std::string &source, ShaderType _
 }
 
 ///compile attached source; returns true if successful
-bool shader_code::compile(context& ctx)
+bool shader_code::compile(const context& ctx)
 {
 	if (!ctx.shader_code_compile(*this)) {
 		user_data = 0;
@@ -271,7 +268,7 @@ bool shader_code::compile(context& ctx)
 }
 
 /// read shader code from file, compile and print error message if necessary
-bool shader_code::read_and_compile(context& ctx, const std::string &file_name, ShaderType st, bool show_error)
+bool shader_code::read_and_compile(const context& ctx, const std::string &file_name, ShaderType st, bool show_error)
 {
 	if (!read_code(ctx,file_name,st))
 		return false;

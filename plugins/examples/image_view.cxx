@@ -12,7 +12,7 @@
 #include <cgv/base/import.h>
 #include <cgv_gl/gl/gl_tools.h>
 #include <cgv_gl/gl/gl.h>
-#include <cgv_gl/gl/gl_image_drawable_base.h>
+#include <cgv_gl/gl/image_drawable.h>
 
 using namespace cgv::base;
 using namespace cgv::signal;
@@ -22,23 +22,22 @@ using namespace cgv::render;
 using namespace cgv::utils;
 using namespace cgv::media::image;
 
-class image_drawable : 
+class image_view : 
 	public cgv::base::node,          /// derive from node to integrate into global tree structure and to store a name
-	public cgv::render::gl::gl_image_drawable_base,     /// derive from drawable for drawing the cube
+	public cgv::render::gl::image_drawable,     /// derive from drawable for drawing the cube
 	public provider
 {
 protected:
-	cgv::math::fvec<float,2> range;
+	vec2 range;
 public:
-	image_drawable() : node("image drawable"), range(0,1)
+	image_view() : node("image view"), range(0,1)
 	{
-		use_shader_program = true;
-		connect(get_animation_trigger().shoot, this, &image_drawable::timer_event);
+		connect(get_animation_trigger().shoot, this, &image_view::timer_event);
 	}
 	void timer_event(double t, double dt)
 	{
 		unsigned old_current_image = current_image;
-		gl_image_drawable_base::timer_event(t, dt);
+		image_drawable::timer_event(t, dt);
 		if (old_current_image != current_image) {
 			update_member(&current_image);
 			post_redraw();
@@ -72,23 +71,23 @@ public:
 			find_control(animate)->set("active", tex_ids.size() > 1);
 			find_control(current_image)->set("active", tex_ids.size() > 1);
 		}
-		if (find_control(x)) {
-			find_control(x)->set("max", W);
-			find_control(y)->set("max", H);
-			find_control(w)->set("max", W);
-			find_control(h)->set("max", H);
+		if (find_control(selection.ref_min_pnt()(0))) {
+			find_control(selection.ref_min_pnt()(0))->set("max", W);
+			find_control(selection.ref_max_pnt()(0))->set("max", W);
+			find_control(selection.ref_min_pnt()(1))->set("max", H);
+			find_control(selection.ref_max_pnt()(1))->set("max", H);
 		}
-		update_member(&x);
-		update_member(&y);
-		update_member(&w);
-		update_member(&h);
+		update_member(&selection.ref_min_pnt()(0));
+		update_member(&selection.ref_max_pnt()(0));
+		update_member(&selection.ref_min_pnt()(1));
+		update_member(&selection.ref_max_pnt()(1));
 		update_member(&file_name);
 		update_member(&current_image);
 		update_member(&use_blending);
 	}
 	void create_gui()
 	{
-		add_decorator("image drawable", "heading");
+		add_decorator("image view", "heading");
 
 		add_control("&animate", animate, "check", "shortcut='A'");
 		add_member_control(this, "current_image", current_image, "value_slider", "min=0;max=0;ticks=true");
@@ -96,9 +95,9 @@ public:
 		if (begin_tree_node("file io", file_name, true)) {
 			align("\a");
 			add_view("file_name", file_name);
-			connect_copy(add_button("&open", "shortcut='O'")->click, rebind(this, &image_drawable::open));
-			connect_copy(add_button("o&pen files", "shortcut='P'")->click, rebind(this, &image_drawable::open_files));
-			connect_copy(add_button("&save", "shortcut='S'")->click, rebind(this, &image_drawable::save));
+			connect_copy(add_button("&open", "shortcut='O'")->click, rebind(this, &image_view::open));
+			connect_copy(add_button("o&pen files", "shortcut='P'")->click, rebind(this, &image_view::open_files));
+			connect_copy(add_button("&save", "shortcut='S'")->click, rebind(this, &image_view::save));
 			align("\b");
 			end_tree_node(file_name);
 		}
@@ -106,7 +105,6 @@ public:
 		if (begin_tree_node("rendering", use_blending)) {
 			align("\a");
 			add_member_control(this, "use_blending", use_blending, "check");
-			add_member_control(this, "use_shader_program", use_shader_program, "check");
 			add_gui("gamma", gamma, "vector", "main_label='heading';components='rgba';options='min=0.01;max=100;ticks=true;log=true'");
 			add_gui("min_value", min_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
 			add_gui("max_value", max_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
@@ -115,15 +113,12 @@ public:
 			end_tree_node(use_blending);
 		}
 
-		if (begin_tree_node("selection", show_rectangle)) {
+		if (begin_tree_node("selection", show_selection)) {
 			align("\a");	
-			add_member_control(this, "show_rectangle", show_rectangle, "check", "shortcut='R'");
-			add_member_control(this, "x", x, "value_slider", "min=0;ticks=true");
-			add_member_control(this, "y", y, "value_slider", "min=0;ticks=true");
-			add_member_control(this, "w", w, "value_slider", "min=0;ticks=true");
-			add_member_control(this, "h", h, "value_slider", "min=0;ticks=true");
+			add_member_control(this, "show", show_selection, "check", "shortcut='R'");
+			add_gui("rectangle", selection, "", "min_size=0.1;main_label='first';gui_type='value_slider';options='min=0;max=1;ticks=true;step=1'");
 			align("\b");
-			end_tree_node(show_rectangle);
+			end_tree_node(show_selection);
 		}
 		configure_gui();
 	}
@@ -177,11 +172,11 @@ public:
 	}
 	bool init(context& ctx)
 	{		
-		return gl_image_drawable_base::init(ctx) && read_image("res://alhambra.png");
+		return image_drawable::init(ctx) && read_image("res://alhambra.png");
 	}
 };
 
 #include <cgv/base/register.h>
 
-extern factory_registration<image_drawable> image_drawable_factory_registration("new/image drawable", 'I', true);
+extern factory_registration<image_view> image_drawable_factory_registration("new/image view", 'I', true);
 

@@ -24,7 +24,6 @@ add_library(cg_fltk
     src/fltk_color_control.cxx
     src/fltk_decorator.cxx
     src/fltk_dockable_group.cxx
-    src/fltk_dragger.cxx
     src/fltk_enum_control.cxx
     src/fltk_event.cxx
     src/fltk_font_server.cxx
@@ -52,7 +51,6 @@ add_library(cg_fltk
     include/cg_flk/fltk_bool_control.h
     include/cg_flk/fltk_button.h
     include/cg_flk/fltk_dockable_group.h
-    include/cg_flk/fltk_dragger.h
     include/cg_flk/fltk_driver.h
     include/cg_flk/fltk_driver_registry.h
     include/cg_flk/fltk_enum_control.h

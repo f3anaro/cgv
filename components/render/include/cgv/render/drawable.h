@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cgv/base/base.h>
 #include <cgv/base/traverser.h>
 #include <cgv/render/context.h>
 #include <cgv/render/view.h>
@@ -10,7 +11,7 @@ namespace cgv {
 	namespace render {
 
 /** base class for all drawables, which is independent of the used rendering API. */
-class CGV_API drawable : public base::traverse_policy
+class CGV_API drawable : public base::traverse_policy, public render_types
 {
 private:
 	/// store the context
@@ -30,6 +31,9 @@ public:
 	context* get_context() const;
 	/// set the current focus context, this should only be called by the context itself
 	void set_context(context* _ctx);
+	//! convenience function to find the view control in the current hierarchy
+	/*! this only works if your class inherits from the cgv::base::node class.*/
+	cgv::render::view* find_view_as_node(size_t view_idx = 0) const;
 	//! use given view together with depth buffer of context in order to compute the world location of the point at mouse pointer location (x,y)
 	/*! returns true if a world location could be computed which is the case when the context pointer of the drawable has been set and when 
 	    the mouse location points inside a valid view panel. */

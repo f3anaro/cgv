@@ -1,4 +1,7 @@
+#include <cgv/base/base.h>
+#include <cgv/base/node.h>
 #include <cgv/render/drawable.h>
+#include <cgv/base/find_action.h>
 
 namespace cgv {
 	namespace render {
@@ -42,15 +45,25 @@ void drawable::post_redraw()
 		ctx->post_redraw();
 }
 
+cgv::render::view* drawable::find_view_as_node(size_t view_idx) const
+{
+	cgv::base::node* node_ptr = const_cast<cgv::base::node*>(dynamic_cast<const cgv::base::node*>(this));
+	std::vector<cgv::render::view*> views;
+	cgv::base::find_interface<cgv::render::view>(cgv::base::base_ptr(node_ptr), views);
+	if (views.empty() || view_idx > views.size())
+		return 0;
+	return views[view_idx];
+}
+
 bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv::math::fvec<double, 3>& world_location) const
 {
 	if (!get_context())
 		return false;
 	// analyze the mouse location
 	cgv::render::context& ctx = *get_context();
-	const cgv::render::context::mat_type* DPV_ptr, *DPV_other_ptr;
+	const dmat4* DPV_ptr, *DPV_other_ptr;
 	int x_other, y_other, vp_col_idx, vp_row_idx, vp_width, vp_height;
-	int eye_panel = V.get_DPVs(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
+	int eye_panel = V.get_modelview_projection_device_matrices(x, y, ctx.get_width(), ctx.get_height(), &DPV_ptr, &DPV_other_ptr, &x_other, &y_other, &vp_col_idx, &vp_row_idx, &vp_width, &vp_height);
 
 	// get the possibly two (if stereo is enabled) different device z-values
 	double z = ctx.get_z_D(x, y);
@@ -60,12 +73,12 @@ bool drawable::get_world_location(int x, int y, const cgv::render::view& V, cgv:
 		if (DPV_ptr->ncols() != 4)
 			return false;
 		// use conversion to (double*) operator to map cgv::math::vec<double> to cgv::math::fvec<float,3>
-		world_location = (double*)ctx.get_point_W(x, y, z, *DPV_ptr);
+		world_location = ctx.get_point_W(x, y, z, *DPV_ptr);
 	}
 	else {
 		if (DPV_other_ptr->ncols() != 4)
 			return false;
-		world_location = (double*)ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
+		world_location = ctx.get_point_W(x_other, y_other, z_other, *DPV_other_ptr);
 	}
 	return true;
 }

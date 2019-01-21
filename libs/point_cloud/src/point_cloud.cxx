@@ -1,4 +1,5 @@
 #include <cgv/math/permute.h>
+#include <cgv/math/det.h>
 #include "point_cloud/point_cloud.h"
 #include <cgv/utils/file.h>
 #include <cgv/utils/stopwatch.h>
@@ -394,70 +395,70 @@ bool point_cloud::read(const string& _file_name)
 		success = read_wrl(_file_name);
 	if (ext == "apc" || ext == "pnt")
 		success = read_ascii(_file_name);
-	if (ext == "obj" || ext == "pobj")
-		success = read_obj(_file_name);
-	if (ext == "ply")
-		success = read_ply(_file_name);
-	if (success) {
-		if (N.size() > 0)
-			has_nmls = true;
-		else if (P.size() > 0)
-			has_nmls = false;
+if (ext == "obj" || ext == "pobj")
+success = read_obj(_file_name);
+if (ext == "ply")
+success = read_ply(_file_name);
+if (success) {
+	if (N.size() > 0)
+		has_nmls = true;
+	else if (P.size() > 0)
+		has_nmls = false;
 
-		if (C.size() > 0)
-			has_clrs = true;
-		else if (P.size() > 0)
-			has_clrs = false;
+	if (C.size() > 0)
+		has_clrs = true;
+	else if (P.size() > 0)
+		has_clrs = false;
 
-		if (T.size() > 0)
-			has_texcrds = true;
-		else if (P.size() > 0)
-			has_texcrds = false;
+	if (T.size() > 0)
+		has_texcrds = true;
+	else if (P.size() > 0)
+		has_texcrds = false;
 
-		if (I.size() > 0)
-			has_pixcrds = true;
-		else if (P.size() > 0)
-			has_pixcrds = false;
+	if (I.size() > 0)
+		has_pixcrds = true;
+	else if (P.size() > 0)
+		has_pixcrds = false;
 
-		if (has_comps = components.size() > 0) {
-			has_comp_clrs = component_colors.size() > 0;
-			has_comp_trans = component_rotations.size() > 0;
-			component_boxes.resize(get_nr_components());
-			component_pixel_ranges.resize(get_nr_components());
-			comp_box_out_of_date.resize(get_nr_components());
-			std::fill(comp_box_out_of_date.begin(), comp_box_out_of_date.end(), true);
-			comp_pixrng_out_of_date.resize(get_nr_components());
-			std::fill(comp_pixrng_out_of_date.begin(), comp_pixrng_out_of_date.end(), true);
-		}
+	if (has_comps = components.size() > 0) {
+		has_comp_clrs = component_colors.size() > 0;
+		has_comp_trans = component_rotations.size() > 0;
+		component_boxes.resize(get_nr_components());
+		component_pixel_ranges.resize(get_nr_components());
+		comp_box_out_of_date.resize(get_nr_components());
+		std::fill(comp_box_out_of_date.begin(), comp_box_out_of_date.end(), true);
+		comp_pixrng_out_of_date.resize(get_nr_components());
+		std::fill(comp_pixrng_out_of_date.begin(), comp_pixrng_out_of_date.end(), true);
+	}
 
-		box_out_of_date = true;
-		if (has_pixel_coordinates())
-			pixel_range_out_of_date = true;
-	}
-	else {
-		cerr << "unknown extension <." << ext << ">." << endl;
-	}
-	if (has_normals() && P.size() != N.size()) {
-		cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
-		N.resize(P.size());
-	}
-	if (has_colors() && P.size() != C.size()) {
-		cerr << "ups different number of colors: " << C.size() << " instead of " << P.size() << endl;
-		C.resize(P.size());
-	}
-	if (has_texture_coordinates() && P.size() != T.size()) {
-		cerr << "ups different number of texture coordinates: " << T.size() << " instead of " << P.size() << endl;
-		T.resize(P.size());
-	}
-	if (has_pixel_coordinates() && P.size() != I.size()) {
-		cerr << "ups different number of pixel coordinates: " << I.size() << " instead of " << P.size() << endl;
-		I.resize(P.size());
-	}
-	if (has_components() && P.size() != component_indices.size()) {
-		cerr << "ups different number of component indices: " << component_indices.size() << " instead of " << P.size() << endl;
-		component_indices.resize(P.size());
-	}
-	return success;
+	box_out_of_date = true;
+	if (has_pixel_coordinates())
+		pixel_range_out_of_date = true;
+}
+else {
+	cerr << "unknown extension <." << ext << ">." << endl;
+}
+if (has_normals() && P.size() != N.size()) {
+	cerr << "ups different number of normals: " << N.size() << " instead of " << P.size() << endl;
+	N.resize(P.size());
+}
+if (has_colors() && P.size() != C.size()) {
+	cerr << "ups different number of colors: " << C.size() << " instead of " << P.size() << endl;
+	C.resize(P.size());
+}
+if (has_texture_coordinates() && P.size() != T.size()) {
+	cerr << "ups different number of texture coordinates: " << T.size() << " instead of " << P.size() << endl;
+	T.resize(P.size());
+}
+if (has_pixel_coordinates() && P.size() != I.size()) {
+	cerr << "ups different number of pixel coordinates: " << I.size() << " instead of " << P.size() << endl;
+	I.resize(P.size());
+}
+if (has_components() && P.size() != component_indices.size()) {
+	cerr << "ups different number of component indices: " << component_indices.size() << " instead of " << P.size() << endl;
+	component_indices.resize(P.size());
+}
+return success;
 }
 
 /// read component transformations from ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
@@ -472,6 +473,8 @@ bool point_cloud::read_component_transformations(const std::string& file_name)
 		std::cerr << "ERROR in point_cloud::read_component_transformations: could not read file " << file_name << std::endl;
 		return false;
 	}
+	string ext = cgv::utils::file::get_extension(file_name);
+
 	vector<line> lines;
 	split_to_lines(content, lines);
 	Cnt ci = 0;
@@ -482,17 +485,60 @@ bool point_cloud::read_component_transformations(const std::string& file_name)
 		Dir t;
 		char tmp = lines[li].end[0];
 		content[lines[li].end - content.c_str()] = 0;
-		if (sscanf(lines[li].begin, "%f %f %f %f %f %f %f %f %f %f %f %f",
-			&R(0, 0), &R(0, 1), &R(0, 2), &R(1, 0), &R(1, 1), &R(1, 2), &R(2, 0), &R(2, 1), &R(2, 2),
-			&t(0), &t(1), &t(2)) == 12) {
-			//R.transpose();
-			component_rotation(ci) = Qat(R);
+		int count = sscanf(lines[li].begin, "%f %f %f %f %f %f %f %f %f %f %f %f",
+			&R(0, 0), &R(1, 0), &R(2, 0),
+			&R(0, 1), &R(1, 1), &R(2, 1),
+			&R(0, 2), &R(1, 2), &R(2, 2),
+			&t(0), &t(1), &t(2));
+
+		if (count == 12) {
+			float D = cgv::math::det_33(
+				R(0, 0), R(1, 0), R(2, 0),
+				R(0, 1), R(1, 1), R(2, 1),
+				R(0, 2), R(1, 2), R(2, 2)
+			);
+			if (fabs(fabs(D) - 1.0f) > 0.0001f) {
+				std::cerr << "C" << ci << "(" << component_name(ci) << "): rotation matrix not normalized, det = " << D << std::endl;
+			}
+			if (ext == "som") {
+				if (D < 0) {
+					std::cerr << "C" << ci << "(" << component_name(ci) << "): negative determinant of rotation matrix = " << D << std::endl;
+					R.transpose();
+					t = R * t;
+					R.transpose();
+					R = -R;
+				}
+			}
+			Qat q(R);
+			if (fabs(q.length() - 1.0f) > 0.0001f) {
+				std::cerr << "C" << ci << "(" << component_name(ci) << "): quaternion of not unit length " << q.length() << std::endl;
+			}
+			Mat R1;
+			q.put_matrix(R1);
+			if ((R-R1).frobenius_norm() > 0.0001f) {
+				std::cerr << "C" << ci << "(" << component_name(ci) << "): matrix could not be reconstructed " << R << " vs " << R1 << std::endl;
+				q = Qat(R);
+			}
+
+			if (fabs(q.length() - 1.0f) > 0.0001f) {
+				std::cerr << "C" << ci << "(" << component_name(ci) << "): quaternion of not unit length " << q.length() << std::endl;
+			}
+			component_rotation(ci) = q;
 			component_translation(ci) = t;
-			if (++ci >= get_nr_components())
-				break;
+			comp_box_out_of_date[ci] = true;
+			++ci;
 		}
+		else if (count == 7) {
+			component_rotation(ci) = Qat(R(0,0), R(1, 0), R(2, 0), R(0, 1));
+			component_translation(ci) = Dir(R(1, 1), R(2, 1), R(0, 2));
+			comp_box_out_of_date[ci] = true;
+			++ci;
+		}
+		if (ci >= get_nr_components())
+			break;
 		content[lines[li].end - content.c_str()] = tmp;
 	}
+	box_out_of_date = true;
 	std::cout << "read " << ci << " transformation (have " << get_nr_components() << " components)" << std::endl;
 	return true;
 }
@@ -513,8 +559,29 @@ bool point_cloud::write(const string& _file_name)
 }
 
 /// write component transformations to ascii file with 12 numbers per line (9 for rotation matrix and 3 for translation vector)
-bool point_cloud::write_component_transformations(const std::string& file_name) const
+bool point_cloud::write_component_transformations(const std::string& file_name, bool as_matrices) const
 {
+	if (!has_components())
+		return false;
+	std::ofstream os(file_name);
+	if (os.fail())
+		return false;
+
+	for (size_t ci = 0; ci < get_nr_components(); ++ci) {
+		const Qat& q = component_rotation(ci);
+		const Dir& t = component_translation(ci);
+		if (as_matrices) {
+			Mat R;
+			q.put_matrix(R);
+			os << R(0, 0) << " " << R(1, 0) << " " << R(2, 0) << " " 
+			   << R(0, 1) << " " << R(1, 1) << " " << R(2, 1) << " " 
+			   << R(0, 2) << " " << R(1, 2) << " " << R(2, 2);
+		}
+		else
+			os << q.re() << " " << q.x() << " " << q.y() << " " << q.z();
+		os << " " << t(0) << " " << t(1) << " " << t(2) << std::endl;
+	}
+	return true;
 	std::cerr << "write_component_transformations not implemented" << std::endl;
 	return false;
 }
@@ -742,7 +809,8 @@ enum BPCFlags
 	BPC_HAS_PIXCRDS = 8,
 	BPC_HAS_COMPS = 16,
 	BPC_HAS_COMP_CLRS = 32,
-	BPC_HAS_COMP_TRANS = 64
+	BPC_HAS_COMP_TRANS = 64,
+	BPC_HAS_BYTE_CLRS = 128
 };
 
 bool point_cloud::read_bin(const string& file_name)
@@ -780,8 +848,36 @@ bool point_cloud::read_bin(const string& file_name)
 			success = success && (fread(&N[0][0], sizeof(Nml), m, fp) == m);
 		}
 		if (flags & BPC_HAS_CLRS) {
+			bool byte_colors_in_file = (flags & BPC_HAS_BYTE_CLRS) != 0;
+#ifdef BYTE_COLORS
+			bool byte_colors_in_pc = true;
+#else
+			bool byte_colors_in_pc = false;
+#endif
 			C.resize(n);
-			success = success && fread(&C[0][0], sizeof(Clr), n, fp) == n;
+			if (byte_colors_in_file == byte_colors_in_pc)
+				success = success && fread(&C[0][0], sizeof(Clr), n, fp) == n;
+			else {
+				if (byte_colors_in_file) {
+					std::vector<cgv::media::color<cgv::type::uint8_type> > tmp;
+					tmp.resize(n);
+					success = success && fread(&tmp[0][0], sizeof(cgv::media::color<cgv::type::uint8_type>), n, fp) == n;
+					if (success) {
+						for (size_t i = 0; i < n; ++i)
+							C[i] = Clr(byte_to_color_component(tmp[i][0]), byte_to_color_component(tmp[i][1]), byte_to_color_component(tmp[i][2]));
+					}
+				}
+				else {
+					std::vector<cgv::media::color<float> > tmp;
+					tmp.resize(n);
+					success = success && fread(&tmp[0][0], sizeof(cgv::media::color<float>), n, fp) == n;
+					if (success) {
+						for (size_t i = 0; i < n; ++i)
+							C[i] = Clr(float_to_color_component(tmp[i][0]), float_to_color_component(tmp[i][1]), float_to_color_component(tmp[i][2]));
+					}
+
+				}
+			}
 		}
 		if (flags & BPC_HAS_TCS) {
 			T.resize(n);
@@ -803,7 +899,7 @@ bool point_cloud::read_bin(const string& file_name)
 						component_indices[j] = i;
 				if (flags & BPC_HAS_COMP_CLRS) {
 					component_colors.resize(nr_comps);
-					success = success && fread(&component_colors[0], sizeof(Rgba), nr_comps, fp) == nr_comps;
+					success = success && fread(&component_colors[0], sizeof(RGBA), nr_comps, fp) == nr_comps;
 				}
 				if (flags & BPC_HAS_COMP_TRANS) {
 					component_rotations.resize(nr_comps);
@@ -858,7 +954,7 @@ static PlyProperty face_props[] = { /* list of property information for a face *
 {"vertex_indices", Int32, Int32, offsetof(PlyFace,verts), 1, Uint8, Uint8, offsetof(PlyFace,nverts)},
 };
 
-static const char* propNames[] = { "vertex", "face" };
+static char* propNames[] = { "vertex", "face" };
 
 bool point_cloud::read_ply(const string& _file_name) 
 {
@@ -1030,6 +1126,9 @@ bool point_cloud::write_bin(const std::string& file_name) const
 	flags += has_components() ? BPC_HAS_COMPS : 0;
 	flags += has_component_colors() ? BPC_HAS_COMP_CLRS : 0;
 	flags += has_component_transformations() ? BPC_HAS_COMP_TRANS : 0;
+#ifdef BYTE_COLORS
+	flags += BPC_HAS_BYTE_CLRS;
+#endif
 	if (has_colors() && C.size() == n)
 		m1 = 2*n+m;
 	bool success;
@@ -1044,15 +1143,14 @@ bool point_cloud::write_bin(const std::string& file_name) const
 			success = success && (fwrite(&C[0][0], sizeof(Clr), n, fp) == n);
 	}
 	else {
-		m = n;
-		m1 = 0;
+		m = 0;
 		success =
-			fwrite(&m1, sizeof(Cnt), 1, fp) == 1 &&
 			fwrite(&m, sizeof(Cnt), 1, fp) == 1 &&
+			fwrite(&n, sizeof(Cnt), 1, fp) == 1 &&
 			fwrite(&flags, sizeof(Cnt), 1, fp) == 1 &&
 			fwrite(&P[0][0], sizeof(Pnt), n, fp) == n;
 		if (has_normals())
-			success = success && (fwrite(&N[0][0], sizeof(Nml), m, fp) == m);
+			success = success && (fwrite(&N[0][0], sizeof(Nml), n, fp) == n);
 		if (has_colors() && C.size() == n)
 			success = success && (fwrite(&C[0][0], sizeof(Clr), n, fp) == n);
 
@@ -1065,7 +1163,7 @@ bool point_cloud::write_bin(const std::string& file_name) const
 			success = success && (fwrite(&nr_comps, sizeof(Cnt), 1, fp) == 1) && (fwrite(&components[0], sizeof(component_info), nr_comps, fp) == nr_comps);
 		}
 		if (has_component_colors())
-			success = success && (fwrite(&component_colors[0][0], sizeof(Rgba), get_nr_components(), fp) == get_nr_components());
+			success = success && (fwrite(&component_colors[0][0], sizeof(RGBA), get_nr_components(), fp) == get_nr_components());
 		if (has_component_transformations()) {
 			success = success && (fwrite(&component_rotations[0][0], sizeof(Qat), get_nr_components(), fp) == get_nr_components());
 			success = success && (fwrite(&component_translations[0][0], sizeof(Dir), get_nr_components(), fp) == get_nr_components());

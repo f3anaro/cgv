@@ -108,10 +108,8 @@ int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg,
 			// otherwise use current folder als initial folder
 			GetCurrentDirectory(sizeof(initialPath) / sizeof(TCHAR), initialPath);
 		}
-
 		// set the initial folder in the folder dialog by a message
 		SendMessage(hwnd, BFFM_SETSELECTION, true, (LPARAM)initialPath);
-
 		break;
 	}
 
@@ -126,13 +124,15 @@ void prepare_bi_struct(BROWSEINFO& bi, _TCHAR *wszPath,
 	ZeroMemory(&bi, sizeof(bi));
 	bi.hwndOwner = GetForegroundWindow();
 	bi.ulFlags = BIF_USENEWUI;
-
+	bi.lParam = 0;
+	std::string windows_path(path);
+	cgv::utils::replace(windows_path, "/", "\\");
 #ifdef _UNICODE
 	wtitle = cgv::utils::str2wstr(title);
-	wpath = cgv::utils::str2wstr(path);
+	wpath = cgv::utils::str2wstr(windows_path);
 #else
 	wtitle = title;
-	wpath = path;
+	wpath = windows_path;
 #endif    
 
 	bi.pidlRoot = NULL;
@@ -173,10 +173,12 @@ std::string directory_open_dialog(const std::string& title, const std::string& p
 			CoTaskMemFree(item);
 			CoUninitialize();
 #ifdef _UNICODE
-			return cgv::utils::wstr2str(szPath);
+			std::string result = cgv::utils::wstr2str(szPath);
 #else
-			return szPath;
+			std::string result = szPath;
 #endif
+			cgv::utils::replace(result, "\\", "/");
+			return result;
 		}
 		else
 		{
@@ -300,17 +302,17 @@ std::string fltk_driver::file_save_dialog(const std::string& title, const std::s
 #undef TA_RIGHT
 #undef TA_BOTTOM
 #endif
-#include <cg_flk/fltk_driver.h>
-#include <cg_flk/fltk_button.h>
-#include <cg_flk/fltk_viewer_window.h>
-#include <cg_flk/fltk_generic_window.h>
-#include <cg_flk/fltk_align_group.h>
-#include <cg_flk/fltk_tab_group.h>
-#include <cg_flk/fltk_tree_group.h>
-#include <cg_flk/fltk_dockable_group.h>
-#include <cg_flk/fltk_layout_group.h>
-#include <cg_flk/fltk_driver_registry.h>
-#include <cg_flk/fltk_text_editor.h>
+#include "fltk_driver.h"
+#include "fltk_button.h"
+#include "fltk_viewer_window.h"
+#include "fltk_generic_window.h"
+#include "fltk_align_group.h"
+#include "fltk_tab_group.h"
+#include "fltk_tree_group.h"
+#include "fltk_dockable_group.h"
+#include "fltk_layout_group.h"
+#include "fltk_driver_registry.h"
+#include "fltk_text_editor.h"
 #include <fltk/file_chooser.h>
 #include <fltk/events.h>
 #include <fltk/run.h>

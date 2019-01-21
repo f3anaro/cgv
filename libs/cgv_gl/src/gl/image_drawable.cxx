@@ -1,9 +1,11 @@
-#include <cgv_gl/gl/gl_image_drawable_base.h>
+#include "image_drawable.h"
 
 #include <cgv/media/image/image_reader.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/media/axis_aligned_box.h>
 #include <cgv/base/import.h>
+#include <cgv/math/ftransform.h>
+#include <cgv/render/attribute_array_binding.h>
 #include <cgv_gl/gl/gl_tools.h>
 #include <cgv_gl/gl/gl.h>
 
@@ -17,23 +19,24 @@ namespace cgv {
 	namespace render {
 		namespace gl {
 
-gl_image_drawable_base::gl_image_drawable_base() : min_value(0,0,0,0), max_value(1,1,1,1), gamma(1,1,1,1)
+image_drawable::image_drawable() : min_value(0,0,0,0), max_value(1,1,1,1), gamma(1,1,1,1)
 {
-	use_shader_program = false;
 	aspect = 1;
 	start_time = -2;
 	use_blending = false;
-	animate = true;
-	show_rectangle = false;
-	x = 100;
-	y = 50;
-	w = 200;
-	h = 100;
+	animate = false;
+	show_selection = false;
+	selection.add_point(vec2i(100, 50));
+	selection.add_point(vec2i(300, 150));
 	W = 1;
 	H = 1;
+
+	use_mixing = false;
+	mix_with = -1;
+	mix_param = 0.0f;
 }
 
-void gl_image_drawable_base::timer_event(double t, double dt)
+void image_drawable::timer_event(double t, double dt)
 {
 	if (tex_ids.size() > 1 && start_time != -2) {
 		if (animate) {
@@ -67,20 +70,20 @@ void gl_image_drawable_base::timer_event(double t, double dt)
 	}
 }
 
-bool gl_image_drawable_base::init(context& ctx)
+bool image_drawable::init(context& ctx)
 {
 	return prog.build_program(ctx, "image.glpr");
 }
 
 /// destruct textures and shader program
-void gl_image_drawable_base::clear(context& ctx)
+void image_drawable::clear(context& ctx)
 {
 	prog.destruct(ctx);
 	if (!tex_ids.empty())
 		glDeleteTextures(tex_ids.size(), &tex_ids.front());
 }
 
-bool gl_image_drawable_base::read_image(const std::string& _file_name)
+bool image_drawable::read_image(const std::string& _file_name)
 {
 	if (!cgv::render::gl::read_image_to_textures(_file_name, tex_ids, durations, true, &aspect, &use_blending))
 		return false;
@@ -89,10 +92,9 @@ bool gl_image_drawable_base::read_image(const std::string& _file_name)
 	ir.open(_file_name);
 	W = df.get_width();
 	H = df.get_height();
-	x = 0;
-	y = 0;
-	w = W;
-	h = H;
+	selection.invalidate();
+	selection.add_point(vec2i(0, 0));
+	selection.add_point(vec2i(W, H));
 	current_image = 0;
 	start_time = -2;
 	file_name = _file_name;
@@ -101,7 +103,7 @@ bool gl_image_drawable_base::read_image(const std::string& _file_name)
 	return true;
 }
 
-bool gl_image_drawable_base::read_images(const std::string& _file_name, const std::vector<std::string>& _files)
+bool image_drawable::read_images(const std::string& _file_name, const std::vector<std::string>& _files)
 {
 	for (unsigned i=0; i<_files.size(); ++i) {
 		unsigned tex_id = cgv::render::gl::read_image_to_texture(_file_name+"/"+_files[i],
@@ -112,16 +114,15 @@ bool gl_image_drawable_base::read_images(const std::string& _file_name, const st
 		durations.push_back(0.04f);
 		std::cout << "read image " << _file_name+"/"+_files[i] << std::endl;
 	}
-	if (!files.empty()) {
+	if (!_files.empty()) {
 		data_format df;
 		image_reader ir(df);
 		ir.open(_file_name+"/"+_files[0]);
 		W = df.get_width();
 		H = df.get_height();
-		w = W;
-		h = H;
-		x = 0;
-		y = 0;
+		selection.invalidate();
+		selection.add_point(vec2i(0, 0));
+		selection.add_point(vec2i(W, H));
 	}
 	current_image = 0;
 	start_time = -2;
@@ -131,14 +132,11 @@ bool gl_image_drawable_base::read_images(const std::string& _file_name, const st
 	return true;
 }
 
-bool gl_image_drawable_base::save_images(const std::string& output_file_name)
+bool image_drawable::save_images(const std::string& output_file_name)
 {
-	// crop update rectangle
-	if (x+w > W)
-		w = W-x;
-	if (y+h > H)
-		h = H-y;
-	bool crop = (w > 0 && h > 0 && (w < W || h < H));
+	bool crop = (selection.get_min_pnt() != vec2i(0) || selection.get_max_pnt() != vec2i(W,H));
+	int w = selection.get_extent()(0);
+	int h = selection.get_extent()(1);
 
 	// prepare output
 	image_writer iw(output_file_name);
@@ -189,7 +187,10 @@ bool gl_image_drawable_base::save_images(const std::string& output_file_name)
 				return false;
 			}
 			if (crop) {
-				unsigned char* src_ptr = dv.get_ptr<unsigned char>() + x*dv.get_step_size(1) + y*dv.get_step_size(0);
+				unsigned char* src_ptr = dv.get_ptr<unsigned char>() + 
+					selection.get_min_pnt()(0)*dv.get_step_size(1) + 
+					selection.get_min_pnt()(1)*dv.get_step_size(0);
+				
 				unsigned char* dst_ptr = dv_out->get_ptr<unsigned char>();
 				for (int j=0; j<h; ++j) {
 					memcpy(dst_ptr, src_ptr, dv_out->get_step_size(0));
@@ -210,64 +211,79 @@ bool gl_image_drawable_base::save_images(const std::string& output_file_name)
 	return true;
 }
 
-void gl_image_drawable_base::draw(context& ctx)
+void image_drawable::draw(context& ctx)
 {
-	glColor3d(1, 0, 0);
-	glPushMatrix();
-	glScaled(aspect, 1, 1);
-	if (show_rectangle) {
-		glPushMatrix();
-		glTranslated(-1, -1, 0);
-		glScaled(2.0 / W, 2.0 / H, 1);
-		glBegin(GL_LINE_STRIP);
-		glVertex2i(x, y);
-		glVertex2i(x + w, y);
-		glVertex2i(x + w, y + h);
-		glVertex2i(x, y + h);
-		glVertex2i(x, y);
-		glEnd();
-		glPopMatrix();
-	}
+	ctx.push_modelview_matrix();
+		ctx.mul_modelview_matrix(cgv::math::scale4<double>(aspect, 1, 1));
+		if (show_selection) {
+			ctx.push_modelview_matrix();
+				ctx.mul_modelview_matrix(cgv::math::translate4<double>(-1,-1,0)*cgv::math::scale4<double>(2.0 / W, 2.0 / H, 1));
+				float x = (float)selection.get_min_pnt()(0);
+				float y = (float)selection.get_min_pnt()(1);
+				float w = (float)selection.get_extent()(0);
+				float h = (float)selection.get_extent()(1);
+				std::vector<vec2> P;
+				P.push_back(vec2(x, y,0));
+				P.push_back(vec2(x+w, y,0));
+				P.push_back(vec2(x+w, y+h,0));
+				P.push_back(vec2(x, y+h,0));
+				shader_program& prog = ctx.ref_default_shader_program();
+				prog.enable(ctx);
+					ctx.set_color(rgb(1, 0, 0));
+					attribute_array_binding::set_global_attribute_array(ctx, prog.get_position_index(), P);
+					attribute_array_binding::enable_global_array(ctx, prog.get_position_index());
+						glDrawArrays(GL_LINE_LOOP, 0, 4);
+					attribute_array_binding::disable_global_array(ctx, prog.get_position_index());
+				prog.disable(ctx);
+			ctx.pop_modelview_matrix();
+		}
 
-	glColor3d(1, 1, 0);
-	if (tex_ids.size()>0) {
-		glActiveTexture(GL_TEXTURE0);
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, tex_ids[current_image]);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		if (start_time == -2)
-			start_time = -1;
-	}
-	if (use_shader_program && prog.is_linked()) {
-		prog.enable(ctx);
-		prog.set_uniform(ctx, "min_value", min_value);
-		prog.set_uniform(ctx, "max_value", max_value);
-		prog.set_uniform(ctx, "gamma", gamma);
-		prog.set_uniform(ctx, "image", 0);
-		prog.set_uniform(ctx, "use_texture", tex_ids.size() > 0);
-	}
-	if (use_blending) {
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-	glDisable(GL_CULL_FACE);
-		glBegin(GL_QUADS);
-			glTexCoord2d(0,1);
-			glVertex3d(-1,-1,0);
-			glTexCoord2d(1,1);
-			glVertex3d(1,-1,0);
-			glTexCoord2d(1,0);
-			glVertex3d(1,1,0);
-			glTexCoord2d(0,0);
-			glVertex3d(-1,1,0);
-		glEnd();
-	if (use_blending)
-		glDisable(GL_BLEND);
-	glEnable(GL_CULL_FACE);
-	glDisable(GL_TEXTURE_2D);
-	if (use_shader_program && prog.is_linked())
-		prog.disable(ctx);
-	glPopMatrix();
+		bool mix_enabled = false;
+		if (tex_ids.size()>0) {
+			glActiveTexture(GL_TEXTURE0);
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, tex_ids[current_image]);
+
+			if (use_mixing && mix_with != -1 && mix_with < tex_ids.size()) {
+				glActiveTexture(GL_TEXTURE1);
+				glEnable(GL_TEXTURE_2D);
+				glBindTexture(GL_TEXTURE_2D, tex_ids[mix_with]);
+				mix_enabled = true;
+				glActiveTexture(GL_TEXTURE0);
+			}
+			if (start_time == -2)
+				start_time = -1;
+		}
+		if (prog.is_linked()) {
+			prog.enable(ctx);
+			prog.set_uniform(ctx, "min_value", min_value);
+			prog.set_uniform(ctx, "max_value", max_value);
+			prog.set_uniform(ctx, "gamma", gamma);
+			prog.set_uniform(ctx, "image", 0);
+			prog.set_uniform(ctx, "use_texture", tex_ids.size() > 0);
+			prog.set_uniform(ctx, "use_mixing", use_mixing);
+			prog.set_uniform(ctx, "mix_with", 1);
+			prog.set_uniform(ctx, "mix_param", mix_param);
+		}
+		if (use_blending) {
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
+		glDisable(GL_CULL_FACE);
+		ctx.mul_modelview_matrix(cgv::math::scale4<double>(1, -1, 1));
+		ctx.tesselate_unit_square();
+		if (use_blending)
+			glDisable(GL_BLEND);
+		glEnable(GL_CULL_FACE);
+		glDisable(GL_TEXTURE_2D);
+		if (mix_enabled) {
+			glActiveTexture(GL_TEXTURE1);
+			glDisable(GL_TEXTURE_2D);
+			glActiveTexture(GL_TEXTURE0);
+		}
+		if (prog.is_linked())
+			prog.disable(ctx);
+	ctx.pop_modelview_matrix();
 }
 		}
 	}

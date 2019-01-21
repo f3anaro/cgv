@@ -120,7 +120,8 @@ public:
 			return;
 		}
 		pnt_type p_ref = info_ptr->center(i,j) / X(info_ptr->count(i,j));
-		pnt_type q = (X*)info_ptr->get_qem(i,j).minarg(p_ref.to_vec(), X(0.1), d.length());
+		vec<X> min_pnt = info_ptr->get_qem(i, j).minarg(p_ref.to_vec(), X(0.1), d.length());
+		pnt_type q(min_pnt.size(), min_pnt);
 		info_ptr->index(i,j) = this->new_vertex(q);
 	}
 	/// construct a quadrilateral
