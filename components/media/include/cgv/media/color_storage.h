@@ -20,24 +20,25 @@ namespace cgv {
 			};
 
 			/// define supported color types
-			typedef typename color<float, RGB> rgb;
-			typedef typename color<float, RGB, OPACITY> rgba;
-			typedef typename color<unsigned char, RGB> rgb8;
-			typedef typename color<unsigned char, RGB, OPACITY> rgba8;
+			typedef color<float, RGB> rgb;
+			typedef color<float, RGB, OPACITY> rgba;
+			typedef color<unsigned char, RGB> rgb8;
+			typedef color<unsigned char, RGB, OPACITY> rgba8;
 		};
 
-			/// interface for color storage of different internal types
+		/// traits struct used to derive color type
+		template <typename T> struct color_storage_traits {};
+		template <> struct color_storage_traits<color_storage_types::rgb> { static const color_storage_types::ColorType color_type = color_storage_types::CT_RGB; };
+		template <> struct color_storage_traits<color_storage_types::rgba> { static const color_storage_types::ColorType color_type = color_storage_types::CT_RGBA; };
+		template <> struct color_storage_traits<color_storage_types::rgb8> { static const color_storage_types::ColorType color_type = color_storage_types::CT_RGB8; };
+		template <> struct color_storage_traits<color_storage_types::rgba8> { static const color_storage_types::ColorType color_type = color_storage_types::CT_RGBA8; };
+
+		/// interface for color storage of different internal types
 		class abst_color_storage : public color_storage_types
 		{
 		protected:
 			// type of color stored in storage
 			ColorType color_type;
-			// traits struct used to derive color type
-			template <typename T> struct color_storage_traits {};
-			template <> struct color_storage_traits<rgb> { static const ColorType color_type = CT_RGB; };
-			template <> struct color_storage_traits<rgba> { static const ColorType color_type = CT_RGBA; };
-			template <> struct color_storage_traits<rgb8> { static const ColorType color_type = CT_RGB8; };
-			template <> struct color_storage_traits<rgba8> { static const ColorType color_type = CT_RGBA8; };
 		public:
 			/// construct from color type enumerate
 			abst_color_storage(ColorType _color_type);
