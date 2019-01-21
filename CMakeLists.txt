@@ -195,7 +195,6 @@ add_subdirectory(plugins/cg_fltk)
 add_subdirectory(plugins/cg_icons)
 add_subdirectory(plugins/cg_meta)
 add_subdirectory(plugins/cmi_io)
-# add_subdirectory(plugins/cmv_avi)
 # add_subdirectory(plugins/co_web)
 # add_subdirectory(plugins/crg_antialias)
 # add_subdirectory(plugins/crg_depth_of_field)
@@ -210,6 +209,7 @@ add_subdirectory(plugins/crg_stereo_view)
 # Plugins only supported on Windows platforms
 if (WIN32)
 	add_subdirectory(plugins/cg_multi_mouse)
+	add_subdirectory(plugins/cmv_avi)
 endif()
 
 # Applications
