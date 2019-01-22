@@ -104,6 +104,10 @@ public:
 	virtual bool read_mtl(const std::string& file_name);
 };
 
+// Explicit instantiations (see .cxx file)
+extern template class obj_reader_generic<float>;
+extern template class obj_reader_generic<double>;
+
 typedef obj_reader_generic<float>  obj_readerf;
 typedef obj_reader_generic<double> obj_readerd;
 typedef obj_reader_generic<double> obj_reader;

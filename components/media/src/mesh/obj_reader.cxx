@@ -438,9 +438,9 @@ void obj_reader_generic<T>::parse_face(const std::vector<token>& tokens)
 	process_face((unsigned) vertex_indices.size(), &vertex_indices[0], tex_ptr, nml_ptr);
 }
 
-
-template class obj_reader_generic < float >;
-template class obj_reader_generic < double >;
+// Explicit instantiations
+template class obj_reader_generic<float>;
+template class obj_reader_generic<double>;
 
 		}
 	}
