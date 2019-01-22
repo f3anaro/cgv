@@ -93,8 +93,6 @@ set(SHADERS
 add_library(cgv_gl
 	# Source files
 	src/gl/gl.cxx
-	src/gl/gl_context_unix.cxx
-	src/gl/gl_context_win32.cxx
 	src/gl/gl_cursor.cxx
 	src/gl/gl_depth_peeler.cxx
 	src/gl/gl_performance_monitor.cxx
@@ -152,6 +150,13 @@ add_library(cgv_gl
 	# Shader files
 	${SHADERS})
 
+# Add platform-specific GL context implementations
+if(WIN32)
+	target_sources(cgv_gl PRIVATE src/gl/gl_context_win32.cxx)
+else()
+	target_sources(cgv_gl PRIVATE src/gl/gl_context_unix.cxx)
+endif()
+
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
 add_library(cgv::cgv_gl ALIAS cgv_gl)
@@ -188,7 +193,7 @@ source_group("Shaders" FILES ${SHADERS})
 # ---------------
 # Shader handling
 # ---------------
-# 
+#
 # For shared builds, the shader files are copied into the build directory in
 # shader/ next to the runtime directory (bin/). If we are building a static
 # library or the option "REGISTER_SHADERS" is set to TRUE, the resources are
