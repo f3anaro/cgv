@@ -8,8 +8,8 @@ find_package(cgv_media REQUIRED)
 find_package(cgv_utils REQUIRED)
 
 add_library(cg_meta
-    # Source Files
-    src/object_browser.cxx)
+	# Source files
+	src/object_browser.cxx)
 
 # Add an alias target for the cgv:: namespace such that other components can use
 # this target like other imported targets with namespace prefixes.
@@ -19,21 +19,21 @@ add_library(cgv::cg_meta ALIAS cg_meta)
 # compiling the library, and will be added to consumers' build
 # paths.
 target_include_directories(cg_meta
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>)
 
 set_target_properties(cg_meta PROPERTIES
-    # Set name of the preprocessor symbol defined when compiling as shared
-    # library. This will be used for the dllexport/dllimport declarations.
-    DEFINE_SYMBOL "CGV_GUI_META_EXPORTS"
+	# Set name of the preprocessor symbol defined when compiling as shared
+	# library. This will be used for the dllexport/dllimport declarations.
+	DEFINE_SYMBOL "CGV_GUI_META_EXPORTS"
 
-    # Set folder for Visual Studio
-    FOLDER "Standard Plugins")
+	# Set folder for Visual Studio
+	FOLDER "Standard Plugins")
 
 # Dependencies on other components, plugins and libraries.
 target_link_libraries(cg_meta
-    PUBLIC
+	PUBLIC
 		cgv::base
 		cgv::gui
 		cgv::render
@@ -44,22 +44,22 @@ target_link_libraries(cg_meta
 # multi-config generators are used, build targets in a config-specific
 # subdirectory.
 if(CMAKE_CONFIGURATION_TYPES)
-    set_target_properties(cg_meta PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(cg_meta PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    set_target_properties(cg_meta PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(cg_meta PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS cg_meta EXPORT cg_metaTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).

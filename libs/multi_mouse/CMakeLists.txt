@@ -10,7 +10,7 @@ add_library(multi_mouse
 	src/multi_mouse.cxx
 	src/multi_mouse_win32.cxx
 
-	# Public headers
+	# Public headers (Visual Studio only)
 	include/multi_mouse/lib_begin.h
 	include/multi_mouse/multi_mouse.h
 	include/multi_mouse/multi_mouse_detail.h
@@ -20,7 +20,7 @@ add_library(multi_mouse_fltk
 	# Source files
 	src/multi_mouse_fltk.cxx
 
-	# Public headers
+	# Public headers (Visual Studio only)
 	include/multi_mouse/lib_begin_fltk.h
 	include/multi_mouse/multi_mouse_fltk.h)
 

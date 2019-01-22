@@ -4,17 +4,17 @@ project(space_pilot LANGUAGES CXX)
 find_package(cgv_config REQUIRED)
 
 add_library(space_pilot
-	# Source Files
+	# Source files
 	src/space_input.cxx
 
-	# Public Headers
+	# Public headers (Visual Studio only)
 	include/space_pilot/lib_begin.h
 	include/space_pilot/space_input.h
 	include/space_pilot/space_pilot.h)
 
 # Also add the .def-file to the sources. CMake will know what to do with it.
 if(MSVC)
-    target_sources(space_pilot PRIVATE src/space_pilot.def)
+	target_sources(space_pilot PRIVATE src/space_pilot.def)
 endif()
 
 # Add platform-specific implementations

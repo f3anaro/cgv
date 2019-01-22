@@ -13,9 +13,9 @@ option(REGISTER_SHADERS "Include shader resources in shared libraries" FALSE)
 set(OpenGL_GL_PREFERENCE "GLVND")
 
 if(UNIX AND CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    # Use a namespace directory for the whole cgv framework similar to the
-    # golang project.
-    set(CMAKE_INSTALL_PREFIX "/usr/local/cgv" CACHE PATH "Default install path" FORCE)
+	# Use a namespace directory for the whole cgv framework similar to the
+	# golang project.
+	set(CMAKE_INSTALL_PREFIX "/usr/local/cgv" CACHE PATH "Default install path" FORCE)
 endif()
 
 # Must use GNUInstallDirs to install libraries into correct
@@ -25,7 +25,7 @@ include(GNUInstallDirs)
 # Set runtime search path (rpath) of executables and libraries on Unix systems.
 # Windows does not have the concept of runtime search paths.
 if (UNIX)
-    set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR} CACHE PATH "rpath for installed targets" FORCE)
+	set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_FULL_LIBDIR} CACHE PATH "rpath for installed targets" FORCE)
 endif()
 
 # Enable organization of targets in folders (solution folders in Visual Studio)
@@ -58,71 +58,71 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "")
 # subproject. This list will be checked during "find_package" calls if it
 # contains the requested package. If yes, "find_package" will simply do nothing.
 set(as_subproject
-    # 3rd party libraries (available for all platforms)
-    FLTK2
-    ANN
+	# 3rd party libraries (available for all platforms)
+	FLTK2
+	ANN
 
-    # Libraries
-    ann_wrapper
-    cg_gamepad
-    cgv_gl
-    cgv_reflect_types
-    libppp
-    gamepad
-    glsu
-    plot
+	# Libraries
+	ann_wrapper
+	cg_gamepad
+	cgv_gl
+	cgv_reflect_types
+	libppp
+	gamepad
+	glsu
+	plot
 	rect_pack
 	space_pilot
 
-    # Tools
-    cgv_p_p_p
-    cgv_res_prep
+	# Tools
+	cgv_p_p_p
+	cgv_res_prep
 
-    # Components
-    cgv_base
-    cgv_config
-    cgv_data
-    cgv_defines
-    cgv_gui
-    cgv_math
-    cgv_media
-    cgv_os
-    cgv_reflect
-    cgv_render
-    cgv_signal
-    cgv_type
-    cgv_utils
+	# Components
+	cgv_base
+	cgv_config
+	cgv_data
+	cgv_defines
+	cgv_gui
+	cgv_math
+	cgv_media
+	cgv_os
+	cgv_reflect
+	cgv_render
+	cgv_signal
+	cgv_type
+	cgv_utils
 
-    # Plugins
-    cg_ext
-    cg_fltk
-    cg_icons
-    cg_meta
-    cmi_io
-    crg_stereo_view)
+	# Plugins
+	cg_ext
+	cg_fltk
+	cg_icons
+	cg_meta
+	cmi_io
+	crg_stereo_view)
 
 # Subprojects that are only build on Windows platforms
 if(WIN32)
-    list(APPEND as_subproject
-        # 3rd party libraries
-        JPEG
-        PNG
-        GLEW
-        Threads
-        TIFF
-        ZLIB
+	list(APPEND as_subproject
+		# 3rd party libraries
+		JPEG
+		PNG
+		GLEW
+		Threads
+		TIFF
+		ZLIB
 
-        # Additional libraries
-        multi_mouse
+		# Additional libraries
+		multi_mouse
 
-    	# Plugins
-    	cg_multi_mouse)
+		# Plugins
+		cg_multi_mouse)
 endif()
 
 macro(find_package ARG0)
-    if(NOT "${ARG0}" IN_LIST as_subproject)
-        _find_package(${ARGV})
-    endif()
+	if(NOT "${ARG0}" IN_LIST as_subproject)
+		_find_package(${ARGV})
+	endif()
 endmacro()
 
 # Enable testing for current directory and below
@@ -131,12 +131,12 @@ enable_testing()
 # 3rd party libraries required for Windows builds. Unix platforms will use the
 # system installation of these libraries.
 if(WIN32)
-    add_subdirectory(3rd/jpeg)
-    add_subdirectory(3rd/glew)
-    add_subdirectory(3rd/png)
-    add_subdirectory(3rd/pthread)
-    add_subdirectory(3rd/tiff)
-    add_subdirectory(3rd/zlib)
+	add_subdirectory(3rd/jpeg)
+	add_subdirectory(3rd/glew)
+	add_subdirectory(3rd/png)
+	add_subdirectory(3rd/pthread)
+	add_subdirectory(3rd/tiff)
+	add_subdirectory(3rd/zlib)
 endif()
 
 # The "point cloud" library uses a custom "float" build of the ANN library

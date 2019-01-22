@@ -37,12 +37,12 @@ set(SHADERS
 	shader/plot2d_point.glvs)
 
 add_library(plot
-	# Sources
+	# Source files
 	src/plot1d.cxx
 	src/plot2d.cxx
 	src/plot_base.cxx
 
-	# Public headers
+	# Public headers (Visual Studio only)
 	include/plot/lib_begin.h
 	include/plot/plot1d.h
 	include/plot/plot2d.h

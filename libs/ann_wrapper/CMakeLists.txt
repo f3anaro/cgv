@@ -7,7 +7,7 @@ find_package(cgv_math REQUIRED)
 add_library(ann_wrapper
 	src/ann_wrapper.cxx
 
-	# Public headers
+	# Public headers (Visual Studio only)
 	include/ann_wrapper/ann.h
 	include/ann_wrapper/lib_begin.h)
 

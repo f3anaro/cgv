@@ -113,7 +113,7 @@ set(OpenGL_SOURCES
 	OpenGL/gl_start.cxx)
 
 add_library(FLTK2
-	# Source Files
+	# Source files
 	src/addarc.cxx
 	src/addcurve.cxx
 	src/add_idle.cxx
@@ -256,7 +256,7 @@ add_library(FLTK2
 	src/xbmImage.cxx
 	src/xpmImage.cxx
 
-	# Public Headers
+	# Public headers (Visual Studio only)
 	include/fltk/Adjuster.h
 	include/fltk/AlignGroup.h
 	include/fltk/AnsiWidget.h

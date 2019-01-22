@@ -9,9 +9,9 @@ add_library(cgv::config ALIAS config)
 
 # Define headers for this header-only library.
 target_include_directories(config
-    INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>)
 
 # CGV uses C++11 standard
 target_compile_features(config INTERFACE cxx_std_11)
@@ -20,28 +20,28 @@ target_compile_features(config INTERFACE cxx_std_11)
 #   libraries. We use a custom target to create a pseudo-target called
 #   "config_ide".
 if (MSVC)
-    add_custom_target(config_ide SOURCES
-        include/cgv/config/cpp_version.h
-        include/cgv/config/lib_begin.h
-        include/cgv/config/lib_end.h)
+	add_custom_target(config_ide SOURCES
+		include/cgv/config/cpp_version.h
+		include/cgv/config/lib_begin.h
+		include/cgv/config/lib_end.h)
 
-    set_target_properties(config_ide PROPERTIES
-        # Set name of the target in an Visual Studio
-        PROJECT_LABEL "config"
+	set_target_properties(config_ide PROPERTIES
+		# Set name of the target in an Visual Studio
+		PROJECT_LABEL "config"
 
-        # Set folder for Visual Studio
-        FOLDER "CGV-Framework")
+		# Set folder for Visual Studio
+		FOLDER "CGV-Framework")
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS config EXPORT cgv_configTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # Install header files of component
 install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).

@@ -9,9 +9,9 @@ add_library(cgv::defines ALIAS defines)
 
 # Define headers for this header-only library.
 target_include_directories(defines
-    INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+	INTERFACE
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>)
 
 # CGV uses C++11 standard
 target_compile_features(defines INTERFACE cxx_std_11)
@@ -20,28 +20,29 @@ target_compile_features(defines INTERFACE cxx_std_11)
 #   libraries. We use a custom target to create a pseudo-target called
 #   "defines_ide".
 if (MSVC)
-    add_custom_target(defines_ide SOURCES
-        include/cgv/defines/assert.h
-        include/cgv/defines/join.h
-        include/cgv/defines/quote.h)
+	add_custom_target(defines_ide SOURCES
+		include/cgv/defines/assert.h
+		include/cgv/defines/deprecated.h
+		include/cgv/defines/join.h
+		include/cgv/defines/quote.h)
 
-    set_target_properties(defines_ide PROPERTIES
-        # Set name of the target in an Visual Studio
-        PROJECT_LABEL "defines"
+	set_target_properties(defines_ide PROPERTIES
+		# Set name of the target in an Visual Studio
+		PROJECT_LABEL "defines"
 
-        # Set folder for Visual Studio
-        FOLDER "CGV-Framework")
+		# Set folder for Visual Studio
+		FOLDER "CGV-Framework")
 endif()
 
 # Install header files of component
 install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS defines EXPORT cgv_definesTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # This makes the project importable from the install directory.
 # Put defines file in per-project dir (name MUST match).

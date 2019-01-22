@@ -20,10 +20,10 @@ set(RectangleBinPack_SOURCES
 	src/RectangleBinPack/SkylineBinPack.h)
 
 add_library(rect_pack
-	# Source Files
+	# Source files
 	src/rect_pack.cxx
 
-	# Public Headers
+	# Public headers (Visual Studio only)
 	include/rect_pack/lib_begin.h
 	include/rect_pack/rect_pack.h
 

@@ -10,7 +10,7 @@ find_package(cgv_render REQUIRED)
 find_package(cgv_gui REQUIRED)
 
 add_library(reflect_types
-	# Source Files
+	# Source files
 	src/gui/shortcut.cxx
 	src/math/perm_mat.cxx
 	src/media/color.cxx
@@ -22,7 +22,7 @@ add_library(reflect_types
 	src/render/context.cxx
 	src/render/view.cxx
 
-	# Public Headers
+	# Public headers (Visual Studio only)
 	include/cgv_reflect_types/gui/shortcut.h
 	include/cgv_reflect_types/lib_begin.h
 	include/cgv_reflect_types/math/diag_mat.h

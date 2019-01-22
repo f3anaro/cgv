@@ -17,7 +17,7 @@ set(SOURCES
 	../../components/utils/src/dir.cxx
 	../../components/utils/src/date_time.cxx
 
-	# Public headers
+	# Public headers (Visual Studio only)
 	include/cgv/ppp/command_token.h
 	include/cgv/ppp/expression_processor.h
 	include/cgv/ppp/lib_begin.h

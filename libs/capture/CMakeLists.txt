@@ -13,7 +13,7 @@ add_library(capture
 	src/capture_result.cxx
 	src/device_capabilities.cxx
 
-	# Public headers
+	# Public headers (Visual Studio only)
 	include/capture/capture_device.h
 	include/capture/capture_format.h
 	include/capture/capture_processor.h

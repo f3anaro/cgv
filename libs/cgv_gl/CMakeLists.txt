@@ -91,7 +91,7 @@ set(SHADERS
 	shader/view.glsl)
 
 add_library(cgv_gl
-	# Source Files
+	# Source files
 	src/gl/gl.cxx
 	src/gl/gl_context_unix.cxx
 	src/gl/gl_context_win32.cxx
@@ -119,7 +119,7 @@ add_library(cgv_gl
 	src/sphere_renderer.cxx
 	src/surfel_renderer.cxx
 
-	# Public Headers
+	# Public headers (Visual Studio only)
 	include/cgv_gl/gl/gl.h
 	include/cgv_gl/gl/gl_context_switch.ph
 	include/cgv_gl/gl/gl_cursor.h

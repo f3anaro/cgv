@@ -10,7 +10,7 @@ find_package(cgv_media REQUIRED)
 find_package(cg_icons REQUIRED)
 
 add_library(cg_ext
-    # Source Files
+	# Source files
 	src/axis_aligned_box_gui.cxx
 	src/bit_field_controler.cxx
 	src/file_name_gui.cxx
@@ -19,7 +19,7 @@ add_library(cg_ext
 	src/light_source_gui.cxx
 	src/material_gui.cxx
 
-    # Public Headers
+	# Public headers (Visual Studio only)
 	include/cg_ext/bit_field_controler.h
 	include/cg_ext/lib_begin.h)
 
@@ -31,28 +31,28 @@ add_library(cgv::cg_ext ALIAS cg_ext)
 # compiling the library, and will be added to consumers' build
 # paths.
 target_include_directories(cg_ext
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>)
 
 set_target_properties(cg_ext PROPERTIES
-    # Set name of the preprocessor symbol defined when compiling as shared
-    # library. This will be used for the dllexport/dllimport declarations.
-    DEFINE_SYMBOL "CGV_GUI_EXT_EXPORTS"
+	# Set name of the preprocessor symbol defined when compiling as shared
+	# library. This will be used for the dllexport/dllimport declarations.
+	DEFINE_SYMBOL "CGV_GUI_EXT_EXPORTS"
 
-    # Set folder for Visual Studio
-    FOLDER "Standard Plugins")
+	# Set folder for Visual Studio
+	FOLDER "Standard Plugins")
 
 # Dependencies on other components, plugins and libraries.
 target_link_libraries(cg_ext
-    PUBLIC
+	PUBLIC
 		cgv::gui
 		cgv::base
 		cgv::type
 		cgv::math
 		cgv::utils
 		cgv::media
-        cgv::cg_icons)
+		cgv::cg_icons)
 
 if(WIN32 AND NOT ${BUILD_SHARED_LIBS})
 	# Add additional dependencies for static Windows builds
@@ -63,26 +63,26 @@ endif()
 # multi-config generators are used, build targets in a config-specific
 # subdirectory.
 if(CMAKE_CONFIGURATION_TYPES)
-    set_target_properties(cg_ext PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(cg_ext PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    set_target_properties(cg_ext PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(cg_ext PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS cg_ext EXPORT cg_extTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # Install header files of component.
 install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).

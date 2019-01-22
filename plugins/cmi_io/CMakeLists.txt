@@ -11,23 +11,23 @@ find_package(JPEG REQUIRED)
 
 # The imported target for JPEG is only available on CMake >= 3.12
 if(NOT TARGET JPEG::JPEG)
-    message(STATUS "Create imported target JPEG::JPEG")
-    add_library(JPEG::JPEG SHARED IMPORTED)
-    set_target_properties(JPEG::JPEG PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${JPEG_INCLUDE_DIR})
-    foreach(lib ${JPEG_LIBRARIES})
-        set_target_properties(JPEG::JPEG PROPERTIES IMPORTED_LOCATION ${lib})
-    endforeach()
+	message(STATUS "Create imported target JPEG::JPEG")
+	add_library(JPEG::JPEG SHARED IMPORTED)
+	set_target_properties(JPEG::JPEG PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${JPEG_INCLUDE_DIR})
+	foreach(lib ${JPEG_LIBRARIES})
+		set_target_properties(JPEG::JPEG PROPERTIES IMPORTED_LOCATION ${lib})
+	endforeach()
 endif()
 
 add_library(cmi_io
-    # Source Files
+	# Source files
 	src/jpg_reader.cxx
 	src/png_reader.cxx
 	src/png_writer.cxx
 	src/tiff_reader.cxx
 	src/tiff_writer.cxx
 
-    # Public Headers
+	# Public headers (Visual Studio only)
 	include/cmi_io/jpg_reader.h
 	include/cmi_io/lib_begin.h
 	include/cmi_io/png_reader.h
@@ -43,28 +43,28 @@ add_library(cgv::cmi_io ALIAS cmi_io)
 # compiling the library, and will be added to consumers' build
 # paths.
 target_include_directories(cmi_io
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>)
 
 if(NOT ${BUILD_SHARED_LIBS})
-    # Compiler definitions for static library
-    target_compile_definitions(cmi_io
-        PUBLIC
-            CGV_GUI_FLTK_FORCE_STATIC)
+	# Compiler definitions for static library
+	target_compile_definitions(cmi_io
+		PUBLIC
+			CGV_GUI_FLTK_FORCE_STATIC)
 endif()
 
 set_target_properties(cmi_io PROPERTIES
-    # Set name of the preprocessor symbol defined when compiling as shared
-    # library. This will be used for the dllexport/dllimport declarations.
-    DEFINE_SYMBOL "CGV_MEDIA_IMAGE_IO_EXPORTS"
+	# Set name of the preprocessor symbol defined when compiling as shared
+	# library. This will be used for the dllexport/dllimport declarations.
+	DEFINE_SYMBOL "CGV_MEDIA_IMAGE_IO_EXPORTS"
 
-    # Set folder for Visual Studio
-    FOLDER "Standard Plugins")
+	# Set folder for Visual Studio
+	FOLDER "Standard Plugins")
 
 # Dependencies on other components, plugins and libraries.
 target_link_libraries(cmi_io
-    PUBLIC
+	PUBLIC
 		cgv::media
 		cgv::base
 		cgv::data
@@ -77,26 +77,26 @@ target_link_libraries(cmi_io
 # multi-config generators are used, build targets in a config-specific
 # subdirectory.
 if(CMAKE_CONFIGURATION_TYPES)
-    set_target_properties(cmi_io PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(cmi_io PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    set_target_properties(cmi_io PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(cmi_io PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS cmi_io EXPORT cmi_ioTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # Install header files of component.
 install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).

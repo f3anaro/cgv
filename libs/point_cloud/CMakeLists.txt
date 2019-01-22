@@ -14,7 +14,7 @@ find_package(cgv_gl REQUIRED)
 find_package(ANN REQUIRED)
 
 add_library(point_cloud 
-	# Source Files
+	# Source files
 	src/ann_tree.cxx
 	src/gl_point_cloud_drawable.cxx
 	src/gl_surface_reconstructor_drawable.cxx
@@ -33,7 +33,7 @@ add_library(point_cloud
 	src/surface_reconstructor_predicates.cxx
 	src/surface_reconstructor_region_growing.cxx
 
-	# Public headers
+	# Public headers (Visual Studio only)
 	include/point_cloud/ann_tree.h
 	include/point_cloud/gl_point_cloud_drawable.h
 	include/point_cloud/gl_surface_reconstructor_drawable.h

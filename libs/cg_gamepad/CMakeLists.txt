@@ -15,11 +15,11 @@ find_package(cgv_gui REQUIRED)
 find_package(gamepad REQUIRED)
 
 add_library(cg_gamepad 
-    src/gamepad_server.cxx
+	src/gamepad_server.cxx
 
-    # Public headers
-    include/cg_gamepad/gamepad_server.h
-    include/cg_gamepad/lib_begin.h)
+	# Public headers (Visual Studio only)
+	include/cg_gamepad/gamepad_server.h
+	include/cg_gamepad/lib_begin.h)
 
 # CGV uses C++11 standard
 target_compile_features(cg_gamepad PUBLIC cxx_std_11)
@@ -29,53 +29,53 @@ target_compile_features(cg_gamepad PUBLIC cxx_std_11)
 add_library(cgv::cg_gamepad ALIAS cg_gamepad)
 
 target_include_directories(cg_gamepad
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		$<INSTALL_INTERFACE:include>)
 
 set_target_properties(cg_gamepad PROPERTIES
-    # Set name of the preprocessor symbol defined when compiling as shared
-    # library. This will be used for the dllexport/dllimport declarations.
-    DEFINE_SYMBOL "CG_GAMEPAD_EXPORTS"
+	# Set name of the preprocessor symbol defined when compiling as shared
+	# library. This will be used for the dllexport/dllimport declarations.
+	DEFINE_SYMBOL "CG_GAMEPAD_EXPORTS"
 
-    # Set folder for Visual Studio
-    FOLDER "Additional Libraries")
+	# Set folder for Visual Studio
+	FOLDER "Additional Libraries")
 
 # Dependencies on other components and libraries
 target_link_libraries(cg_gamepad
-    cgv::utils
-    cgv::type
-    cgv::reflect
-    cgv::reflect_types
-    cgv::data
-    cgv::signal
-    cgv::os
-    cgv::base
-    cgv::math
-    cgv::media
-    cgv::gui
-    cgv::gamepad)
+	cgv::utils
+	cgv::type
+	cgv::reflect
+	cgv::reflect_types
+	cgv::data
+	cgv::signal
+	cgv::os
+	cgv::base
+	cgv::math
+	cgv::media
+	cgv::gui
+	cgv::gamepad)
 
 # Build library in directories matching the installation layout. If
 # multi-config generators are used, build targets in a config-specific
 # subdirectory.
 if(CMAKE_CONFIGURATION_TYPES)
-    set_target_properties(cg_gamepad PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(cg_gamepad PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    set_target_properties(cg_gamepad PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(cg_gamepad PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS cg_gamepad EXPORT cg_gamepadTargets
-    ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+	ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # Install header files of library
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})

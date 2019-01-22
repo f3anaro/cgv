@@ -9,7 +9,7 @@ add_library(delaunay
 	src/ext_corner_connectivity.cxx
 	src/instantiation.cxx
 
-	# Public headers
+	# Public headers (Visual Studio only)
 	include/delaunay/corner_connectivity.h
 	include/delaunay/delaunay_mesh.h
 	include/delaunay/delaunay_mesh_with_hierarchy.h

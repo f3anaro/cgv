@@ -8,8 +8,8 @@ find_package(cgv
 	)
 	
 set(PLUGINS
-        cg_fltk
-        crg_grid
+		cg_fltk
+		crg_grid
 	crg_stereo_view
 )
 	

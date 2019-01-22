@@ -11,82 +11,82 @@ find_package(JPEG REQUIRED)
 
 # The imported target for JPEG is only available on CMake >= 3.12
 if(NOT TARGET JPEG::JPEG)
-    message(STATUS "Create imported target JPEG::JPEG")
-    add_library(JPEG::JPEG SHARED IMPORTED)
-    set_target_properties(JPEG::JPEG PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${JPEG_INCLUDE_DIR})
-    foreach(lib ${JPEG_LIBRARIES})
-        set_target_properties(JPEG::JPEG PROPERTIES IMPORTED_LOCATION ${lib})
-    endforeach()
+	message(STATUS "Create imported target JPEG::JPEG")
+	add_library(JPEG::JPEG SHARED IMPORTED)
+	set_target_properties(JPEG::JPEG PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${JPEG_INCLUDE_DIR})
+	foreach(lib ${JPEG_LIBRARIES})
+		set_target_properties(JPEG::JPEG PROPERTIES IMPORTED_LOCATION ${lib})
+	endforeach()
 endif()
 
 set(PRIVATE_HEADERS
-    src/t4.h
-    src/tif_config.h.in
-    src/tif_dir.h
-    src/tif_fax3.h
-    src/tiffiop.h
-    src/tif_predict.h
-    src/uvcode.h)
+	src/t4.h
+	src/tif_config.h.in
+	src/tif_dir.h
+	src/tif_fax3.h
+	src/tiffiop.h
+	src/tif_predict.h
+	src/uvcode.h)
 
 add_library(TIFF
-    # Source Files
-    src/tif_aux.c
-    src/tif_close.c
-    src/tif_codec.c
-    src/tif_color.c
-    src/tif_compress.c
-    src/tif_dir.c
-    src/tif_dirinfo.c
-    src/tif_dirread.c
-    src/tif_dirwrite.c
-    src/tif_dumpmode.c
-    src/tif_error.c
-    src/tif_extension.c
-    src/tif_fax3.c
-    src/tif_fax3sm.c
-    src/tif_flush.c
-    src/tif_getimage.c
-    src/tif_jbig.c
-    src/tif_jpeg.c
-    src/tif_luv.c
-    src/tif_lzw.c
-    src/tif_next.c
-    src/tif_ojpeg.c
-    src/tif_open.c
-    src/tif_packbits.c
-    src/tif_pixarlog.c
-    src/tif_predict.c
-    src/tif_print.c
-    src/tif_read.c
-    src/tif_stream.cxx
-    src/tif_strip.c
-    src/tif_swab.c
-    src/tif_thunder.c
-    src/tif_tile.c
-    src/tif_version.c
-    src/tif_warning.c
-    src/tif_write.c
-    src/tif_zip.c
+	# Source files
+	src/tif_aux.c
+	src/tif_close.c
+	src/tif_codec.c
+	src/tif_color.c
+	src/tif_compress.c
+	src/tif_dir.c
+	src/tif_dirinfo.c
+	src/tif_dirread.c
+	src/tif_dirwrite.c
+	src/tif_dumpmode.c
+	src/tif_error.c
+	src/tif_extension.c
+	src/tif_fax3.c
+	src/tif_fax3sm.c
+	src/tif_flush.c
+	src/tif_getimage.c
+	src/tif_jbig.c
+	src/tif_jpeg.c
+	src/tif_luv.c
+	src/tif_lzw.c
+	src/tif_next.c
+	src/tif_ojpeg.c
+	src/tif_open.c
+	src/tif_packbits.c
+	src/tif_pixarlog.c
+	src/tif_predict.c
+	src/tif_print.c
+	src/tif_read.c
+	src/tif_stream.cxx
+	src/tif_strip.c
+	src/tif_swab.c
+	src/tif_thunder.c
+	src/tif_tile.c
+	src/tif_version.c
+	src/tif_warning.c
+	src/tif_write.c
+	src/tif_zip.c
 
-    # Public Headers
-    include/tiff.h
-    include/tiffconf.h
-    include/tiffio.h
-    include/tiffvers.h
+	# Public headers (Visual Studio only)
+	include/tiff.h
+	include/tiffconf.h
+	include/tiffio.h
+	include/tiffvers.h
 
-    # Private Headers
-    ${PRIVATE_HEADERS})
+	# Private Headers
+	${PRIVATE_HEADERS})
 
 # Add OS-specific implementation
 if(WIN32)
-    target_sources(TIFF PRIVATE src/tif_win32.c)
+	target_sources(TIFF PRIVATE src/tif_win32.c)
 
 	# Also add the .def-file to the sources. CMake will know what to do with it.
 	if(MSVC)
-	    target_sources(TIFF PRIVATE src/libtiff.def)
+		target_sources(TIFF PRIVATE src/libtiff.def)
 	endif()
 else()
-    target_sources(TIFF PRIVATE src/tif_unix.c)
+	target_sources(TIFF PRIVATE src/tif_unix.c)
 endif(WIN32)
 
 # Add an alias target for the TIFF:: namespace such that other components can use
@@ -94,12 +94,12 @@ endif(WIN32)
 add_library(TIFF::TIFF ALIAS TIFF)
 
 set_target_properties(TIFF PROPERTIES
-    # Set lowercase library name and version
-    OUTPUT_NAME "tiff"
-    VERSION "4.0.3"
+	# Set lowercase library name and version
+	OUTPUT_NAME "tiff"
+	VERSION "4.0.3"
 
-    # Set folder for Visual Studio
-    FOLDER "3rd-Party Libraries")
+	# Set folder for Visual Studio
+	FOLDER "3rd-Party Libraries")
 
 # Move private headers into "Source Files" folder in Visual Studio.
 source_group("Source Files" FILES ${PRIVATE_HEADERS})
@@ -108,27 +108,27 @@ source_group("Source Files" FILES ${PRIVATE_HEADERS})
 # multi-config generators are used, build targets in a config-specific
 # subdirectory.
 if(CMAKE_CONFIGURATION_TYPES)
-    set_target_properties(TIFF PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(TIFF PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    set_target_properties(TIFF PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(TIFF PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # Define headers for this library. PUBLIC headers are used for
 # compiling the library, and will be added to consumers' build
 # paths.
 target_include_directories(TIFF
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        # Adding the build directory for generated header files
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src>
-        $<INSTALL_INTERFACE:include>)
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+		# Adding the build directory for generated header files
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src>
+		$<INSTALL_INTERFACE:include>)
 
 # ---------
 # Configure
@@ -188,11 +188,11 @@ set(IPTC_SUPPORT ON)
 
 # Generate public configuration header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/tiffconf.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/include/tiffconf.h)
+			   ${CMAKE_CURRENT_BINARY_DIR}/include/tiffconf.h)
 
 # Generate private configuration header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/tif_config.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/src/tif_config.h)
+			   ${CMAKE_CURRENT_BINARY_DIR}/src/tif_config.h)
 
 if(WIN32)
 	# Windows prefixes POSIX functions with an underscore.
@@ -220,26 +220,26 @@ endif()
 
 # Dependencies on other libraries
 target_link_libraries(TIFF
-    PUBLIC
-        ZLIB::ZLIB
-        JPEG::JPEG)
+	PUBLIC
+		ZLIB::ZLIB
+		JPEG::JPEG)
 
 # Build the library in the lib/ directory inside the build directory.
 set_target_properties(TIFF PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+	LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS TIFF EXPORT TIFFTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # Install header files of component.
 install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    FILES_MATCHING
-    PATTERN "*"
-    PATTERN "*.in" EXCLUDE)
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+	FILES_MATCHING
+	PATTERN "*"
+	PATTERN "*.in" EXCLUDE)
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).

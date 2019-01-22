@@ -8,21 +8,21 @@
 project(pthread-w32 VERSION 1.11.0 LANGUAGES C)
 
 set(PRIVATE_HEADERS
-    config.h
-    implement.h
-    need_errno.h
-    sched.h
-    semaphore.h)
+	config.h
+	implement.h
+	need_errno.h
+	sched.h
+	semaphore.h)
 
 add_library(pthread
-    # Source Files
-    pthread.c
+	# Source files
+	pthread.c
 
-    # Public Headers
-    pthread.h
+	# Public headers (Visual Studio only)
+	pthread.h
 
-    # Private Headers
-    ${PRIVATE_HEADERS})
+	# Private Headers
+	${PRIVATE_HEADERS})
 
 # Add an alias target for the Threads:: namespace such that other components can
 # use this target like other imported targets with namespace prefixes. This is
@@ -33,35 +33,35 @@ add_library(Threads::Threads ALIAS pthread)
 # compiling the library, and will be added to consumers' build
 # paths.
 target_include_directories(pthread
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-        $<INSTALL_INTERFACE:include>)
+	PUBLIC
+		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+		$<INSTALL_INTERFACE:include>)
 
 # Windows-specific Compiler definitions
 target_compile_definitions(pthread
-    PUBLIC
-        HAVE_STRUCT_TIMESPEC)
+	PUBLIC
+		HAVE_STRUCT_TIMESPEC)
 
 if(NOT ${BUILD_SHARED_LIBS})
-    # Compiler definitions for static library
-    target_compile_definitions(pthread PUBLIC PTW32_STATIC_LIB)
+	# Compiler definitions for static library
+	target_compile_definitions(pthread PUBLIC PTW32_STATIC_LIB)
 endif()
 
 # Winsock (Windows sockets) library
 target_link_libraries(pthread PUBLIC ws2_32)
 
 set_target_properties(pthread PROPERTIES
-    # Rename the exported target to "Threads" to match the "FindThreads"
-    # module interface. Build the library in the lib/ directory inside the
-    # build directory.
-    EXPORT_NAME Threads
+	# Rename the exported target to "Threads" to match the "FindThreads"
+	# module interface. Build the library in the lib/ directory inside the
+	# build directory.
+	EXPORT_NAME Threads
 
-    # Set name of the preprocessor symbol defined when compiling as shared
-    # library. This will be used for the dllexport/dllimport declarations.
-    DEFINE_SYMBOL "PTW32_BUILD"
+	# Set name of the preprocessor symbol defined when compiling as shared
+	# library. This will be used for the dllexport/dllimport declarations.
+	DEFINE_SYMBOL "PTW32_BUILD"
 
-    # Set folder for Visual Studio
-    FOLDER "3rd-Party Libraries")
+	# Set folder for Visual Studio
+	FOLDER "3rd-Party Libraries")
 
 # Move private headers into "Source Files" folder in Visual Studio.
 source_group("Source Files" FILES ${PRIVATE_HEADERS})
@@ -70,26 +70,26 @@ source_group("Source Files" FILES ${PRIVATE_HEADERS})
 # multi-config generators are used, build targets in a config-specific
 # subdirectory.
 if(CMAKE_CONFIGURATION_TYPES)
-    set_target_properties(pthread PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(pthread PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/$<CONFIG>/${CMAKE_INSTALL_BINDIR})
 else()
-    set_target_properties(pthread PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
-        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+	set_target_properties(pthread PROPERTIES
+		ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 # 'make install' to the correct locations (provided by GNUInstallDirs).
 install(TARGETS pthread EXPORT pthreadTargets
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})  # This is for Windows
 
 # Install header files of component
 install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # This makes the project importable from the install directory.
 # Put config file in per-project dir (name MUST match).
