@@ -15,7 +15,7 @@ namespace cgv {
 		namespace mesh {
 
 /** implements the pure reading of an obj file and calls virtual callback
-    functions to allow a derived class to handle the read information. 
+    functions to allow a derived class to handle the read information.
 	The default implementations of the processing methods are implemented
 	to simply ignore the read information. */
 template <typename T>
@@ -82,11 +82,11 @@ protected:
 	/// overide this function to process a normal
 	virtual void process_normal(const v3d_type& n);
 	/// convert negative indices to positive ones by adding the number of elements
-	void convert_to_positive(unsigned vcount, int *vertices, 
+	void convert_to_positive(unsigned vcount, int *vertices,
 							 int *texcoords, int *normals,
 							 unsigned v, unsigned n, unsigned t);
 	/// overide this function to process a face, the indices start with 0
-	virtual void process_face(unsigned vcount, int *vertices, 
+	virtual void process_face(unsigned vcount, int *vertices,
 							  int *texcoords = 0, int *normals=0);
 	/// overide this function to process a group given by name and parameter string
 	virtual void process_group(const std::string& name, const std::string& parameters);
@@ -103,10 +103,6 @@ public:
 	/// read a material file
 	virtual bool read_mtl(const std::string& file_name);
 };
-
-// Explicit instantiations (see .cxx file)
-extern template class obj_reader_generic<float>;
-extern template class obj_reader_generic<double>;
 
 typedef obj_reader_generic<float>  obj_readerf;
 typedef obj_reader_generic<double> obj_readerd;

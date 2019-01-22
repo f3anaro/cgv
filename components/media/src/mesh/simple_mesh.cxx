@@ -244,9 +244,9 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 	return color_increment;
 }
 
+// Explicit instantiations
 template class simple_mesh<float>;
 template class simple_mesh<double>;
-
 
 		}
 	}

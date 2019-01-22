@@ -31,19 +31,27 @@ namespace cgv {
 				return cgv::utils::is_double(begin, end, value);
 			}
 
-///
-template <typename T>
-bool obj_reader_generic<T>::is_double(const char* begin, const char* end, crd_type& value)
+template <>
+bool obj_reader_generic<float>::is_double(const char* begin, const char* end, crd_type& value)
 {
-	return is_double_impl(begin, end, value);
+	double valued;
+	bool res = cgv::utils::is_double(begin, end, valued);
+	value = (float)valued;
+	return res;
+}
+
+template <>
+bool obj_reader_generic<double>::is_double(const char* begin, const char* end, crd_type& value)
+{
+	return cgv::utils::is_double(begin, end, value);
 }
 
 template <typename T>
 typename obj_reader_generic<T>::v2d_type obj_reader_generic<T>::parse_v2d(const std::vector<token>& t) const
 {
 	v2d_type v(0.0);
-	t.size() > 2 && 
-	is_double(t[1].begin,t[1].end, v(0)) && 
+	t.size() > 2 &&
+	is_double(t[1].begin,t[1].end, v(0)) &&
 	is_double(t[2].begin,t[2].end, v(1));
 	return v;
 }
@@ -52,9 +60,9 @@ template <typename T>
 typename obj_reader_generic<T>::v3d_type obj_reader_generic<T>::parse_v3d(const std::vector<token>& t) const
 {
 	v3d_type v(0,0,0);
-	t.size() > 3 && 
-	is_double(t[1].begin,t[1].end, v(0)) && 
-	is_double(t[2].begin,t[2].end, v(1)) && 
+	t.size() > 3 &&
+	is_double(t[1].begin,t[1].end, v(0)) &&
+	is_double(t[2].begin,t[2].end, v(1)) &&
 	is_double(t[3].begin,t[3].end, v(2));
 	return v;
 }
@@ -63,9 +71,9 @@ template <typename T>
 typename obj_reader_generic<T>::color_type obj_reader_generic<T>::parse_color(const std::vector<token>& t, unsigned off) const
 {
 	crd_type v[4] = {0,0,0,1};
-	(t.size() > 3+off) && 
-	is_double(t[1+off].begin,t[1+off].end, v[0]) && 
-	is_double(t[2+off].begin,t[2+off].end, v[1]) && 
+	(t.size() > 3+off) &&
+	is_double(t[1+off].begin,t[1+off].end, v[0]) &&
+	is_double(t[2+off].begin,t[2+off].end, v[1]) &&
 	is_double(t[3+off].begin,t[3+off].end, v[2]);
 	if (t.size() > 4+off)
 		is_double(t[4+off].begin,t[4+off].end, v[3]);
@@ -186,7 +194,7 @@ bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 
 	std::vector<line> lines;
 	split_to_lines(content,lines);
-	
+
 	minus = 1;
 	material_index = -1;
 	group_index = -1;
@@ -215,11 +223,11 @@ bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 					process_normal(parse_v3d(tokens));
 					++nr_normals;
 					break;
-				case 't' : 
+				case 't' :
 					process_texcoord(parse_v2d(tokens));
 					++nr_texcoords;
 					break;
-				case 'c' : 
+				case 'c' :
 					process_color(parse_color(tokens));
 					break;
 				}
@@ -241,16 +249,16 @@ bool obj_reader_generic<T>::read_obj(const std::string& file_name)
 				material_index_lut[m.get_name()] = material_index;
 				have_default_material = true;
 			}
-			parse_face(tokens); 
+			parse_face(tokens);
 			break;
-		case 'g' : 
+		case 'g' :
 			if (tokens.size() > 1) {
 				std::string name = to_string(tokens[1]);
 				std::string parameters;
 				if (tokens.size() > 2)
 					parameters.assign(tokens[2].begin, tokens.back().end - tokens[2].begin);
 
-				std::map<std::string,unsigned>::iterator it = 
+				std::map<std::string,unsigned>::iterator it =
 					group_index_lut.find(name);
 
 				if (it != group_index_lut.end())
@@ -316,7 +324,7 @@ bool obj_reader_generic<T>::read_mtl(const std::string& file_name)
 					++nr_materials;
 				}
 				// if not overwrite old definition
-				else 
+				else
 					process_material(mtl, material_index_lut[mtl.get_name()]);
 			}
 			in_mtl = true;
@@ -368,7 +376,7 @@ bool obj_reader_generic<T>::read_mtl(const std::string& file_name)
 			++nr_materials;
 		}
 		// if not overwrite old definition
-		else 
+		else
 			process_material(mtl, material_index_lut[mtl.get_name()]);
 	}
 	return true;
@@ -380,9 +388,9 @@ void obj_reader_generic<T>::parse_material(const std::vector<token>& tokens)
 	if (tokens.size() < 2)
 		return;
 
-	std::map<std::string,unsigned>::iterator it = 
+	std::map<std::string,unsigned>::iterator it =
 		material_index_lut.find(to_string(tokens[1]));
-	
+
 	if(it != material_index_lut.end())
 		material_index = it->second;
 }
@@ -394,7 +402,7 @@ void obj_reader_generic<T>::parse_face(const std::vector<token>& tokens)
 	std::vector<int> normal_indices;
 	std::vector<int> texcoord_indices;
 
-	for(unsigned i = 1; i < tokens.size(); i++)	{ 
+	for(unsigned i = 1; i < tokens.size(); i++)	{
 		std::vector<token> smaller_tokens;
 		tokenizer(tokens[i]).set_sep("/").bite_all(smaller_tokens);
 		if (smaller_tokens.size() < 1)
