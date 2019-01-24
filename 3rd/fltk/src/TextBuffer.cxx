@@ -355,7 +355,7 @@ void TextBuffer::copy(TextBuffer *from_buf, int from_start, int from_end, int to
  * from the undo buffer.
  */
 int TextBuffer::undo(int *cursorPos) {
-  if (undowidget != this || !undocut && !undoinsert &&!mCanUndo) return 0;
+  if (undowidget != this || (!undocut && !undoinsert && !mCanUndo)) return 0;
 
   int ilen = undocut;
   int xlen = undoinsert;

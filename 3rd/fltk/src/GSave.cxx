@@ -23,6 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@fltk.org".
 //
 
+#include <cstdint>
 #include <config.h>
 #include <fltk/x.h>
 namespace fltk {class Image;}
@@ -77,7 +78,7 @@ GSave::GSave() {
 # error
 #endif
   data[2] = fl_current_Image;
-  data[3] = (void*)((fl_clip_w<<16)+(fl_clip_h&0xffff));
+  data[3] = (void*)(intptr_t)((fl_clip_w<<16)+(fl_clip_h&0xffff));
 }
 
 GSave::~GSave() {

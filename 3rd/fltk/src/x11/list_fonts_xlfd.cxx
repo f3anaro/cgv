@@ -46,7 +46,7 @@
 #include "IFont.h"
 using namespace fltk;
 
-// return dash number N, or pointer to ending null if none:
+// return dash number N, or pointer to ending null if fnone:
 static const char* font_word(const char* p, int n) {
 //  while (*p) {if (*p=='-') {if (!--n) break;} p++;}
   for (; *p; p++) if (*p == '-' && !--n) break; // simpler to follow logic?
@@ -92,7 +92,8 @@ static int to_nice(char* o, const char* p) {
   // collect all the attribute words:
   for (int n = 3; n <= 5; n++) {
     // get the next word:
-    if (*e) e++; x = e; e = font_word(x,1);
+    if (*e) e++;
+    x = e; e = font_word(x,1);
     int t = attribute(n,x);
     if (t < 0) {*o++ = ' '; strncpy(o,x,e-x); o += e-x;}
     else type |= t;

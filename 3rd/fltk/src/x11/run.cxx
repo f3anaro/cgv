@@ -924,7 +924,7 @@ bool fltk::warp_mouse(int x, int y) {
 // Tablet initialisation and event handling
 const int n_stylus_device = 2;
 static XID stylus_device_id[n_stylus_device] = { 0, 0 };
-static XDevice *stylus_device[n_stylus_device] = { 0, 0 };
+/* static XDevice *stylus_device[n_stylus_device] = { 0, 0 }; */
 static int stylus_motion_event,
 	   stylus_proximity_in_event, stylus_proximity_out_event;
 static float pressure_mul[n_stylus_device];

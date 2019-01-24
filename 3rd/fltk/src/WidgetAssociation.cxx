@@ -231,10 +231,8 @@ bool Widget::find(const AssociationType& at, void* data) const {
   if (!node) return false;
 
   Association* ass = node->associations;
-  Association* prev = 0;
 
   while (ass && ass->at != &at && ass->data != data) {
-    prev = ass;
     ass = ass->next;
   }
 

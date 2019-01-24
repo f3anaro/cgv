@@ -606,8 +606,8 @@ void fltk::setfont(Font* font, float psize) {
       nname = thisname;
       ptsize = size;
     } else if (!ptsize ||	// no fonts yet
-               thissize < ptsize && ptsize > size || // current font too big
-               thissize > ptsize && thissize <= size // current too small
+               (thissize < ptsize && ptsize > size) || // current font too big
+               (thissize > ptsize && thissize <= size) // current too small
       ) {
       // Use the nearest fixed size font:
       name = nname = thisname;

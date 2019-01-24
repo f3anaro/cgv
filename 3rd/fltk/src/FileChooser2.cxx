@@ -399,7 +399,7 @@ void
 FileChooser::fileListCB()
 {
   char	*filename,			// New filename
-	pathname[1024];			// Full pathname to file
+	pathname[1025];			// Full pathname to file
 
  int cval = fileList->value();
  if (cval<0  || !(filename = (char *)fileList->child(cval)->label())) return;
@@ -488,7 +488,7 @@ FileChooser::fileListCB()
 void FileChooser::fileNameCB() {
   char		*filename,	// New filename
 		*slash,		// Pointer to trailing slash
-		pathname[1024],	// Full pathname to file
+		pathname[1025],	// Full pathname to file
 		matchname[256];	// Matching filename
   int		i,		// Looping var
 		min_match,	// Minimum number of matching chars
@@ -583,7 +583,7 @@ void FileChooser::fileNameCB() {
       directory(pathname);
 
       if (filename[0]) {
-	char tempname[1024];
+	char tempname[1025];
 
 	snprintf(tempname, sizeof(tempname), "%s/%s", directory_, filename);
 	fileName->text(tempname);
@@ -739,7 +739,7 @@ void
 FileChooser::newdir()
 {
   const char	*dir;		// New directory name
-  char		pathname[1024];	// Full path of directory
+  char		pathname[1025];	// Full path of directory
 
 
   // Get a directory name from the user
@@ -1048,7 +1048,7 @@ FileChooser::value(int f)	// I - File number
   int		i;		// Looping var
   int		fcount;		// Number of selected files
   const char	*name;		// Current filename
-  static char	pathname[1024];	// Filename + directory
+  static char	pathname[1025];	// Filename + directory
 
 
   name = fileName->text();

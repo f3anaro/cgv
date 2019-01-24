@@ -2311,7 +2311,7 @@ SharedImage *
 HelpView::get_image(const char *name, int W, int H) {
   const char	*localname;		// Local filename
   char		dir[1024];		// Current directory
-  char		temp[1024],		// Temporary filename
+  char		temp[1025],		// Temporary filename
 		*tempptr;		// Pointer into temporary name
   SharedImage *ip;			// Image pointer...
 
@@ -2434,7 +2434,7 @@ HelpView::handle(int event)	// I - Event to handle
     if (strcmp(linkp->filename, filename_) != 0 && linkp->filename[0])
     {
       char	dir[1024];	// Current directory
-      char	temp[1024],	// Temporary filename
+      char	temp[2048],	// Temporary filename
 		*tempptr;	// Pointer into temporary filename
 
 
