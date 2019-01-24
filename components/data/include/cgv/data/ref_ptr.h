@@ -2,7 +2,6 @@
 
 #include "ref_counted.h"
 
-#include <cgv/defines/assert.h>
 #include <cgv/type/cond/is_base_of.h>
 #include <cgv/type/cond/has_virtual_destructor.h>
 #include <assert.h>
@@ -85,9 +84,9 @@ protected:
 	ref_ptr_impl(const ref_ptr_impl<S,false>& s)
 	{
 		// ref_ptr conversion only valid if T is base of S
-		CGV_DEFINES_ASSERT(type::cond::is_base_of<T,S>::value);
+		static_assert(type::cond::is_base_of<T,S>::value);
 		// and T has a virtual destructor
-		CGV_DEFINES_ASSERT(type::cond::has_virtual_destructor<T>::value);
+		static_assert(type::cond::has_virtual_destructor<T>::value);
 		// after validity checks, set pointer 
 		counter = reinterpret_cast<counter_type*>(s.counter);
 		// and increment reference count
@@ -134,9 +133,9 @@ protected:
 	ref_ptr_impl(const ref_ptr_impl<S,true>& s)
 	{
 		// ref_ptr conversion only valid if T is base of S
-		CGV_DEFINES_ASSERT(type::cond::is_base_of<T,S>::value);
+		static_assert(type::cond::is_base_of<T,S>::value);
 		// and T has a virtual destructor
-		CGV_DEFINES_ASSERT(type::cond::has_virtual_destructor<T>::value);
+		static_assert(type::cond::has_virtual_destructor<T>::value);
 		// after validity checks, set pointer with a very bad hack!!
 		ptr = static_cast<const ref_ptr<S,true>&>(s).operator->();
 		// and increment reference count
@@ -179,9 +178,9 @@ public:
 	template <typename S>
 	ref_ptr<S,is_ref_counted> up_cast() const {
 		// ref_ptr conversion only valid if T is base of S
-		CGV_DEFINES_ASSERT(type::cond::is_base_of<T,S>::value);
+		static_assert(type::cond::is_base_of<T,S>::value);
 		// and S has a virtual destructor
-		CGV_DEFINES_ASSERT(type::cond::has_virtual_destructor<T>::value);
+		static_assert(type::cond::has_virtual_destructor<T>::value);
 		// after validity checks, return converted pointer
 		return ref_ptr<S,is_ref_counted>(
 					*reinterpret_cast<const ref_ptr<S,is_ref_counted>*>(this)

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <iostream>
-#include <cgv/defines/assert.h>
 #include <cgv/type/func/promote.h>
 #include <cgv/type/traits/max.h>
 #include <cgv/type/info/type_name.h>

@@ -21,7 +21,6 @@ target_compile_features(defines INTERFACE cxx_std_11)
 #   "defines_ide".
 if (MSVC)
 	add_custom_target(defines_ide SOURCES
-		include/cgv/defines/assert.h
 		include/cgv/defines/deprecated.h
 		include/cgv/defines/join.h
 		include/cgv/defines/quote.h)

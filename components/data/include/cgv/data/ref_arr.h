@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cgv/defines/assert.h>
 #include <cgv/type/cond/is_base_of.h>
 #include <cgv/type/cond/has_virtual_destructor.h>
 
