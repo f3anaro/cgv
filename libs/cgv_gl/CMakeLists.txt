@@ -20,7 +20,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl)
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl/gl_context_switch.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv_gl/gl/gl_context_switch.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv_gl/gl/gl_context_switch.h
 	MAIN_DEPENDENCY include/cgv_gl/gl/gl_context_switch.ph)

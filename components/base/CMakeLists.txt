@@ -14,7 +14,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/base)
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/base/call_interface_impl.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/base/call_interface_impl.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/base/call_interface_impl.h
 	MAIN_DEPENDENCY include/cgv/base/call_interface_impl.ph)
@@ -100,7 +100,7 @@ if(WIN32)
 	# Add additional dependencies for Windows builds
 	target_link_libraries(base INTERFACE user32)
 else()
-	# On Unix systems, tell the linker where to find "dlopen" and friends 
+	# On Unix systems, tell the linker where to find "dlopen" and friends
 	target_link_libraries(base PUBLIC ${CMAKE_DL_LIBS})
 endif()
 

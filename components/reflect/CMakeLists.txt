@@ -11,7 +11,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/reflect)
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/reflect/method_interface_impl.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/reflect/method_interface_impl.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/reflect/method_interface_impl.h
 	MAIN_DEPENDENCY include/cgv/reflect/method_interface_impl.ph)

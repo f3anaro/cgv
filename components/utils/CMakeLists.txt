@@ -10,7 +10,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/utils)
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/utils/ostream_printf.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/utils/ostream_printf.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/utils/ostream_printf.h
 	MAIN_DEPENDENCY include/cgv/utils/ostream_printf.ph)

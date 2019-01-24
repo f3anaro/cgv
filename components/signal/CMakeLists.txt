@@ -10,7 +10,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal)
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal/abst_signal.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/signal/abst_signal.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal/abst_signal.h
 	MAIN_DEPENDENCY include/cgv/signal/abst_signal.ph)
@@ -18,7 +18,7 @@ add_custom_command(
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal/bool_signal.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/signal/bool_signal.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal/bool_signal.h
 	MAIN_DEPENDENCY include/cgv/signal/bool_signal.ph)
@@ -26,7 +26,7 @@ add_custom_command(
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal/rebind.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/signal/rebind.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal/rebind.h
 	MAIN_DEPENDENCY include/cgv/signal/rebind.ph)
@@ -34,7 +34,7 @@ add_custom_command(
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal/signal.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/signal/signal.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/signal/signal.h
 	MAIN_DEPENDENCY include/cgv/signal/signal.ph)

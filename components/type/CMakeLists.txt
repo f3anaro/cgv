@@ -10,7 +10,7 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/type/traits)
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/type/invalid_type.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/type/invalid_type.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/type/invalid_type.h
 	MAIN_DEPENDENCY include/cgv/type/invalid_type.ph)
@@ -18,7 +18,7 @@ add_custom_command(
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/type/traits/function_pointer.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/type/traits/function_pointer.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/type/traits/function_pointer.h
 	MAIN_DEPENDENCY include/cgv/type/traits/function_pointer.ph)
@@ -26,7 +26,7 @@ add_custom_command(
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/include/cgv/type/traits/method_pointer.h
 	COMMAND ppp
-		-CGV_DIR=${CMAKE_SOURCE_DIR}
+		-CGV_DIR=${PROJECT_SOURCE_DIR}/../..
 		${CMAKE_CURRENT_SOURCE_DIR}/include/cgv/type/traits/method_pointer.ph
 		${CMAKE_CURRENT_BINARY_DIR}/include/cgv/type/traits/method_pointer.h
 	MAIN_DEPENDENCY include/cgv/type/traits/method_pointer.ph)
