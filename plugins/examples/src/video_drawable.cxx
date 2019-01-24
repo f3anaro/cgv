@@ -231,5 +231,5 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<video_drawable> video_drawable_fac("new/video drawable", 'V', true);
+static factory_registration<video_drawable> video_drawable_fac("new/video drawable", 'V', true);
 

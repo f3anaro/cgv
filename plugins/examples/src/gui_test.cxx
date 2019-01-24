@@ -134,4 +134,4 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<gui_test> gp_fac("gui_test", "shortcut='Shift-Ctrl-G';menu_text='new/gui test'", true);
+static factory_registration<gui_test> gp_fac("gui_test", "shortcut='Shift-Ctrl-G';menu_text='new/gui test'", true);

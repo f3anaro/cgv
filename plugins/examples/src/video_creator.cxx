@@ -167,7 +167,7 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<video_creator> video_creator_fac("new/video creater", 'Y', true);
+static factory_registration<video_creator> video_creator_fac("new/video creater", 'Y', true);
 
 /*
 	cgv::media::video::video_writer writer("avi");

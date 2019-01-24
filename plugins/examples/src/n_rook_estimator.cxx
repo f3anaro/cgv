@@ -302,5 +302,5 @@ public:
 
 #include <cgv/base/register.h>
 
-extern factory_registration<n_rook_estimator> nr_fac("new/n_rook_estimator", 'Q', true);
+static factory_registration<n_rook_estimator> nr_fac("new/n_rook_estimator", 'Q', true);
 

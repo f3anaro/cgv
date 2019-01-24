@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cgv/base/action.h>
+#include <cgv/base/traverser.h>
 
 namespace cgv {
 	namespace base {

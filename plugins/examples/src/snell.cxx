@@ -124,4 +124,4 @@ public:
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern factory_registration<snell_demo> gp_fac("snell", "shortcut='Shift-Ctrl-S';menu_text='new/snell demo'", true); 
+static factory_registration<snell_demo> gp_fac("snell", "shortcut='Shift-Ctrl-S';menu_text='new/snell demo'", true); 

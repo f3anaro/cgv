@@ -85,8 +85,6 @@ public:
 	}
 };
 
-#include <windows.h>
-
 struct post_thread : public thread
 {
 	std::string address;
@@ -255,7 +253,7 @@ public:
 };
 
 /// register web server test
-extern factory_registration<web_server_test> web_server_test_fac("new/web server test", 'W', true);
+static factory_registration<web_server_test> web_server_test_fac("new/web server test", 'W', true);
 
 
 

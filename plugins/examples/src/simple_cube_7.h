@@ -106,4 +106,4 @@ public:
 
 // register a newly created cube with a dummy constructor 
 // argument to avoid elimination of this code by the compiler
-extern factory_registration<simple_cube> simp_cube_factory("new/simple cube", 'C', false);
+static factory_registration<simple_cube> simp_cube_factory("new/simple cube", 'C', false);

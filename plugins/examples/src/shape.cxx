@@ -246,4 +246,4 @@ void shape::create_gui()
 #include <cgv/base/register.h>
 
 /// register a factory to create new cubes
-extern factory_registration_1<shape,const char*> shape_fac("new/shape", 'S', "shape");
+static factory_registration_1<shape,const char*> shape_fac("new/shape", 'S', "shape");

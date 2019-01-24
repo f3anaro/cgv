@@ -67,6 +67,7 @@ set(as_subproject
 	cg_gamepad
 	cgv_gl
 	cgv_reflect_types
+	delaunay
 	libppp
 	gamepad
 	glsu
@@ -204,7 +205,7 @@ add_subdirectory(plugins/cmi_io)
 # add_subdirectory(plugins/crg_spherical_view)
 add_subdirectory(plugins/crg_stereo_view)
 # add_subdirectory(plugins/crg_view)
-# add_subdirectory(plugins/examples)
+add_subdirectory(plugins/examples)
 
 # Plugins only supported on Windows platforms
 if (WIN32)
