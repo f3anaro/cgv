@@ -394,29 +394,25 @@ public:
 	///in place addition of a scalar s
 	vec<T>& operator += (const T& s)			
 	{
-		 for (unsigned i=0;i<_size;++i) 
-			_data[i] += s; 
-		return *this; 
+		 for (unsigned i=0;i<_size;++i) { _data[i] += s; } return *this; 
 	}
 
 	///in place subtraction by scalar s
 	vec<T>& operator -= (const T& s)
 	{
-		for (unsigned i=0;i<_size; ++i) 
-			_data[i] -= s; 
-		return *this; 
+		for (unsigned i=0;i<_size; ++i) { _data[i] -= s; } return *this; 
 	}
 
 	///in place multiplication with s
 	vec<T>& operator *= (const T& s)
 	{ 
-		for (unsigned i=0;i<_size;++i) _data[i] *= s; return *this; 
+		for (unsigned i=0;i<_size;++i) { _data[i] *= s; } return *this; 
 	}
 
 	///in place division by scalar s
 	vec<T>& operator /= (const T& s)			
 	{ 		
-		for (unsigned i=0;i<_size;++i) _data[i] /= s; return *this; 
+		for (unsigned i=0;i<_size;++i) { _data[i] /= s; } return *this; 
 	}
 
 	///in place vector addition
@@ -424,7 +420,7 @@ public:
 	vec<T>& operator += (const vec<S>& v) 
 	{ 
 		assert(_size == v._size);
-		for (unsigned i=0;i<_size;++i) _data[i] += v(i); return *this; 
+		for (unsigned i=0;i<_size;++i) { _data[i] += v(i); } return *this; 
 	}
 
 	///in place vector subtraction
@@ -432,7 +428,7 @@ public:
 	vec<T>& operator -= (const vec<S>& v) 
 	{
 		assert(_size == v._size);
-		for (unsigned i=0;i<_size;++i) _data[i] -= v(i); return *this; 
+		for (unsigned i=0;i<_size;++i) { _data[i] -= v(i); } return *this; 
 	}
 
 	///in place componentwise vector multiplication
@@ -440,7 +436,7 @@ public:
 	vec<T>& operator *= (const vec<S>& v) 
 	{
 		assert(_size == v._size);
-		 for (unsigned i=0;i<_size;++i) _data[i] *= v(i); return *this; 
+		 for (unsigned i=0;i<_size;++i) { _data[i] *= v(i); } return *this; 
 	}
 
 	///in place componentwise vector division
@@ -448,7 +444,7 @@ public:
 	vec<T>& operator /= (const vec<S>& v) 
 	{
 		assert(_size == v._size);
-		 for (unsigned i=0;i<_size;++i) _data[i] /= v(i); return *this; 
+		 for (unsigned i=0;i<_size;++i) { _data[i] /= v(i); } return *this; 
 	}
 	
 	///vector addition
