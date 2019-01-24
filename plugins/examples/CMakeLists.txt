@@ -121,11 +121,11 @@ if(REGISTER_SHADERS OR NOT ${BUILD_SHARED_LIBS})
 	foreach(shader IN LISTS SHADERS)
 		add_custom_command(
 			OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${shader}.cxx
-			COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/tool/res_prep/strres_prep.py
+			COMMAND ${PYTHON_EXECUTABLE} ${PROJECT_SOURCE_DIR}/../../tool/strres_prep.py
 				${CMAKE_CURRENT_SOURCE_DIR}/${shader}
 				${CMAKE_CURRENT_BINARY_DIR}/${shader}.cxx
 			MAIN_DEPENDENCY ${shader}
-			DEPENDS ${CMAKE_SOURCE_DIR}/tool/res_prep/strres_prep.py)
+			DEPENDS ${PROJECT_SOURCE_DIR}/../../tool/strres_prep.py)
 
 		list(APPEND RESOURCES ${CMAKE_CURRENT_BINARY_DIR}/${shader}.cxx)
 	endforeach()
