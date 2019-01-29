@@ -84,9 +84,9 @@ protected:
 	ref_ptr_impl(const ref_ptr_impl<S,false>& s)
 	{
 		// ref_ptr conversion only valid if T is base of S
-		static_assert(type::cond::is_base_of<T,S>::value);
+		static_assert(type::cond::is_base_of<T,S>::value, "Must be base class");
 		// and T has a virtual destructor
-		static_assert(type::cond::has_virtual_destructor<T>::value);
+		static_assert(type::cond::has_virtual_destructor<T>::value, "Must have virtual destructor");
 		// after validity checks, set pointer 
 		counter = reinterpret_cast<counter_type*>(s.counter);
 		// and increment reference count
@@ -133,9 +133,9 @@ protected:
 	ref_ptr_impl(const ref_ptr_impl<S,true>& s)
 	{
 		// ref_ptr conversion only valid if T is base of S
-		static_assert(type::cond::is_base_of<T,S>::value);
+		static_assert(type::cond::is_base_of<T,S>::value, "Must be base class");
 		// and T has a virtual destructor
-		static_assert(type::cond::has_virtual_destructor<T>::value);
+		static_assert(type::cond::has_virtual_destructor<T>::value, "Must have virtual destructor");
 		// after validity checks, set pointer with a very bad hack!!
 		ptr = static_cast<const ref_ptr<S,true>&>(s).operator->();
 		// and increment reference count
@@ -178,9 +178,9 @@ public:
 	template <typename S>
 	ref_ptr<S,is_ref_counted> up_cast() const {
 		// ref_ptr conversion only valid if T is base of S
-		static_assert(type::cond::is_base_of<T,S>::value);
+		static_assert(type::cond::is_base_of<T,S>::value, "Must be base class");
 		// and S has a virtual destructor
-		static_assert(type::cond::has_virtual_destructor<T>::value);
+		static_assert(type::cond::has_virtual_destructor<T>::value, "Must have virtual constructor");
 		// after validity checks, return converted pointer
 		return ref_ptr<S,is_ref_counted>(
 					*reinterpret_cast<const ref_ptr<S,is_ref_counted>*>(this)
