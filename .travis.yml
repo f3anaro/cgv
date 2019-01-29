@@ -1,15 +1,15 @@
 addons:
-	apt:
-		packages:
-			- doxygen
+  apt:
+    packages:
+      - doxygen
 
 script:
-	- doxygen doc/cgv.dox
+  - doxygen doc/cgv.dox
 
 deploy:
-	provider: pages
-	skip_cleanup: true
-	local_dir: doc/html
-	github_token: $GH_REPO_TOKEN
-	on:
-		branch: modern-cmake
+  provider: pages
+  skip_cleanup: true
+  local_dir: doc/html
+  github_token: $GH_REPO_TOKEN
+  on:
+    branch: modern-cmake
