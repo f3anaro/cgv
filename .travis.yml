@@ -1,16 +1,48 @@
-addons:
-  apt:
-    packages:
-      - doxygen
-      - graphviz
+language: cpp
 
-script:
-  - doxygen doc/cgv.dox
+stages:
+  - compile
+  - deploy
 
-deploy:
-  provider: pages
-  skip_cleanup: true
-  local_dir: doc/html
-  github_token: $GH_REPO_TOKEN
-  on:
-    branch: modern-cmake
+jobs:
+  include:
+    - stage: compile
+      addons:
+        apt:
+          packages:
+            - build-essential
+            - wget
+            - ca-certificates
+            - make
+            - libgl1-mesa-dev
+            - libglu1-mesa-dev
+            - libglew-dev
+            - libxi-dev
+            - libjpeg-dev
+            - libpng-dev
+            - libtiff-dev
+            - libz-dev
+      before_install:
+        - wget -q https://github.com/Kitware/CMake/releases/download/v3.13.0/cmake-3.13.0-Linux-x86_64.sh
+        - sudo sh cmake-3.13.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
+        - rm cmake-3.13.0-Linux-x86_64.sh
+        - cmake --version
+      script:
+        - mkdir build/
+        - cd build/
+        - cmake ..
+        - make
+    - stage: deploy
+      script: doxygen doc/cgv.dox
+      addons:
+        apt:
+          packages:
+            - doxygen
+            - graphviz
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        local_dir: doc/html
+        github_token: $GH_REPO_TOKEN
+        on:
+          branch: modern-cmake
