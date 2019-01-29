@@ -23,7 +23,7 @@ jobs:
             - libtiff-dev
             - libz-dev
       before_install:
-        - wget https://github.com/Kitware/CMake/releases/download/v3.13.0/cmake-3.13.0-Linux-x86_64.sh
+        - wget -q https://github.com/Kitware/CMake/releases/download/v3.13.0/cmake-3.13.0-Linux-x86_64.sh
         - sudo sh cmake-3.13.0-Linux-x86_64.sh --prefix=/usr/local --exclude-subdir
         - rm cmake-3.13.0-Linux-x86_64.sh
         - cmake --version
