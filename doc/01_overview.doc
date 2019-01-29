@@ -2,7 +2,7 @@
 
 using namespace cgv;
 
-/*! \page overview The Computer Graphics and Visualization Framework
+/*! \mainpage The Computer Graphics and Visualization Framework
 
 \section cgv Basics
 
