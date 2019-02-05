@@ -1,0 +1,13 @@
+<map id="cgv::render::vertex_buffer" name="cgv::render::vertex_buffer">
+<area shape="rect" id="node2" href="$a00252.html" title="base interface for a vertex buffer " alt="" coords="1291,134,1421,175"/>
+<area shape="rect" id="node3" href="$a00241.html" title="base interface for all render components " alt="" coords="1109,134,1240,175"/>
+<area shape="rect" id="node4" href="$a00232.html" title="cgv::render::context" alt="" coords="877,141,1016,168"/>
+<area shape="rect" id="node5" href="$a00255.html" title="connect to the write signal of the callback stream in order to process all text written to the stream..." alt="" coords="565,15,707,57"/>
+<area shape="rect" id="node6" href="$a00256.html" title="simple implementation of a streambuf that sends all written text to the write signal that is referenc..." alt="" coords="232,5,373,46"/>
+<area shape="rect" id="node7" href="$a00144.html" title="&gt;simple class to hold the properties of a light source " alt="" coords="571,101,701,142"/>
+<area shape="rect" id="node8" href="$a00129.html" title="cgv::media::color\&lt;\l float, RGB \&gt;" alt="" coords="237,154,368,195"/>
+<area shape="rect" id="node12" href="$a00147.html" title="simple class to hold the material properties of a phong material " alt="" coords="571,166,701,207"/>
+<area shape="rect" id="node9" href="$a00134.html" title="cgv::media::extinction\l_alpha_interface\&lt; color\l\&lt; float, cm, am \&gt; \&gt;" alt="" coords="5,147,163,203"/>
+<area shape="rect" id="node10" href="$a00108.html" title="cgv::math::fvec\&lt; float, 3 \&gt;" alt="" coords="214,72,391,99"/>
+<area shape="rect" id="node11" href="$a00073.html" title="cgv::data::ref_ptr\l\&lt; const font_face \&gt;" alt="" coords="568,231,704,273"/>
+</map>

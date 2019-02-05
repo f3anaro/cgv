@@ -1,0 +1,4 @@
+<map id="cgv::media::illum::phong_material" name="cgv::media::illum::phong_material">
+<area shape="rect" id="node2" href="$a00129.html" title="cgv::media::color\&lt;\l float, RGB, OPACITY \&gt;" alt="" coords="5,113,171,154"/>
+<area shape="rect" id="node3" href="$a00134.html" title="cgv::media::extinction\l_alpha_interface\&lt; color\l\&lt; float, cm, am \&gt; \&gt;" alt="" coords="9,5,167,61"/>
+</map>

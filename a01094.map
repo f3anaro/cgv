@@ -1,0 +1,6 @@
+<map id="cgv::media::video::video_reader_listener" name="cgv::media::video::video_reader_listener">
+<area shape="rect" id="node2" href="$a00017.html" title="cgv::base::base" alt="" coords="103,104,217,131"/>
+<area shape="rect" id="node3" href="$a00072.html" title="cgv::data::ref_counted" alt="" coords="5,13,157,40"/>
+<area shape="rect" id="node4" href="$a00229.html" title="Derive from this class to announce implementation of the method self_reflect. " alt="" coords="182,6,297,47"/>
+<area shape="rect" id="node5" href="$a00043.html" title="interfaces that allows to listen to registration events. " alt="" coords="242,97,392,138"/>
+</map>

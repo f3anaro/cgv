@@ -1,0 +1,4 @@
+<map id="cgv::media::illum::surface_material" name="cgv::media::illum::surface_material">
+<area shape="rect" id="node2" href="$a00148.html" title="simple class to hold the material properties of a phong material " alt="" coords="5,97,176,138"/>
+<area shape="rect" id="node3" href="$a00249.html" title="class that extends obj_material with the management of textures " alt="" coords="19,187,161,229"/>
+</map>

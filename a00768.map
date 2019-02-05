@@ -1,0 +1,8 @@
+<map id="cgv::base::registration_listener" name="cgv::base::registration_listener">
+<area shape="rect" id="node2" href="$a00090.html" title="gui independent group class which is a container for gui elements " alt="" coords="213,5,345,32"/>
+<area shape="rect" id="node4" href="$a00155.html" title="interfaces that allows to listen to registration events " alt="" coords="210,57,347,98"/>
+<area shape="rect" id="node5" href="$a00156.html" title="interfaces that allows to listen to registration events " alt="" coords="210,122,347,163"/>
+<area shape="rect" id="node6" href="$a00189.html" title="interfaces that allows to listen to registration events " alt="" coords="206,187,351,229"/>
+<area shape="rect" id="node7" href="$a00191.html" title="interfaces that allows to listen to registration events " alt="" coords="208,253,349,294"/>
+<area shape="rect" id="node3" href="$a00102.html" title="gui independent window class " alt="" coords="400,5,520,32"/>
+</map>

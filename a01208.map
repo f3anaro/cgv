@@ -1,0 +1,7 @@
+<map id="cgv::render::performance_monitor" name="cgv::render::performance_monitor">
+<area shape="rect" id="node2" href="$a00298.html" title="cgv::utils::stopwatch" alt="" coords="274,5,417,32"/>
+<area shape="rect" id="node3" href="$a00129.html" title="cgv::media::color\&lt;\l float \&gt;" alt="" coords="280,57,411,98"/>
+<area shape="rect" id="node4" href="$a00134.html" title="cgv::media::extinction\l_alpha_interface\&lt; color\l\&lt; float, RGB, am \&gt; \&gt;" alt="" coords="12,49,169,105"/>
+<area shape="rect" id="node5" href="$a00013.html" title="cgv::media::axis_aligned\l_box\&lt; int, 2 \&gt;" alt="" coords="262,122,429,163"/>
+<area shape="rect" id="node6" href="$a00108.html" title="cgv::math::fvec\&lt; int, N \&gt;" alt="" coords="6,129,175,156"/>
+</map>

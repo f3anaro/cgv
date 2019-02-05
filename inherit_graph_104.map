@@ -1,0 +1,9 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$a00178.html" title="read only implementation of rgb color interface including automatic conversion " alt="" coords="5,4,152,60"/>
+<area shape="rect" id="node2" href="$a00142.html" title="read only implementation of hls color interface including automatic conversion " alt="" coords="200,4,347,60"/>
+<area shape="rect" id="node3" href="$a00193.html" title="read only implementation of xyz color interface including automatic conversion " alt="" coords="395,4,546,60"/>
+<area shape="rect" id="node4" href="$a00173.html" title="read only implementation of opacity alpha interface including automatic conversion ..." alt="" coords="595,4,752,60"/>
+<area shape="rect" id="node5" href="$a00184.html" title="read only implementation of transparency alpha interface including automatic conversion ..." alt="" coords="801,4,970,60"/>
+<area shape="rect" id="node6" href="$a00135.html" title="read only implementation of extinction alpha interface including automatic conversion ..." alt="" coords="1019,4,1176,60"/>
+<area shape="rect" id="node7" href="$a00129.html" title="cgv::media::color\&lt;\l T, cm, AlphaModel \&gt;" alt="" coords="1225,11,1373,53"/>
+</map>

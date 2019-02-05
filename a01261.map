@@ -1,0 +1,3 @@
+<map id="cgv::type::func::promote_const&lt; T1, T2 &gt;" name="cgv::type::func::promote_const&lt; T1, T2 &gt;">
+<area shape="rect" id="node2" href="$a00263.html" title="cgv::type::ctrl::if\l_\&lt; cond::is_const\&lt; T1\l \&gt;::value, make_const\l\&lt; T2 \&gt;::type, drop_const\l\&lt; T2 \&gt;::type \&gt;" alt="" coords="6,5,173,91"/>
+</map>

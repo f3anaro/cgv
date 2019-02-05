@@ -1,0 +1,4 @@
+<map id="cgv::os::display_configuration" name="cgv::os::display_configuration">
+<area shape="rect" id="node2" href="$a00199.html" title="the display position gives the signed x and y coordinates on the virtual screen " alt="" coords="5,5,171,32"/>
+<area shape="rect" id="node3" href="$a00198.html" title="a display mode describes a valid setting of the display parameters " alt="" coords="195,5,348,32"/>
+</map>

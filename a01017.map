@@ -1,0 +1,5 @@
+<map id="cgv::media::illum::obj_material" name="cgv::media::illum::obj_material">
+<area shape="rect" id="node2" href="$a00146.html" title="&gt;simple class to hold the material properties of a phong material " alt="" coords="23,262,152,303"/>
+<area shape="rect" id="node3" href="$a00129.html" title="cgv::media::color\&lt;\l float, RGB, OPACITY \&gt;" alt="" coords="5,113,171,154"/>
+<area shape="rect" id="node4" href="$a00134.html" title="cgv::media::extinction\l_alpha_interface\&lt; color\l\&lt; float, cm, am \&gt; \&gt;" alt="" coords="9,5,167,61"/>
+</map>

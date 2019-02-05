@@ -1,0 +1,8 @@
+<map id="cgv::media::hls_color_interface&lt; color&lt; T, cm, am &gt; &gt;" name="cgv::media::hls_color_interface&lt; color&lt; T, cm, am &gt; &gt;">
+<area shape="rect" id="node3" href="$a00193.html" title="read only implementation of xyz color interface including automatic conversion " alt="" coords="14,213,164,269"/>
+<area shape="rect" id="node2" href="$a00178.html" title="read only implementation of rgb color interface including automatic conversion " alt="" coords="16,5,163,61"/>
+<area shape="rect" id="node4" href="$a00173.html" title="read only implementation of opacity alpha interface including automatic conversion ..." alt="" coords="11,317,168,373"/>
+<area shape="rect" id="node5" href="$a00184.html" title="read only implementation of transparency alpha interface including automatic conversion ..." alt="" coords="5,421,173,477"/>
+<area shape="rect" id="node6" href="$a00135.html" title="read only implementation of extinction alpha interface including automatic conversion ..." alt="" coords="11,525,168,581"/>
+<area shape="rect" id="node7" href="$a00129.html" title="cgv::media::color\&lt;\l T, cm, AlphaModel \&gt;" alt="" coords="15,630,163,671"/>
+</map>

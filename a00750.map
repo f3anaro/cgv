@@ -1,0 +1,9 @@
+<map id="cgv::base::group" name="cgv::base::group">
+<area shape="rect" id="node7" href="$a00090.html" title="gui independent group class which is a container for gui elements " alt="" coords="94,395,225,421"/>
+<area shape="rect" id="node2" href="$a00038.html" title="cgv::base::node" alt="" coords="103,245,217,272"/>
+<area shape="rect" id="node3" href="$a00037.html" title="cgv::base::named" alt="" coords="97,171,223,197"/>
+<area shape="rect" id="node4" href="$a00017.html" title="cgv::base::base" alt="" coords="103,96,217,123"/>
+<area shape="rect" id="node5" href="$a00072.html" title="cgv::data::ref_counted" alt="" coords="5,13,157,40"/>
+<area shape="rect" id="node6" href="$a00229.html" title="Derive from this class to announce implementation of the method self_reflect. " alt="" coords="182,6,297,47"/>
+<area shape="rect" id="node8" href="$a00102.html" title="gui independent window class " alt="" coords="100,469,220,496"/>
+</map>

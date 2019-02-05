@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$a00066.html" title="cgv::data::data_view_base" alt="" coords="5,84,184,111"/>
+<area shape="rect" id="node2" href="$a00067.html" title="cgv::data::data_view\l_impl\&lt; D, P \&gt;" alt="" coords="253,5,395,46"/>
+<area shape="rect" id="node3" href="$a00067.html" title="cgv::data::data_view\l_impl\&lt; const_data_view,\l const unsigned char * \&gt;" alt="" coords="241,69,407,125"/>
+<area shape="rect" id="node5" href="$a00067.html" title="cgv::data::data_view\l_impl\&lt; data_view, unsigned\l char * \&gt;" alt="" coords="232,149,416,205"/>
+<area shape="rect" id="node4" href="$a00063.html" title="cgv::data::const_data_view" alt="" coords="465,84,647,111"/>
+<area shape="rect" id="node6" href="$a00065.html" title="cgv::data::data_view" alt="" coords="485,164,627,191"/>
+</map>

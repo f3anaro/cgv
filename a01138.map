@@ -1,0 +1,5 @@
+<map id="cgv::reflect::abst_enum_reflection_traits" name="cgv::reflect::abst_enum_reflection_traits">
+<area shape="rect" id="node3" href="$a00224.html" title="cgv::reflect::reflection\l_traits_impl\&lt; T, abst_enum\l_reflection_traits \&gt;" alt="" coords="5,187,187,243"/>
+<area shape="rect" id="node2" href="$a00211.html" title="abstract interface for type reflection with basic type management and optional string conversion ..." alt="" coords="36,6,156,47"/>
+<area shape="rect" id="node4" href="$a00213.html" title="this type specific reflection traits class is used by the reflect_enum function to reflect enum types..." alt="" coords="21,291,171,333"/>
+</map>

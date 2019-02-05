@@ -1,0 +1,48 @@
+<map id="cgv::base::base" name="cgv::base::base">
+<area shape="rect" id="node4" href="$a00018.html" title="cgv::base::base_generator" alt="" coords="377,41,553,68"/>
+<area shape="rect" id="node5" href="$a00023.html" title="cgv::base::console" alt="" coords="399,92,531,119"/>
+<area shape="rect" id="node6" href="$a00025.html" title="interface for a factory that allows to create objects derived from cgv::base::base ..." alt="" coords="402,143,529,169"/>
+<area shape="rect" id="node10" href="$a00037.html" title="cgv::base::named" alt="" coords="402,193,529,220"/>
+<area shape="rect" id="node25" href="$a00039.html" title="abstract base class of helpers to perform delayed registration and creation of objects in case that t..." alt="" coords="368,244,563,271"/>
+<area shape="rect" id="node26" href="$a00051.html" title="structure used to register a test function " alt="" coords="411,295,520,321"/>
+<area shape="rect" id="node27" href="$a00089.html" title="abstract base class for gui drivers " alt="" coords="399,345,531,372"/>
+<area shape="rect" id="node28" href="$a00137.html" title="interface class for fonts. Construct font with the find_font function " alt="" coords="392,396,539,423"/>
+<area shape="rect" id="node29" href="$a00138.html" title="interface class for different faces of a font, which can be constructed from a font ..." alt="" coords="376,447,555,473"/>
+<area shape="rect" id="node30" href="$a00139.html" title="provides the methods to create and search for fonts " alt="" coords="392,498,539,539"/>
+<area shape="rect" id="node31" href="$a00149.html" title="abstract interface for image readers " alt="" coords="397,563,534,605"/>
+<area shape="rect" id="node33" href="$a00150.html" title="abstract interface for image readers " alt="" coords="397,629,534,670"/>
+<area shape="rect" id="node35" href="$a00153.html" title="cgv::media::image::\limage_reader" alt="" coords="397,694,534,735"/>
+<area shape="rect" id="node36" href="$a00154.html" title="the image writer chooses a specific writer automatically based on the extension of the given file nam..." alt="" coords="397,759,534,801"/>
+<area shape="rect" id="node37" href="$a00155.html" title="interfaces that allows to listen to registration events " alt="" coords="397,825,534,866"/>
+<area shape="rect" id="node38" href="$a00156.html" title="interfaces that allows to listen to registration events " alt="" coords="397,890,534,931"/>
+<area shape="rect" id="node39" href="$a00186.html" title="abstract interface for a video reader " alt="" coords="399,955,532,997"/>
+<area shape="rect" id="node40" href="$a00187.html" title="abstract interface for video writers " alt="" coords="399,1021,532,1062"/>
+<area shape="rect" id="node41" href="$a00188.html" title="the video reader chooses a specific reader automatically based on the extension of the given file nam..." alt="" coords="399,1086,532,1127"/>
+<area shape="rect" id="node42" href="$a00189.html" title="interfaces that allows to listen to registration events " alt="" coords="393,1151,538,1193"/>
+<area shape="rect" id="node43" href="$a00190.html" title="the image writer chooses a specific writer automatically based on the extension of the given file nam..." alt="" coords="399,1217,532,1258"/>
+<area shape="rect" id="node44" href="$a00191.html" title="interfaces that allows to listen to registration events " alt="" coords="395,1282,536,1323"/>
+<area shape="rect" id="node45" href="$a00235.html" title="cgv::render::context\l_creation_config" alt="" coords="396,1347,535,1389"/>
+<area shape="rect" id="node47" href="$a00244.html" title="cgv::render::shader\l_config" alt="" coords="398,1413,533,1454"/>
+<area shape="rect" id="node2" href="$a00072.html" title="cgv::data::ref_counted" alt="" coords="5,640,157,667"/>
+<area shape="rect" id="node3" href="$a00229.html" title="Derive from this class to announce implementation of the method self_reflect. " alt="" coords="23,691,139,733"/>
+<area shape="rect" id="node7" href="$a00026.html" title="implementation of factory for objects of type T using the standard constructor " alt="" coords="631,5,758,46"/>
+<area shape="rect" id="node8" href="$a00027.html" title="implementation of factory for objects of type T using a constructor with one argument of type CA ..." alt="" coords="631,70,758,111"/>
+<area shape="rect" id="node9" href="$a00028.html" title="implementation of factory for objects of type T using a constructor with two arguments of types CA1 a..." alt="" coords="611,135,778,177"/>
+<area shape="rect" id="node11" href="$a00038.html" title="cgv::base::node" alt="" coords="637,201,752,228"/>
+<area shape="rect" id="node24" href="$a00097.html" title="abstract base class for text editors " alt="" coords="626,252,763,279"/>
+<area shape="rect" id="node12" href="$a00033.html" title="cgv::base::group" alt="" coords="835,100,954,127"/>
+<area shape="rect" id="node15" href="$a00078.html" title="type independent &amp;base class of all views " alt="" coords="827,201,962,228"/>
+<area shape="rect" id="node23" href="$a00081.html" title="gui independent button class that provides a click signal " alt="" coords="839,252,951,279"/>
+<area shape="rect" id="node13" href="$a00090.html" title="gui independent group class which is a container for gui elements " alt="" coords="1021,75,1153,101"/>
+<area shape="rect" id="node14" href="$a00102.html" title="gui independent window class " alt="" coords="1224,75,1344,101"/>
+<area shape="rect" id="node16" href="$a00076.html" title="gui and type independent base class of all controls " alt="" coords="1013,125,1160,152"/>
+<area shape="rect" id="node19" href="$a00101.html" title="class for gui elements that view values of the type specified in the template argument ..." alt="" coords="1019,176,1154,203"/>
+<area shape="rect" id="node20" href="$a00101.html" title="cgv::gui::view\&lt; bool \&gt;" alt="" coords="1011,227,1162,253"/>
+<area shape="rect" id="node21" href="$a00101.html" title="cgv::gui::view\&lt; cgv\l::type::int32_type \&gt;" alt="" coords="1019,278,1155,319"/>
+<area shape="rect" id="node22" href="$a00101.html" title="cgv::gui::view\&lt; std\l::string \&gt;" alt="" coords="1020,343,1153,385"/>
+<area shape="rect" id="node17" href="$a00082.html" title="cgv::gui::control\&lt; T \&gt;" alt="" coords="1211,125,1357,152"/>
+<area shape="rect" id="node18" href="$a00082.html" title="cgv::gui::control\&lt;\l bool \&gt;" alt="" coords="1223,177,1345,218"/>
+<area shape="rect" id="node32" href="$a00151.html" title="implements the image reader interface for bmp files " alt="" coords="626,563,763,605"/>
+<area shape="rect" id="node34" href="$a00152.html" title="implements the image writer interface for bmp files " alt="" coords="626,629,763,670"/>
+<area shape="rect" id="node46" href="$a00242.html" title="cgv::render::render\l_config" alt="" coords="629,1347,760,1389"/>
+</map>

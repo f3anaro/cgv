@@ -1,0 +1,3 @@
+<map id="cgv::signal::callback_stream" name="cgv::signal::callback_stream">
+<area shape="rect" id="node2" href="$a00256.html" title="simple implementation of a streambuf that sends all written text to the write signal that is referenc..." alt="" coords="4,6,144,47"/>
+</map>

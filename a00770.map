@@ -1,0 +1,8 @@
+<map id="cgv::base::factory" name="cgv::base::factory">
+<area shape="rect" id="node5" href="$a00026.html" title="implementation of factory for objects of type T using the standard constructor " alt="" coords="565,5,691,46"/>
+<area shape="rect" id="node6" href="$a00027.html" title="implementation of factory for objects of type T using a constructor with one argument of type CA ..." alt="" coords="565,70,691,111"/>
+<area shape="rect" id="node7" href="$a00028.html" title="implementation of factory for objects of type T using a constructor with two arguments of types CA1 a..." alt="" coords="545,135,711,177"/>
+<area shape="rect" id="node2" href="$a00017.html" title="cgv::base::base" alt="" coords="205,77,320,104"/>
+<area shape="rect" id="node3" href="$a00072.html" title="cgv::data::ref_counted" alt="" coords="5,48,157,75"/>
+<area shape="rect" id="node4" href="$a00229.html" title="Derive from this class to announce implementation of the method self_reflect. " alt="" coords="23,99,139,141"/>
+</map>

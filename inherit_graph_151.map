@@ -1,0 +1,4 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$a00263.html" title="cgv::type::ctrl::if\l_\&lt; cond::is_const\&lt; T1\l \&gt;::value, make_const\l\&lt; T2 \&gt;::type, drop_const\l\&lt; T2 \&gt;::type \&gt;" alt="" coords="6,5,173,91"/>
+<area shape="rect" id="node2" href="$a00278.html" title="cgv::type::func::promote\l_const\&lt; T1, T2 \&gt;" alt="" coords="222,27,386,69"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="cgv::gui::control&lt; T &gt;" name="cgv::gui::control&lt; T &gt;">
+<area shape="rect" id="node2" href="$a00076.html" title="gui and type independent base class of all controls " alt="" coords="87,411,233,437"/>
+<area shape="rect" id="node3" href="$a00078.html" title="type independent &amp;base class of all views " alt="" coords="93,332,227,359"/>
+<area shape="rect" id="node4" href="$a00038.html" title="cgv::base::node" alt="" coords="103,253,217,280"/>
+<area shape="rect" id="node5" href="$a00037.html" title="cgv::base::named" alt="" coords="97,176,223,203"/>
+<area shape="rect" id="node6" href="$a00017.html" title="cgv::base::base" alt="" coords="103,99,217,125"/>
+<area shape="rect" id="node7" href="$a00072.html" title="cgv::data::ref_counted" alt="" coords="5,13,157,40"/>
+<area shape="rect" id="node8" href="$a00229.html" title="Derive from this class to announce implementation of the method self_reflect. " alt="" coords="182,6,297,47"/>
+</map>

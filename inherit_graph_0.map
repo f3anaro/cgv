@@ -1,0 +1,10 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$a00014.html" title="cgv::base::action" alt="" coords="5,155,128,181"/>
+<area shape="rect" id="node2" href="$a00019.html" title="cgv::base::base_method\l_action\&lt; X \&gt;" alt="" coords="185,118,351,159"/>
+<area shape="rect" id="node8" href="$a00032.html" title="simple action implementation that adds nodes implementing X to a results vector " alt="" coords="177,184,359,211"/>
+<area shape="rect" id="node3" href="$a00035.html" title="cgv::base::method_action\l\&lt; X, T1 \&gt;" alt="" coords="409,85,581,126"/>
+<area shape="rect" id="node6" href="$a00036.html" title="cgv::base::method_action\l_2\&lt; X, T1, T2 \&gt;" alt="" coords="409,150,581,191"/>
+<area shape="rect" id="node4" href="$a00034.html" title="cgv::base::matched\l_method_action\&lt; X, R1,\l R2, T1 \&gt;" alt="" coords="635,5,799,61"/>
+<area shape="rect" id="node5" href="$a00049.html" title="cgv::base::single_method\l_action\&lt; X, R, T1 \&gt;" alt="" coords="632,85,803,126"/>
+<area shape="rect" id="node7" href="$a00050.html" title="cgv::base::single_method\l_action_2\&lt; X, R, T1, T2 \&gt;" alt="" coords="630,150,805,191"/>
+</map>
