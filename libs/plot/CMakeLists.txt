@@ -13,38 +13,38 @@ find_package(cgv_render REQUIRED)
 find_package(cgv_gl REQUIRED)
 
 set(SHADERS
-	shader/plot1d.glfs
-	shader/plot1d.glpr
-	shader/plot1d.glvs
-	shader/plot1d_bar.glgs
-	shader/plot1d_bar.glpr
-	shader/plot1d_bar_outline.glgs
-	shader/plot1d_bar_outline.glpr
-	shader/plot1d_empty.glvs
-	shader/plot1d_lib.glsl
-	shader/plot1d_stick.glgs
-	shader/plot1d_stick.glpr
-	shader/plot2d_face.glfs
-	shader/plot2d_face.glgs
-	shader/plot2d_face.glpr
-	shader/plot2d_face.glvs
-	shader/plot2d_line.glfs
-	shader/plot2d_line.glgs
-	shader/plot2d_line.glpr
-	shader/plot2d_line.glvs
-	shader/plot2d_point.glfs
-	shader/plot2d_point.glpr
-	shader/plot2d_point.glvs)
+	shader/plot2d_bar.glgs
+	shader/plot2d_bar.glpr
+	shader/plot2d_bar_outline.glgs
+	shader/plot2d_bar_outline.glpr
+	shader/plot2d.glpr
+	shader/plot2d.glvs
+	shader/plot2d_stick.glgs
+	shader/plot2d_stick.glpr
+	shader/plot3d_box.glpr
+	shader/plot3d_box.glvs
+	shader/plot3d.glpr
+	shader/plot3d.glvs
+	shader/plot3d_sphere.glfs
+	shader/plot3d_sphere.glgs
+	shader/plot3d_sphere.glpr
+	shader/plot3d_sphere.glvs
+	shader/plot3d_stick.glgs
+	shader/plot3d_stick.glpr
+	shader/plot3d_tick_label.glpr
+	shader/plot3d_tick_label.glvs
+	shader/plot_empty.glvs
+	shader/plot_lib.glsl)
 
 add_library(plot
 	# Source files
-	src/plot1d.cxx
+	src/plot3d.cxx
 	src/plot2d.cxx
 	src/plot_base.cxx
 
 	# Public headers (Visual Studio only)
 	include/plot/lib_begin.h
-	include/plot/plot1d.h
+	include/plot/plot3d.h
 	include/plot/plot2d.h
 	include/plot/plot_base.h
 

@@ -15,9 +15,6 @@ set(IMAGES
 	resources/testimg.jpg)
 
 set(SHADERS
-	shader/bump_mapper.glfs
-	shader/bump_mapper.glpr
-	shader/bump_mapper.glvs
 	shader/gpu_test.glfs
 	shader/gpu_test.glpr
 	shader/gpu_test.glvs

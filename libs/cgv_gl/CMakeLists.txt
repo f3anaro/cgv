@@ -26,69 +26,64 @@ add_custom_command(
 	MAIN_DEPENDENCY include/cgv_gl/gl/gl_context_switch.ph)
 
 set(SHADERS
-	shader/box_wire.glfs
-	shader/box_wire.glgs
-	shader/bump_map.glfs
-	shader/ellipsoid.glfs
-	shader/ellipsoid.glvs
-	shader/ellipsoid_base.glfs
-	shader/ellipsoid_base.glgs
-	shader/normal.glfs
-	shader/normal.glgs
-	shader/sphere.glfs
-	shader/sphere.glvs
-	shader/sphere.pglfs
-	shader/sphere_base.glfs
-	shader/sphere_base.glgs
-	shader/textured_material.glfs
-	shader/textured_material.glpr
-	shader/textured_material.glvs
-	shader/side.glsl
-	shader/point.glvs
-	shader/point.glpr
-	shader/point.glgs
-	shader/point.glfs
-	shader/normal.glvs
-	shader/normal.glpr
-	shader/group.glsl
-	shader/box_wire.glvs
-	shader/box_wire.glpr
-	shader/box.glvs
-	shader/box.glpr
-	shader/box.glgs
-	shader/box.glfs
-	shader/lighting.glsl
-	shader/sphere.pglvs
-	shader/brdf.glsl
-	shader/default.glfs
-	shader/default.glpr
-	shader/default.glvs
-	shader/default_surface.glfs
-	shader/default_surface.glpr
-	shader/default_surface.glvs
-	shader/image.glfs
-	shader/image.glpr
-	shader/image.glvs
-	shader/lights.glsl
-	shader/quaternion.glsl
-	shader/sphere.glpr
-	shader/sphere_shader_geom.glfs
-	shader/sphere_shader_geom.glgs
-	shader/sphere_shader_geom.glvs
-	shader/splat.glsl
-	shader/surface.glsl
-	shader/surfel.glfs
-	shader/surfel.glgs
-	shader/surfel.glpr
-	shader/surfel.glvs
-	shader/textured_default.glfs
-	shader/textured_default.glpr
-	shader/textured_default.glvs
-	shader/textured_surface.glfs
-	shader/textured_surface.glpr
-	shader/textured_surface.glvs
-	shader/view_compatibility.glsl
-	shader/view.glsl)
+    shader/box.glfs
+    shader/box.glgs
+    shader/box.glpr
+    shader/box.glvs
+    shader/box_wire.glgs
+    shader/box_wire.glpr
+    shader/brdf.glsl
+    shader/bump_map.glfs
+    shader/default.glfs
+    shader/default.glpr
+    shader/default.glvs
+    shader/default_surface.glfs
+    shader/default_surface.glpr
+    shader/default_surface.glvs
+    shader/ellipsoid_base.glfs
+    shader/ellipsoid_base.glgs
+    shader/ellipsoid.glfs
+    shader/ellipsoid.glvs
+    shader/fragment.glfs
+    shader/group.glsl
+    shader/image.glfs
+    shader/image.glpr
+    shader/image.glvs
+    shader/lighting.glsl
+    shader/light_ray.glfs
+    shader/light_ray.glpr
+    shader/light_ray.glvs
+    shader/lights.glsl
+    shader/normal.glgs
+    shader/normal.glpr
+    shader/normal.glvs
+    shader/point.glfs
+    shader/point.glgs
+    shader/point.glpr
+    shader/point.glvs
+    shader/quaternion.glsl
+    shader/side.glsl
+    shader/sphere.glfs
+    shader/sphere.glgs
+    shader/sphere.glpr
+    shader/sphere.glvs
+    shader/sphere_lib.glfs
+    shader/sphere_lib.glgs
+    shader/sphere_lib.glvs
+    shader/splat.glsl
+    shader/surface.glsl
+    shader/surfel.glfs
+    shader/surfel.glgs
+    shader/surfel.glpr
+    shader/surfel.glvs
+    shader/textured_default.glfs
+    shader/textured_default.glpr
+    shader/textured_default.glvs
+    shader/textured_surface.glfs
+    shader/textured_surface.glpr
+    shader/textured_surface.glvs
+    shader/view_compatibility.glsl
+    shader/view.glsl)
 
 add_library(cgv_gl
 	# Source files
@@ -101,7 +96,6 @@ add_library(cgv_gl
 	src/gl/gl_implicit_surface_drawable_base.cxx
 	src/gl/gl_texture_tools.cxx
 	src/gl/gl_tools.cxx
-	src/gl/gl_view.cxx
 	src/gl/image_drawable.cxx
 	src/gl/mesh_drawable.cxx
 	src/gl/mesh_render_info.cxx
@@ -129,7 +123,6 @@ add_library(cgv_gl
 	include/cgv_gl/gl/wgl.h
 	include/cgv_gl/gl/gl_context.h
 	include/cgv_gl/gl/gl_implicit_surface_drawable_base.h
-	include/cgv_gl/gl/gl_view.h
 	include/cgv_gl/gl/image_drawable.h
 	include/cgv_gl/gl/mesh_drawable.h
 	include/cgv_gl/gl/mesh_render_info.h
