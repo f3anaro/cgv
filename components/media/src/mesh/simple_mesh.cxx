@@ -34,8 +34,8 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 	std::map<std::tuple<idx_type, idx_type, idx_type>, idx_type> corner_to_index;
 	for (idx_type ci = 0; ci < position_indices.size(); ++ci) {
 		// construct corner
-		vec3i c(position_indices[ci],
-			    (include_tex_coords && ci < tex_coord_indices.size()) ? tex_coord_indices[ci] : 0,
+		vec3i c(position_indices[ci], 
+			    (include_tex_coords && ci < tex_coord_indices.size()) ? tex_coord_indices[ci] : 0, 
 			    (include_normals && ci < normal_indices.size()) ? normal_indices[ci] : 0);
 		std::tuple<idx_type, idx_type, idx_type> triple(c(0),c(1),c(2));
 		// look corner up in map
@@ -43,7 +43,7 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 		// determine vertex index
 		idx_type vi;
 		if (iter == corner_to_index.end()) {
-			vi = unique_triples.size();
+			vi = idx_type(unique_triples.size());
 			corner_to_index[triple] = vi;
 			unique_triples.push_back(c);
 		}
@@ -56,7 +56,7 @@ void simple_mesh_base::merge_indices(std::vector<idx_type>& indices, std::vector
 
 /// extract element array buffers for triangulation
 void simple_mesh_base::extract_triangle_element_buffer(
-	const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer,
+	const std::vector<idx_type>& vertex_indices, std::vector<idx_type>& triangle_element_buffer, 
 	const std::vector<idx_type>* face_perm_ptr, std::vector<vec3i>* material_group_start_ptr) const
 {
 	idx_type mi = idx_type(-1);
@@ -68,7 +68,7 @@ void simple_mesh_base::extract_triangle_element_buffer(
 			if (mi != material_indices[fj] || gi != group_indices[fj]) {
 				mi = material_indices[fj];
 				gi = group_indices[fj];
-				material_group_start_ptr->push_back(vec3i(mi, gi, triangle_element_buffer.size()));
+				material_group_start_ptr->push_back(vec3i(mi, gi, idx_type(triangle_element_buffer.size())));
 			}
 		}
 		if (face_degree(fj) == 3) {
@@ -121,9 +121,6 @@ class simple_mesh_obj_reader : public obj_reader_generic<T>
 {
 public:
 	typedef typename simple_mesh<T>::idx_type idx_type;
-	typedef typename simple_mesh<T>::vec2 v2d_type;
-	typedef typename simple_mesh<T>::vec3 v3d_type;
-	typedef typename simple_mesh<T>::clr_type color_type;
 protected:
 	simple_mesh<T> &mesh;
 public:
@@ -139,12 +136,12 @@ public:
 	/// overide this function to process a face, the indices start with 0
 	void process_face(unsigned vcount, int *vertices, int *texcoords, int *normals)
 	{
-		this->convert_to_positive(vcount, vertices, texcoords, normals, mesh.positions.size(), mesh.normals.size(), mesh.tex_coords.size());
-		mesh.faces.push_back(mesh.position_indices.size());
-		if (this->get_current_group() != -1)
-			mesh.group_indices.push_back(this->get_current_group());
-		if (this->get_current_material() != -1)
-			mesh.material_indices.push_back(this->get_current_material());
+		convert_to_positive(vcount, vertices, texcoords, normals, unsigned(mesh.positions.size()), unsigned(mesh.normals.size()), unsigned(mesh.tex_coords.size()));
+		mesh.faces.push_back(idx_type(mesh.position_indices.size()));
+		if (get_current_group() != -1)
+			mesh.group_indices.push_back(get_current_group());
+		if (get_current_material() != -1)
+			mesh.material_indices.push_back(get_current_material());
 		for (idx_type i = 0; i < vcount; ++i) {
 			mesh.position_indices.push_back(idx_type(vertices[i]));
 			if (texcoords)
@@ -169,21 +166,21 @@ public:
 
 /// clear simple mesh
 template <typename T>
-void simple_mesh<T>::clear()
+void simple_mesh<T>::clear() 
 {
-	positions.clear();
-	normals.clear();
-	tex_coords.clear();
-	position_indices.clear();
-	tex_coord_indices.clear();
-	normal_indices.clear();
-	faces.clear();
+	positions.clear(); 
+	normals.clear(); 
+	tex_coords.clear(); 
+	position_indices.clear(); 
+	tex_coord_indices.clear(); 
+	normal_indices.clear(); 
+	faces.clear(); 
 }
 
 /// read simple mesh from file
 template <typename T>
 bool simple_mesh<T>::read(const std::string& file_name)
-{
+{ 
 	simple_mesh_obj_reader<T> reader(*this);
 	return reader.read_obj(file_name);
 }
@@ -201,9 +198,9 @@ typename simple_mesh<T>::box_type simple_mesh<T>::compute_box() const
 /// extract vertex attribute array and element array buffers for triangulation and edges in wireframe
 template <typename T>
 unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
-	const std::vector<idx_type>& vertex_indices,
-	const std::vector<vec3i>& unique_triples,
-	bool include_tex_coords, bool include_normals,
+	const std::vector<idx_type>& vertex_indices, 
+	const std::vector<vec3i>& unique_triples, 
+	bool include_tex_coords, bool include_normals, 
 	std::vector<T>& attrib_buffer, bool* include_colors_ptr) const
 {
 	// correct inquiry in case data is missing
@@ -247,6 +244,7 @@ unsigned simple_mesh<T>::extract_vertex_attribute_buffer(
 // Explicit instantiations
 template class simple_mesh<float>;
 template class simple_mesh<double>;
+
 
 		}
 	}

@@ -75,8 +75,12 @@ const char* key_strings[] = {
 
 std::string get_key_string(unsigned short key)
 {
-	if (key > 255)
-		return key_strings[key-256];
+	if (key > 255) {
+		unsigned idx = key - 256;
+		if (idx < 57)
+			return key_strings[key - 256];
+		return "";
+	}
 	else {
 		if (key == 0)
 			return "";
@@ -103,7 +107,7 @@ void shortcut::validate()
 /// write to stream
 void shortcut::stream_out(std::ostream& os) const
 {
-	os << get_modifier_string(modifiers) << get_key_string(key);
+	os << get_modifier_string(EventModifier(modifiers)) << get_key_string(key);
 }
 
 /// read from stream

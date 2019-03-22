@@ -91,7 +91,6 @@ bool fltk_gl_view::self_reflect(cgv::reflect::reflection_handler& srh)
 	srh.reflect_member("show_stats", show_stats) &&
 	srh.reflect_member("font_size", info_font_size) &&
 	srh.reflect_member("tab_size", tab_size) &&
-	srh.reflect_member("phong_shading", phong_shading) &&
 	srh.reflect_member("performance_monitoring", enabled) &&
 	srh.reflect_member("bg_r", bg_r) &&
 	srh.reflect_member("bg_g", bg_g) &&
@@ -499,6 +498,7 @@ void fltk_gl_view::draw()
 
 	if (enabled) {
 		finish_frame();
+		update_member(&fps);
 		if (redraw_request) {
 			start_frame();
 			started_frame_pm = true;
@@ -824,6 +824,9 @@ int fltk_gl_view::handle(int ei)
 	case fltk::KEY :
 		if (dispatch_event(cgv_key_event(fltk::event_key_repeated() ? KA_REPEAT : KA_PRESS)))
 			return 1;
+		if (fltk::event_key() >= fltk::HomeKey &&
+			fltk::event_key() <= fltk::EndKey)
+			return 1;
 		break;
 	case fltk::KEYUP :
 		if (dispatch_event(cgv_key_event(KA_RELEASE)))
@@ -917,12 +920,24 @@ void fltk_gl_view::disable_phong_shading()
 void fltk_gl_view::create_gui()
 {
 	add_decorator("gl view", "heading");
-
+	if (begin_tree_node("Frames", fps, false, "level=3")) {
+		provider::align("\a");
+		add_view("fps", fps);
+		add_member_control(this, "fps_alpha", fps_alpha, "value_slider", "min=0;max=1;ticks=true");
+		add_member_control(this, "vsynch", enable_vsynch, "check");
+		add_member_control(this, "gamma", gamma, "value_slider", "min=0.2;max=5;ticks=true;log=true");
+		add_member_control(this, "sRGB_framebuffer", sRGB_framebuffer, "check");
+		provider::align("\b");
+		end_tree_node(fps);
+	}
 	if (begin_tree_node("debug", enabled, false, "level=3")) {
 		provider::align("\a");
 		add_member_control(this, "show_help", show_help, "check");
 		add_member_control(this, "show_stats", show_stats, "check");
+		add_member_control(this, "debug_render_passes", debug_render_passes, "check");
 		add_member_control(this, "performance monitoring", enabled, "check");
+		add_member_control(this, "time scale", time_scale, "value_slider", "min=1;max=90;ticks=true;log=true");
+		add_gui("placement", placement, "", "options='min=0;max=500'");
 		provider::align("\b");
 		end_tree_node(enabled);
 	}

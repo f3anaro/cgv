@@ -16,6 +16,8 @@ class CGV_API textured_surface_material : public surface_material
 protected:
 	/// name of material
 	std::string name;
+	/// whether textures are in sRGB format
+	bool sRGBA_textures;
 	/// vector of image file names
 	std::vector<std::string> image_file_names;
 	/// index of image from which diffuse_reflectance should be mapped, -1 corresponds to no mapping
@@ -72,18 +74,25 @@ public: //@<
 	const std::string& get_name() const { return name; }
 	/// return reference to name value
 	std::string& ref_name() { return name; }
-
+	/// set whether textures are interpreted in sRGB format
+	void set_sRGBA_textures(bool do_set = true);
+	/// return whether textures are interpreted in sRGB format
+	bool get_sRGBA_textures() const { return sRGBA_textures; }
+	/// return reference to whether textures are interpreted in sRGB format
+	bool& ref_sRGBA_textures() { return sRGBA_textures; }
 	/// return number of image files
-	size_t get_nr_image_files() const { return image_file_names.size(); }
+	unsigned get_nr_image_files() const { return unsigned(image_file_names.size()); }
 	/// add a new image and return its index
-	size_t add_image_file(const std::string& file_name);
+	int add_image_file(const std::string& file_name);
 	/// return the name of the i-th image file
-	std::string get_image_file_name(size_t i) const { return image_file_names[i]; }
+	std::string get_image_file_name(int i) const { return image_file_names[i]; }
 	/// set the image file name of i-th image file
-	void set_image_file_name(size_t i, std::string image_file_name) { image_file_names[i] = image_file_name; }
+	void set_image_file_name(int i, std::string image_file_name) { image_file_names[i] = image_file_name; }
 	/// return reference to image file name of i-th image file
-	std::string& ref_image_file_name(size_t i) { return image_file_names[i]; }
-
+	std::string& ref_image_file_name(int i) { return image_file_names[i]; }
+	/// virtual method to query number of textures
+	virtual unsigned get_nr_textures() const { return get_nr_image_files(); }
+	///
 	void set_diffuse_index(int i) { diffuse_index = i; }
 	int  get_diffuse_index() const { return diffuse_index; }
 	int& ref_diffuse_index() { return diffuse_index; }

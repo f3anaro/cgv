@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @exclude<cgv/config/make.ppp>
 @define(projectName="cg_icons")
 @define(projectType="plugin")
@@ -5,3 +6,12 @@
 @define(addProjectDirs=[CGV_DIR."/plugins"])
 @define(addProjectDeps=["cgv_base"])
 @define(addSharedDefines=["ICON_EXPORTS"])
+=======
+@=
+projectName="cg_icons";
+projectType="plugin";
+projectGUID="EEAB296F-7692-495e-8464-DD3D1E0069B0";
+addProjectDirs=[CGV_DIR."/plugins"];
+addProjectDeps=["cgv_base"];
+addSharedDefines=["ICON_EXPORTS"];
+>>>>>>> develop

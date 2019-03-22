@@ -24,7 +24,7 @@ namespace cgv {
 
 		surface_render_style::surface_render_style() : material("default")
 		{
-			surface_color = cgv::media::illum::surface_material::color_type(0.5f, 0.5f, 0.5f);
+			surface_color = cgv::media::illum::surface_material::color_type(0.7f, 0.1f, 0.4f);
 			culling_mode = CM_OFF;
 			illumination_mode = IM_ONE_SIDED;
 			map_color_to_material = MS_FRONT_AND_BACK;
@@ -56,14 +56,14 @@ namespace cgv {
 		}
 
 		/// method to set the normal attribute from a vertex buffer object, the element type must be given as explicit template parameter
-		void surface_renderer::set_normal_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		void surface_renderer::set_normal_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_normals = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "normal"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
 
 		}
 		/// template method to set the texcoord attribute from a vertex buffer object, the element type must be given as explicit template parameter
-		void surface_renderer::set_texcoord_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes)
+		void surface_renderer::set_texcoord_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes)
 		{
 			has_texcoords = true;
 			set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "texcoord"), element_type, vbo, offset_in_bytes, nr_elements, stride_in_bytes);
@@ -84,6 +84,7 @@ namespace cgv {
 			}
 			if (ref_prog().is_linked()) {
 				ctx.set_material(srs.material);
+				ctx.set_color(srs.surface_color);
 				ref_prog().set_uniform(ctx, "map_color_to_material", (has_colors || srs.use_group_color) ? int(srs.map_color_to_material) : 0);
 				ref_prog().set_uniform(ctx, "culling_mode", int(srs.culling_mode));
 				ref_prog().set_uniform(ctx, "illumination_mode", int(srs.illumination_mode));

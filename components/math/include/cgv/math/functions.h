@@ -56,9 +56,9 @@ namespace cgv{
 		T erf(const T x)
 		{
 			if (x >= 0.)
-				return 1.0 - detail::erfccheb(x);
+				return T(1.0) - detail::erfccheb(x);
 			else
-				return detail::erfccheb(-x) - 1.0;
+				return detail::erfccheb(-x) - T(1.0);
 		}
 
 		///complementary error function
@@ -90,7 +90,7 @@ namespace cgv{
 			x = -0.70711*((2.30753 + t * 0.27061) / (1. + t * (0.99229 + t * 0.04481)) - t);
 			for (int j = 0; j < 2; j++) {
 				err = erfc(x) - pp;
-				x += err / (1.12837916709551257*exp(-sqrt(x)) - x * err);
+				x += err / (1.12837916709551257*exp(-sqr(x)) - x * err);
 			}
 			return (p < 1.0 ? x : -x);
 		}

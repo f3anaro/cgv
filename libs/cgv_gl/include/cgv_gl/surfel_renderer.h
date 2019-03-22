@@ -6,7 +6,14 @@
 
 namespace cgv {
 	namespace render {
-		
+		class CGV_API surfel_renderer;
+
+		//! reference to a singleton surfel renderer that can be shared among drawables
+		/*! the second parameter is used for reference counting. Use +1 in your init method,
+			-1 in your clear method and default 0 argument otherwise. If internal reference
+			counter decreases to 0, singelton renderer is destructed. */
+		extern CGV_API surfel_renderer& ref_surfel_renderer(context& ctx, int ref_count_change = 0);
+
 		/** style of a point */
 		struct CGV_API surfel_render_style : public surface_render_style
 		{
@@ -64,11 +71,18 @@ namespace cgv {
 			template <typename T = float>
 			void set_point_size_array(const context& ctx, const std::vector<T>& point_sizes) { has_point_sizes = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "point_size"), point_sizes); }
 			///
-			template <typename T = unsigned, typename C = cgv::media::color<float,cgv::media::RGB,cgv::media::OPACITY> >
+			template <typename T = unsigned, typename C = cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> >
 			void set_indexed_color_array(const context& ctx, const std::vector<T>& color_indices, const std::vector<C>& palette) {
-				has_indexed_colors = true; 
-				set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color_index"), color_indices); 
-				ref_prog().set_uniform_array(ctx, "palette", palette); 
+				has_indexed_colors = true;
+				set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color_index"), color_indices);
+				ref_prog().set_uniform_array(ctx, "palette", palette);
+			}
+			///
+			template <typename T = unsigned, typename C = cgv::media::color<float, cgv::media::RGB, cgv::media::OPACITY> >
+			void set_indexed_color_array(const context& ctx, T* color_index_ptr, size_t nr_elements, const std::vector<C>& palette, unsigned stride = 0) {
+				has_indexed_colors = true;
+				set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "color_index"), color_index_ptr, nr_elements, stride);
+				ref_prog().set_uniform_array(ctx, "palette", palette);
 			}
 			///
 			template <typename T = float>

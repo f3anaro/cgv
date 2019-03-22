@@ -1,3 +1,4 @@
+#include <cgv/base/base.h>
 #include <cgv/render/shader_program.h>
 #include <cgv/utils/file.h>
 #include <cgv/utils/dir.h>
@@ -252,8 +253,18 @@ bool shader_program::attach_program(const context& ctx, const std::string& file_
 	bool no_error = true;
 	std::string error = "2 : attach command failed";
 	for (unsigned int i=0; i<lines.size(); ++i) {
-		std::string l = to_string((const token&)lines[i]);
+		token tok = lines[i];
+		while (tok.begin < tok.end && cgv::utils::is_space(*tok.begin))
+			++tok.begin;
+		std::string l = to_string(tok);
+
 		bool success = true;
+		// ignore empty lines
+		if (l.empty())
+			continue;
+		// ignore comments
+		if (l[0] == '/')
+			continue;
 		if (l.substr(0,5) == "file:")
 			success = attach_file(ctx, l.substr(5));
 		else if (l.substr(0,12) == "vertex_file:")
@@ -481,12 +492,14 @@ bool shader_program::set_textured_material_uniform(const context& ctx, const std
 			return false;
 	return
 		set_material_uniform(ctx, name, material, generate_error) &&
+		set_uniform(ctx, "sRGBA_textures", material.get_sRGBA_textures(), generate_error) &&
 		set_uniform(ctx, "diffuse_index", material.get_diffuse_index(), generate_error) &&
 		set_uniform(ctx, "roughness_index", material.get_roughness_index(), generate_error) &&
 		set_uniform(ctx, "metalness_index", material.get_metalness_index(), generate_error) &&
 		set_uniform(ctx, "ambient_index", material.get_ambient_index(), generate_error) &&
 		set_uniform(ctx, "emission_index", material.get_emission_index(), generate_error) &&
 		set_uniform(ctx, "transparency_index", material.get_transparency_index(), generate_error) &&
+		set_uniform(ctx, "bump_index", material.get_bump_index(), generate_error) &&
 		set_uniform(ctx, "specular_index", material.get_specular_index(), generate_error);
 }
 

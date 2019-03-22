@@ -12,7 +12,7 @@ using namespace cgv::media::image;
 namespace cgv {
 	namespace render {
 
-
+		
 const int nr_backgrounds = 5;
 float background_colors[] = {
 	0,0,0,0,
@@ -138,6 +138,9 @@ context::context()
 	cursor_y = y_offset;
 	nr_identations = 0;
 	at_line_begin = true;
+	enable_vsynch = true;
+	sRGB_framebuffer = true;
+	gamma = 2.2f;
 
 	default_render_flags = RenderPassFlags(RPF_DEFAULT);
 	current_background = 0;
@@ -146,17 +149,19 @@ context::context()
 	bg_d = 1.0f;
 	bg_s = 0;
 	current_font_size = 14;
-
+	
 	phong_shading = true;
 
 	do_screen_shot = false;
 	light_source_handle = 1;
 
 	auto_set_view_in_current_shader_program = true;
+	auto_set_gamma_in_current_shader_program = true;
 	auto_set_lights_in_current_shader_program = true;
 	auto_set_material_in_current_shader_program = true;
 	support_compatibility_mode = true;
 	draw_in_compatibility_mode = false;
+	debug_render_passes = false;
 
 	default_light_source[0].set_local_to_eye(true);
 	default_light_source[0].set_position(vec3(-0.4f, 0.3f, 0.8f));
@@ -190,12 +195,7 @@ void context::init_render_pass()
 {
 }
 
-///
-cgv::base::group* context::get_group_interface()
-{
-}
-
-///
+/// 
 void context::draw_textual_info()
 {
 }
@@ -343,11 +343,32 @@ unsigned int context::get_bg_clr_idx() const
 void context::enable_phong_shading()
 {
 	phong_shading = true;
+	error("context::enable_phong_shading() deprecated");
 }
 
 void context::disable_phong_shading()
 {
 	phong_shading = false;
+	error("context::disable_phong_shading() deprecated");
+}
+
+void context::enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
+{
+	error("context::enable_material(phong_material) deprecated");
+
+}
+void context::disable_material(const cgv::media::illum::phong_material& mat)
+{
+	error("context::disable_material(phong_material) deprecated");
+}
+void context::enable_material(const textured_material& mat, MaterialSide ms, float alpha)
+{
+	error("context::enable_material(textured_material) deprecated");
+}
+
+void context::enable_sRGB_framebuffer(bool do_enable)
+{
+	sRGB_framebuffer = do_enable;
 }
 
 /// check for current program, prepare it for rendering and return pointer to it
@@ -362,23 +383,38 @@ shader_program_base* context::get_current_program() const
 }
 
 /// return the number of light sources
-size_t context::get_nr_light_sources() const
+size_t context::get_nr_light_sources() const 
 {
-	return light_sources.size();
+	return light_sources.size(); 
 }
 
-/// helper function to place lights
+/// helper function to place lights 
 context::vec3 context::get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const
 {
 	vec3 Le = light.get_position();
 	if (place_now && !light.is_local_to_eye()) {
-		dvec4 hL(Le(0), Le(1), Le(2), light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f);
+		dvec4 hL(Le, light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f);
 		hL = get_modelview_matrix()*hL;
 		Le = (const dvec3&)hL;
 		if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL)
 			Le /= float(hL(3));
 	}
 	return Le;
+}
+
+/// helper function to place lights 
+context::vec3 context::get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const
+{
+	vec3 sd = light.get_spot_direction();
+	if (place_now && !light.is_local_to_eye()) {
+		dvec4 hSd(sd, 0.0f);
+		hSd = get_modelview_matrix()*hSd;
+		sd = (const dvec3&)hSd;
+	}
+	float norm = sd.length();
+	if (norm > 1e-8f)
+		sd /= norm;
+	return sd;
 }
 
 /// add a new light source, enable it if \c enable is true and place it relative to current model view transformation if \c place_now is true; return handle to light source
@@ -389,14 +425,16 @@ void* context::add_light_source(const cgv::media::illum::light_source& light, bo
 	void* handle = reinterpret_cast<void*>(light_source_handle);
 	// determine light source position
 	vec3 Le = get_light_eye_position(light, place_now);
+	vec3 sd = get_light_eye_spot_direction(light, place_now);
 	//
 	int idx = -1;
 	if (enabled) {
-		idx = enabled_light_source_handles.size();
+		idx = int(enabled_light_source_handles.size());
 		enabled_light_source_handles.push_back(handle);
 	}
 	// store new light source in map
-	light_sources[handle] = std::pair<cgv::media::illum::light_source, light_source_status>(light, { enabled, Le, idx });
+	light_sources[handle] = std::pair<cgv::media::illum::light_source, light_source_status>(
+		light, { enabled, Le, sd, idx });
 	// set light sources in shader code if necessary
 	if (enabled)
 		on_lights_changed();
@@ -493,8 +531,10 @@ void context::set_current_lights(shader_program& prog) const
 		std::string prefix = std::string("light_sources[") + cgv::utils::to_string(i) + "]";
 		void* light_source_handle = get_enabled_light_source_handle(i);
 		const auto iter = light_sources.find(light_source_handle);
-		if (prog.set_light_uniform(*this, prefix, iter->second.first))
+		if (prog.set_light_uniform(*this, prefix, iter->second.first)) {
 			prog.set_uniform(*this, prefix + ".position", iter->second.second.eye_position);
+			prog.set_uniform(*this, prefix + ".spot_direction", iter->second.second.eye_spot_direction);
+		}
 	}
 	prog.set_uniform(*this, "nr_light_sources", (int)nr_lights);
 }
@@ -520,11 +560,12 @@ void context::place_light_source(void* handle)
 	auto iter = light_sources.find(handle);
 	// determine light source position
 	iter->second.second.eye_position = get_light_eye_position(iter->second.first, true);
+	iter->second.second.eye_spot_direction = get_light_eye_spot_direction(iter->second.first, true);
 	if (iter->second.second.enabled)
 		on_lights_changed();
 }
 
-/// return maximum number of light sources, that can be enabled in parallel
+/// return maximum number of light sources, that can be enabled in parallel 
 unsigned context::get_max_nr_enabled_light_sources() const
 {
 	return 8;
@@ -551,7 +592,7 @@ bool context::enable_light_source(void* handle)
 	if (iter->second.second.enabled)
 		return true;
 	iter->second.second.enabled = true;
-	iter->second.second.light_source_index = enabled_light_source_handles.size();
+	iter->second.second.light_source_index = int(enabled_light_source_handles.size());
 	enabled_light_source_handles.push_back(handle);
 	on_lights_changed();
 	return true;
@@ -575,6 +616,27 @@ bool context::disable_light_source(void* handle)
 
 }
 
+std::string get_render_pass_name(RenderPass rp)
+{
+	const char* render_pass_names[] = {
+	"RP_NONE",
+	"RP_MAIN",                 /// the main rendering pass triggered by the redraw event
+	"RP_STEREO",               /// rendering of second eye
+	"RP_SHADOW_MAP",           /// construction of shadow map
+	"RP_SHADOW_VOLUME",        /// construction of shadow map
+	"RP_OPAQUE_SURFACES",      /// opaque surface rendering using z-Buffer
+	"RP_TRANSPARENT_SURFACES", /// transparent surface rendering using depth peeling
+	"RP_PICK",                 /// in picking pass a small rectangle around the mouse is rendered 
+	"RP_USER_DEFINED"
+	};
+	return render_pass_names[rp];
+};
+
+/// return the current render pass
+unsigned context::get_render_pass_recursion_depth() const
+{
+	return (unsigned)render_pass_stack.size();
+}
 
 /// return the current render pass
 RenderPass context::get_render_pass() const
@@ -610,6 +672,11 @@ void* context::get_render_pass_user_data() const
 	return render_pass_stack.top().user_data;
 }
 
+/// set flag whether to debug render passes
+void context::set_debug_render_passes(bool _debug)
+{
+	debug_render_passes = _debug;
+}
 
 /// perform the given render task
 void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
@@ -623,7 +690,9 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 	ri.pass  = rp;
 	ri.flags = rpf;
 	ri.user_data = user_data;
-
+	if (debug_render_passes) {
+		std::cout << std::string(2 * render_pass_stack.size(), ' ') << get_render_pass_name(rp) << " <" << user_data << ">" << std::endl;
+	}
 	render_pass_stack.push(ri);
 
 	init_render_pass();
@@ -635,19 +704,19 @@ void context::render_pass(RenderPass rp, RenderPassFlags rpf, void* user_data)
 
 	group* grp = dynamic_cast<group*>(this);
 	if (grp && (rpf&RPF_DRAWABLES_DRAW)) {
-		matched_method_action<drawable,void,void,context&>
+		matched_method_action<drawable,void,void,context&> 
 			mma(*this, &drawable::draw, &drawable::finish_draw, true, true);
 		traverser(mma).traverse(group_ptr(grp));
 	}
 	if (rpf&RPF_DRAW_TEXTUAL_INFO)
 		draw_textual_info();
 	if (grp && (rpf&RPF_DRAWABLES_FINISH_FRAME)) {
-		single_method_action<drawable,void,context&>
+		single_method_action<drawable,void,context&> 
 			sma(*this, &drawable::finish_frame, true, true);
 		traverser(sma).traverse(group_ptr(grp));
 	}
 	if (grp && (rpf&RPF_DRAWABLES_AFTER_FINISH)) {
-		single_method_action<drawable,void,context&>
+		single_method_action<drawable,void,context&> 
 			sma(*this, &drawable::after_finish, true, true);
 		traverser(sma).traverse(group_ptr(grp));
 	}
@@ -701,7 +770,7 @@ void context::process_text(const std::string& text)
 		default:
 			at_line_begin = false;
 		}
-	}
+	}	
 	draw_text(text.substr(j,i-j));
 	pop_pixel_coords();
 }
@@ -803,8 +872,8 @@ std::string to_string(TextureCubeSides tcs)
 std::string to_string(PrimitiveType pt)
 {
 	const char* pt_str[] = {
-		"undef", "points", "lines", "lines_adjacency", "line_strip", "line_strip_adjacency", "line_loop",
-		"triangles", "triangles_adjacency", "triangle_strip", "triangle_strip_adjacency", "triangle_fan",
+		"undef", "points", "lines", "lines_adjacency", "line_strip", "line_strip_adjacency", "line_loop", 
+		"triangles", "triangles_adjacency", "triangle_strip", "triangle_strip_adjacency", "triangle_fan", 
 		"quads", "quad_strip", "polygon"
 	};
 	return pt_str[pt];
@@ -814,10 +883,10 @@ std::string to_string(PrimitiveType pt)
 std::string to_string(TextureFilter filter_type)
 {
 	const char* filter_str[] = {
-		"nearest",
-		"linear",
-		"nearest_mipmap_nearest",
-		"linear_mipmap_nearest",
+		"nearest", 
+		"linear", 
+		"nearest_mipmap_nearest", 
+		"linear_mipmap_nearest", 
 		"nearest_mipmap_linear",
 		"linear_mipmap_linear",
 		"anisotrop"
@@ -870,7 +939,7 @@ void context::tesselate_unit_cube(bool flip_normals, bool edges)
 		+1,+1,-1
 	};
 	static float N[6*3] = {
-		-1,0,0, +1,0,0,
+		-1,0,0, +1,0,0, 
 		0,-1,0, 0,+1,0,
 		0,0,-1, 0,0,+1
 	};
@@ -883,7 +952,7 @@ void context::tesselate_unit_cube(bool flip_normals, bool edges)
 		 0.5f,0 , 0.5f,ot ,
 		 0.5f,tt , 0.5f,1 ,
 		 0.75f,ot , 0.75f,tt ,
-		 1,ot , 1,tt
+		 1,ot , 1,tt 
 	};
 	static int F[6*4] = {
 		0,2,6,4,
@@ -891,7 +960,7 @@ void context::tesselate_unit_cube(bool flip_normals, bool edges)
 		0,4,5,1,
 		2,3,7,6,
 		4,6,7,5,
-		0,1,3,2
+		0,1,3,2 
 	};
 	static int FN[6*4] = {
 		0,0,0,0, 1,1,1,1,
@@ -901,7 +970,7 @@ void context::tesselate_unit_cube(bool flip_normals, bool edges)
 	static int FT[6*4] = {
 		3,4,1,0 ,7,10,11,8 ,
 		3,2,6,7 ,4,8,9,5 ,
-		12,13,11,10 ,3,7,8,4
+		12,13,11,10 ,3,7,8,4 
 	};
 	if (edges)
 		draw_edges_of_faces(V, N, T, F, FN, FT, 6, 4, flip_normals);
@@ -943,7 +1012,7 @@ void context::tesselate_box(const cgv::media::axis_aligned_box<double, 3>& B, bo
 		draw_faces(V, N, 0, F, FN, 0, 6, 4, flip_normals);
 }
 
-/// tesselate a prism
+/// tesselate a prism 
 void context::tesselate_unit_prism(bool flip_normals, bool edges)
 {
 	static const float V[6*3] = {
@@ -960,7 +1029,7 @@ void context::tesselate_unit_prism(bool flip_normals, bool edges)
 		 0,-1, 0,
 		 0, 1, 0,
 		 0, 0,-1,
-		-b, 0, a,
+		-b, 0, a, 
 		 b, 0, a
 	};
 	static const int FT[2*3] = { 0,1,2,	5,4,3 };
@@ -1029,7 +1098,7 @@ void context::tesselate_unit_cone(int resolution, bool flip_normals, bool edges)
 	float u = 0;
 	float duv = float(1.0/resolution);
 	for (int i = 0; i <= resolution; ++i, u += duv, phi += step) {
-		float cp = cos(phi);
+		float cp = cos(phi); 
 		float sp = sin(phi);
 		N.push_back(b*cp);
 		N.push_back(b*sp);
@@ -1116,7 +1185,7 @@ void context::tesselate_unit_torus(float minor_radius, int resolution, bool flip
 	for (i = 0; i < resolution; ++i, u += duv) {
 		float cp0 = cp1, sp0 = sp1;
 		phi += step;
-		cp1 = cos(phi);
+		cp1 = cos(phi); 
 		sp1 = sin(phi);
 		float theta = 0;
 		float v = 0;
@@ -1166,7 +1235,7 @@ void context::tesselate_unit_sphere(int resolution, bool flip_normals, bool edge
 	for (i = 0; i < resolution; ++i, u += duv) {
 		float cp0 = cp1, sp0 = sp1;
 		phi += 2*step;
-		cp1 = cos(phi);
+		cp1 = cos(phi); 
 		sp1 = sin(phi);
 		float theta = float(-0.5*M_PI);
 		float v = 0;
@@ -1225,7 +1294,7 @@ void context::tesselate_unit_tetrahedron(bool flip_normals, bool edges)
 }
 
 
-/// tesselate a unit square
+/// tesselate a unit square 
 void context::tesselate_unit_square(bool flip_normals, bool edges)
 {
 	static float N[1*3] = {
@@ -1378,7 +1447,22 @@ void context::tesselate_unit_icosahedron(bool flip_normals, bool edges)
 	tesselate_unit_dodecahedron_or_icosahedron(*this, false, flip_normals, edges);
 }
 
-/// set the current material
+void context::set_gamma(float _gamma)
+{
+	if (!auto_set_gamma_in_current_shader_program)
+		return;
+
+	if (shader_program_stack.empty())
+		return;
+
+	cgv::render::shader_program& prog = *static_cast<cgv::render::shader_program*>(shader_program_stack.top());
+	if (!prog.does_use_gamma())
+		return;
+
+	prog.set_uniform(*this, "gamma", gamma);
+}
+
+/// set the current material 
 void context::set_material(const cgv::media::illum::surface_material& material)
 {
 	current_material_ptr = &material;
@@ -1397,7 +1481,7 @@ void context::set_material(const cgv::media::illum::surface_material& material)
 	prog.set_material_uniform(*this, "material", material);
 }
 
-/// set the current material
+/// set the current material 
 void context::set_textured_material(const textured_material& material)
 {
 	current_material_ptr = &material;
@@ -1438,7 +1522,7 @@ void context::pop_modelview_matrix()
 	set_modelview_matrix(modelview_matrix_stack.top());
 }
 /// same as push_V but for the projection matrix - a different matrix stack is used.
-void context::push_projection_matrix()
+void context::push_projection_matrix() 
 {
 	projection_matrix_stack.push(get_projection_matrix());
 }
@@ -1516,7 +1600,7 @@ void context::put_cursor_coords(const vec_type& p, int& x, int& y) const
 }
 
 /// sets the current text ouput position
-void context::set_cursor(const vec_type& pos,
+void context::set_cursor(const vec_type& pos, 
 		const std::string& text, TextAlignment ta,
 		int x_offset, int y_offset)
 {
@@ -1663,6 +1747,7 @@ shader_program_base::shader_program_base()
 	uses_view = false;
 	uses_material = false;
 	uses_lights = false;
+	uses_gamma = false;
 
 	position_index = -1;
 	normal_index = -1;
@@ -1671,12 +1756,13 @@ shader_program_base::shader_program_base()
 }
 
 // configure program
-void shader_program_base::specify_standard_uniforms(bool view, bool material, bool lights)
+void shader_program_base::specify_standard_uniforms(bool view, bool material, bool lights, bool gamma)
 {
 	auto_detect_uniforms = false;
 	uses_view = view;
 	uses_material = material;
 	uses_lights = lights;
+	uses_gamma = gamma;
 }
 
 void shader_program_base::specify_standard_vertex_attribute_names(context& ctx, bool color, bool normal, bool texcoord)
@@ -1718,9 +1804,10 @@ bool context::shader_program_enable(shader_program_base& spb)
 		spb.auto_detect_vertex_attributes = false;
 	}
 	if (spb.auto_detect_uniforms) {
-		spb.uses_lights = get_uniform_location(spb, "nr_light_sources") != -1;
+		spb.uses_lights = get_uniform_location(spb, "light_sources[0].light_source_type") != -1;
 		spb.uses_material = get_uniform_location(spb, "material.brdf_type") != -1;
 		spb.uses_view = get_uniform_location(spb, "modelview_matrix") != -1;
+		spb.uses_gamma = get_uniform_location(spb, "gamma") != -1;
 		spb.auto_detect_uniforms = false;
 	}
 	return true;
@@ -1911,7 +1998,7 @@ bool context::frame_buffer_attach(frame_buffer_base& fbb, const texture_base& t,
 	}
 	if (!is_depth)
 		fbb.attached[i] = true;
-
+	
 	return true;
 }
 
@@ -2001,8 +2088,8 @@ context_factory_registration::context_factory_registration(context_creation_func
 /** construct a context of the given size. This is primarily used to create
     a context without a window for console applications that render into a frame
     buffer object only. After usage you need to delete the context by hand. */
-context* create_context(RenderAPI api,
-		unsigned int w, unsigned int h,
+context* create_context(RenderAPI api, 
+		unsigned int w, unsigned int h, 
 		const std::string& title, bool show)
 {
 	std::vector<context_creation_function_type>& ccfs = ref_context_creation_functions();

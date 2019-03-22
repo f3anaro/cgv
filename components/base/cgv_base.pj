@@ -1,3 +1,4 @@
+<<<<<<< HEAD:components/base/cgv_base.pj
 @=
 projectName="cgv_base";
 projectType="library";
@@ -7,3 +8,11 @@ if(SYSTEM=="windows") {
 	addDependencies=addDependencies.[["user32", "static"]];
 }
 addSharedDefines=["CGV_BASE_EXPORTS"];
+=======
+@=
+projectName="cgv_base";
+projectType="library";
+projectGUID="25D15D19-2543-4a26-B02E-9029EEDA103D";
+addProjectDeps=["cgv_utils", "cgv_type", "cgv_data", "cgv_reflect", "cgv_signal"];
+addSharedDefines=["CGV_BASE_EXPORTS"];
+>>>>>>> develop:cgv/base/cgv_base.pj

@@ -11,6 +11,6 @@ else {
 	addProjectDeps=["pthread","cgv_utils", "cgv_data"];
 }
 if(SYSTEM=="windows") {
-	addDependencies=addDependencies.[["user32", "static"], "Ws2_32"];
+	addDependencies=addDependencies.["Ws2_32"];
 }
 addSharedDefines=["CGV_OS_EXPORTS"];

@@ -28,23 +28,37 @@ textured_material::~textured_material()
 		destruct_textures(*ctx_ptr);
 }
 
+/// add a reference to a new texture that is managed outside of this class and return its index
+int textured_material::add_texture_reference(cgv::render::texture& tex)
+{
+	while (textures.size() < image_file_names.size())
+		textures.push_back(0);
+	textures.push_back(&tex);
+	return textures.size() - 1;
+}
+
 /// call this to ensure that the textures are loaded - typically done in the init_frame method of a drawable
 bool textured_material::ensure_textures(context& ctx)
 {
 	bool success = true;
+	while (textures.size() < image_file_names.size())
+		textures.push_back(0);
+
 	for (size_t ti = 0; ti < image_file_names.size(); ++ti) {
-		texture* T = new texture();
-		if (!T->create_from_image(ctx, image_file_names[ti])) {
-			std::cerr << "could not create texture from file '" << image_file_names[ti] << "': " << T->get_last_error() << std::endl;
-			delete T;
-			T = 0;
-			success = false;
+		texture*& T = textures[ti];
+		if (!T) {
+			T = new texture();
+			if (!T->create_from_image(ctx, image_file_names[ti])) {
+				std::cerr << "could not create texture from file '" << image_file_names[ti] << "': " << T->get_last_error() << std::endl;
+				delete T;
+				T = 0;
+				success = false;
+			}
+			else {
+				T->set_wrap_s(TW_REPEAT);
+				T->set_wrap_t(TW_REPEAT);
+			}
 		}
-		else {
-			T->set_wrap_s(TW_REPEAT);
-			T->set_wrap_t(TW_REPEAT);
-		}
-		textures.push_back(T);
 	}
 	return success;
 }
@@ -106,7 +120,7 @@ void textured_material::destruct_textures(context& ctx)
 /// enable by modulating opacities of material with given opacity value
 void textured_material::enable_textures(context& ctx)
 {
-	for (size_t ti = 0; ti < textures.size(); ++ti) {
+	for (unsigned ti = 0; ti < textures.size(); ++ti) {
 		if (textures[ti])
 			textures[ti]->enable(ctx, ti);
 	}
@@ -115,14 +129,14 @@ void textured_material::enable_textures(context& ctx)
 /// disable material
 void textured_material::disable_textures(context& ctx)
 {
-	for (size_t ti = 0; ti < textures.size(); ++ti) {
+	for (unsigned ti = 0; ti < textures.size(); ++ti) {
 		if (textures[ti])
 			textures[ti]->disable(ctx);
 	}
 }
 
 /// return pointer to ambient texture or 0 if non created
-texture* textured_material::get_texture(size_t ti) const
+texture* textured_material::get_texture(int ti) const
 {
 	assert(ti < textures.size());
 	return textures[ti];

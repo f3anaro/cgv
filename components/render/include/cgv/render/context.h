@@ -75,6 +75,9 @@ enum RenderPass {
 	RP_USER_DEFINED
 };
 
+/// convert render pass type into string
+extern CGV_API std::string get_render_pass_name(RenderPass rp);
+
 /// available flags that can be queried from the context and set for a new render pass
 enum RenderPassFlags {
 	RPF_NONE = 0,                      // no frame initialization is performed
@@ -293,6 +296,7 @@ protected:
 	bool uses_view;
 	bool uses_material;
 	bool uses_lights;
+	bool uses_gamma;
 	
 	// vertex attribute names
 	int position_index;
@@ -307,13 +311,14 @@ public:
 	/// initializes members
 	shader_program_base();
 	// configure program
-	void specify_standard_uniforms(bool view, bool material, bool lights);
+	void specify_standard_uniforms(bool view, bool material, bool lights, bool gamma);
 	void specify_standard_vertex_attribute_names(context& ctx, bool color = true, bool normal = true, bool texcoord = true);
 	void specify_vertex_attribute_names(context& ctx, const std::string& position, const std::string& color = "", const std::string& normal = "", const std::string& texcoord = "");
 	// uniforms
 	bool does_use_view() const { return uses_view; }
 	bool does_use_material() const { return uses_material; }
 	bool does_use_lights() const { return uses_lights; }
+	bool does_use_gamma() const { return uses_gamma; }
 
 	// vertex attribute names
 	int get_position_index() const { return position_index; }
@@ -521,10 +526,20 @@ protected:
 	bool auto_set_lights_in_current_shader_program;
 	/// whether to automatically set material in current shader program, defaults to true 
 	bool auto_set_material_in_current_shader_program;
+	/// whether to automatically set gamma in current shader program, defaults to true 
+	bool auto_set_gamma_in_current_shader_program;
 	/// whether to support view and lighting management of compatibility mode, defaults to true
 	bool support_compatibility_mode;
 	/// whether to do all drawing in compatibility mode, only possible if support_compatibility_mode is true, , defaults to false
 	bool draw_in_compatibility_mode;
+	/// whether to debug render passes
+	bool debug_render_passes;
+	/// whether vsynch should be enabled
+	bool enable_vsynch;
+	/// whether to use opengl option to support sRGB framebuffer
+	bool sRGB_framebuffer;
+	/// gamma value passed to shader programs that have gamma uniform
+	float gamma;
 
 	/// keep two matrix stacks for model view and projection matrices
 	std::stack<dmat4> modelview_matrix_stack, projection_matrix_stack;
@@ -541,6 +556,7 @@ protected:
 	{
 		bool enabled;
 		vec3 eye_position;
+		vec3 eye_spot_direction;
 		int light_source_index;
 	};
 	/// keep track of enabled light source handles
@@ -549,8 +565,6 @@ protected:
 	size_t light_source_handle;
 	/// map handle to light source and light source status information
 	std::map<void*, std::pair<cgv::media::illum::light_source, light_source_status> > light_sources;
-	/// helper function to place lights 
-	vec3 get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const;
 	/// helper function to send light update events
 	virtual void on_lights_changed();
 	/// number of default light sources
@@ -681,8 +695,6 @@ public:
 	//@{
 	///
 	virtual void init_render_pass();
-	///
-	virtual cgv::base::group* get_group_interface();
 	/// 
 	virtual void draw_textual_info();
 	///
@@ -697,6 +709,8 @@ public:
 	virtual void configure_new_child(cgv::base::base_ptr child);
 	/// return the used rendering API
 	virtual RenderAPI get_render_api() const = 0;
+	/// return current render pass recursion depth
+	unsigned get_render_pass_recursion_depth() const;
 	/// return the current render pass
 	virtual RenderPass get_render_pass() const;
 	/// return the current render pass flags
@@ -711,6 +725,10 @@ public:
 	virtual void render_pass(RenderPass render_pass = RP_MAIN, 
 							 RenderPassFlags render_pass_flags = RPF_ALL,
 							 void* user_data = 0);
+	/// set flag whether to debug render passes
+	void set_debug_render_passes(bool _debug);
+	/// check whether render passes are debugged
+	bool get_debug_render_passes() const { return debug_render_passes; }
 	/// return whether the context is currently in process of rendering
 	virtual bool in_render_process() const = 0;
 	/// return whether the context is created
@@ -841,10 +859,18 @@ public:
 	//@{
 	DEPRECATED("deprecated and ignored.") virtual void enable_phong_shading();
 	DEPRECATED("deprecated and ignored.") virtual void disable_phong_shading();
-	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
-	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material()) = 0;
-	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1) = 0;
+	DEPRECATED("deprecated, use set_material instead.") virtual void enable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material(), MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
+	DEPRECATED("deprecated and ignored.") virtual void disable_material(const cgv::media::illum::phong_material& mat = cgv::media::illum::default_material());
+	DEPRECATED("deprecated, use enable_material(textured_surface_material) instead.") virtual void enable_material(const textured_material& mat, MaterialSide ms = MS_FRONT_AND_BACK, float alpha = 1);
 	//DEPRECATED("deprecated, use disable_material(textured_surface_material) instead.") virtual void disable_material(const textured_material& mat) = 0;
+	/// set the current gamma values
+	virtual void set_gamma(float _gamma);
+	/// query current gamma
+	float get_gamma() const { return gamma; }
+	/// enable or disable sRGB framebuffer
+	virtual void enable_sRGB_framebuffer(bool do_enable = true);
+	/// check whether sRGB framebuffer is enabled
+	bool sRGB_framebuffer_enabled() { return sRGB_framebuffer; }
 	/// set the current color
 	virtual void set_color(const rgba& clr) = 0;
 	/// set the current color
@@ -863,6 +889,10 @@ public:
 	void set_current_material(shader_program& prog) const;
 	/// set the shader program lights to the currently enabled lights
 	void set_current_lights(shader_program& prog) const;
+	/// helper function to place lights 
+	vec3 get_light_eye_position(const cgv::media::illum::light_source& light, bool place_now) const;
+	/// helper function to place spot lights 
+	vec3 get_light_eye_spot_direction(const cgv::media::illum::light_source& light, bool place_now) const;
 	/// return a reference to a shader program used to render without illumination
 	virtual shader_program& ref_default_shader_program(bool texture_support = false) = 0;
 	/// return a reference to the default shader program used to render surfaces 
@@ -875,7 +905,7 @@ public:
 	//@{
 	DEPRECATED("deprecated, use add_light_source instead.") void* enable_light(const cgv::media::illum::light_source& light) { return add_light_source(light); }
 	DEPRECATED("deprecated, use enable_light_source instead.") void disable_light(void* handle) { disable_light_source(handle); }
-	DEPRECATED("deprecated, use enable_light_source instead.") unsigned get_max_nr_lights() const { return get_max_nr_enabled_light_sources(); }
+	DEPRECATED("deprecated, use get_max_nr_enabled_light_sources instead.") unsigned get_max_nr_lights() const { return get_max_nr_enabled_light_sources(); }
 	/// return the number of light sources
 	size_t get_nr_light_sources() const;
 	/// add a new light source, enable it if \c enable is true and place it relative to current model view transformation if \c place_now is true; return handle to light source
@@ -989,7 +1019,7 @@ public:
 	*/
 	virtual void tesselate_arrow(double length = 1, double aspect = 0.1, double rel_tip_radius = 2.0, double tip_aspect = 0.3, int res = 25, bool edges = false);
 	/// define length and direction from start and end point and draw an arrow
-	virtual void tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25, bool edges = false);
+	virtual void tesselate_arrow(const dvec3& start, const dvec3& end, double aspect = 0.1f, double rel_tip_radius = 2.0f, double tip_aspect = 0.3f, int res = 25, bool edges = false);
 	//! draw a light source with an emissive material 
 	/*! @param[in] l to be rendered light source
 	    @param[in] intensity_scale used to multiply with the light source values

@@ -43,10 +43,10 @@ namespace cgv { // @<
 			/// method to set the group index attribute
 			void set_group_index_array(const context& ctx, const unsigned* group_indices, size_t nr_elements);
 			/// method to set the group index attribute from a vertex buffer object, the element type must be given as explicit template parameter
-			void set_group_index_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0);
+			void set_group_index_array(const context& ctx, type_descriptor element_type, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0);
 			/// template method to set the group index color attribute from a vertex buffer object, the element type must be given as explicit template parameter
 			template <typename ElementType>
-			void set_group_index_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, size_t stride_in_bytes = 0) { set_group_index_array(ctx, type_descriptor(element_descriptor_traits<ElementType>::get_type_descriptor(ElementType()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
+			void set_group_index_array(const context& ctx, const vertex_buffer& vbo, size_t offset_in_bytes, size_t nr_elements, unsigned stride_in_bytes = 0) { set_group_index_array(ctx, type_descriptor(element_descriptor_traits<T>::get_type_descriptor(T()), true), vbo, offset_in_bytes, nr_elements, stride_in_bytes); }
 			/// template method to set the group colors from a vector of colors of type T
 			template <typename T>
 			void set_group_colors(const context& ctx, const std::vector<T>& colors) { has_group_colors = true;  ref_prog().set_uniform_array(ctx, "group_colors", colors); }
@@ -78,11 +78,6 @@ namespace cgv {
 				bool self_reflect(cgv::reflect::reflection_handler& rh);
 			};
 		}
-
-#ifdef REFLECT_IN_CLASS_NAMESPACE
-}} namespace cgv { namespace render {
-#endif
-	
 		extern CGV_API cgv::reflect::extern_reflection_traits<cgv::render::group_render_style, cgv::reflect::render::group_render_style> get_reflection_traits(const cgv::render::group_render_style&);
 	}
 }

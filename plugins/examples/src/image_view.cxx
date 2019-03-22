@@ -105,7 +105,7 @@ public:
 		if (begin_tree_node("rendering", use_blending)) {
 			align("\a");
 			add_member_control(this, "use_blending", use_blending, "check");
-			add_gui("gamma", gamma, "vector", "main_label='heading';components='rgba';options='min=0.01;max=100;ticks=true;log=true'");
+			add_gui("gamma4", gamma4, "vector", "main_label='heading';components='rgba';options='min=0.01;max=100;ticks=true;log=true'");
 			add_gui("min_value", min_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
 			add_gui("max_value", max_value, "vector", "main_label='heading';components='rgba';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
 			add_gui("range", range, "ascending", "main_label='heading';components='nx';options='min=0;max=1;ticks=true;step=0.00001;log=true'");
@@ -134,7 +134,7 @@ public:
 	{
 		get_context()->make_current();
 		if (tex_ids.size() > 0) {
-			glDeleteTextures(tex_ids.size(),&tex_ids.front());
+			glDeleteTextures(GLsizei(tex_ids.size()),&tex_ids.front());
 			durations.clear();
 			tex_ids.clear();
 		}
@@ -150,7 +150,7 @@ public:
 	{
 		get_context()->make_current();
 		if (tex_ids.size() > 0) {
-			glDeleteTextures(tex_ids.size(),&tex_ids.front());
+			glDeleteTextures(GLsizei(tex_ids.size()),&tex_ids.front());
 			durations.clear();
 			tex_ids.clear();
 		}

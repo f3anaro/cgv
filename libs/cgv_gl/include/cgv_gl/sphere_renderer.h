@@ -4,10 +4,17 @@
 
 #include "gl/lib_begin.h"
 
-namespace cgv {
-	namespace render {
-		
-		/** style of a point */
+namespace cgv { // @<
+	namespace render { // @<
+		class CGV_API sphere_renderer;
+
+		//! reference to a singleton sphere renderer that can be shared among drawables
+		/*! the second parameter is used for reference counting. Use +1 in your init method,
+			-1 in your clear method and default 0 argument otherwise. If internal reference
+			counter decreases to 0, singelton renderer is destructed. */
+		extern CGV_API sphere_renderer& ref_sphere_renderer(context& ctx, int ref_count_change = 0);
+
+		/** render style for sphere rendere */
 		struct CGV_API sphere_render_style : public surface_render_style
 		{
 			/*@name sphere rendering attributes*/
@@ -34,7 +41,7 @@ namespace cgv {
 			sphere_render_style();
 		};
 
-		/// renderer that supports point splatting
+		/// renderer that supports splatting of spheres
 		class CGV_API sphere_renderer : public surface_renderer
 		{
 		protected:
@@ -55,14 +62,14 @@ namespace cgv {
 			void set_radius_array(const context& ctx, const std::vector<T>& radii) { has_radii = true; set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii); }
 			/// 
 			template <typename T = float>
-			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, size_t stride_in_bytes = 0) { has_radii = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii, nr_elements, stride_in_bytes); }
+			void set_radius_array(const context& ctx, const T* radii, size_t nr_elements, unsigned stride_in_bytes = 0) { has_radii = true;  set_attribute_array(ctx, ref_prog().get_attribute_location(ctx, "radius"), radii, nr_elements, stride_in_bytes); }
 			///
 			template <typename T = float>
 			void set_group_radii(const context& ctx, const std::vector<T>& group_radii) { has_group_radii = true; ref_prog().set_uniform_array(ctx, "group_radii", group_radii); }
 			/// use this function if you store spheres in vec4 with the 4th component the radius
 			template <typename T = float>
 			void set_sphere_array(const context& ctx, const std::vector<cgv::math::fvec<T, 4> >& spheres) {
-				set_position_array(ctx, &(reinterpret_cast<cgv::math::fvec<T, 3>&>(spheres[0]), spheres.size(), sizeof(cgv::math::fvec<T, 4>)));
+				set_position_array(ctx, &(reinterpret_cast<const cgv::math::fvec<T, 3>&>(spheres[0])), spheres.size(), sizeof(cgv::math::fvec<T, 4>));
 				set_radius_array(ctx, &spheres[0][3], spheres.size(), sizeof(cgv::math::fvec<T, 4>));
 			}
 			///

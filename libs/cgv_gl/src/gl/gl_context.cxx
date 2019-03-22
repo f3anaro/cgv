@@ -17,9 +17,9 @@
 #include <cgv/utils/scan.h>
 #include <cgv/media/image/image_writer.h>
 #include <cgv/gui/event_handler.h>
-#include <cgv/math/vec.h>
-#include <cgv/math/mat.h>
 #include <cgv/math/ftransform.h>
+#include <cgv/math/geom.h>
+#include <cgv/math/inv.h>
 #include <cgv/type/standard_types.h>
 #include <cgv/os/clipboard.h>
 
@@ -125,6 +125,8 @@ void gl_set_material(const cgv::media::illum::phong_material& mat, MaterialSide 
 /// construct gl_context and attach signals
 gl_context::gl_context()
 {
+	max_nr_indices = 0;
+	max_nr_vertices = 0;
 	info_font_size = 14;
 	// check if a new context has been created or if the size of the viewport has been changed
 	font_ptr info_font = find_font("Courier New");
@@ -138,7 +140,7 @@ gl_context::gl_context()
 		info_font_face = info_font->get_font_face(FFA_REGULAR);
 
 	show_help = false;
-	show_stats = true;
+	show_stats = false;
 }
 
 /// return the used rendering API
@@ -271,7 +273,17 @@ media::font::font_face_ptr gl_context::get_current_font_face() const
 
 void gl_context::init_render_pass()
 {
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
+#ifdef WIN32
+	wglSwapIntervalEXT(enable_vsynch ? 1 : 0);
+#else
+	glXSwapIntervalEXT(enable_vsynch ? 1 : 0);
+#endif
+	if (sRGB_framebuffer)
+		glEnable(GL_FRAMEBUFFER_SRGB);
+	else
+		glDisable(GL_FRAMEBUFFER_SRGB);
+
+//	glPushAttrib(GL_ALL_ATTRIB_BITS);
 
 	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
 		for (unsigned i = 0; i < nr_default_light_sources; ++i)
@@ -345,68 +357,8 @@ void gl_context::init_render_pass()
 ///
 void gl_context::finish_render_pass()
 {
-	glPopAttrib();
-/*	if (get_render_pass_flags()&RPF_SET_LIGHTS) {
-		// undo change in lights
-		glLightfv(GL_LIGHT0, GL_DIFFUSE, black);
-		glLightfv(GL_LIGHT1, GL_DIFFUSE, black);
-		glLightfv(GL_LIGHT2, GL_DIFFUSE, black);
-		glLightfv(GL_LIGHT3, GL_DIFFUSE, black);
-		glLightfv(GL_LIGHT0, GL_SPECULAR, black);
-		glLightfv(GL_LIGHT1, GL_SPECULAR, black);
-		glLightfv(GL_LIGHT2, GL_SPECULAR, black);
-		glLightfv(GL_LIGHT3, GL_SPECULAR, black);
-	}
-	if (get_render_pass_flags()&RPF_SET_LIGHTS_ON) {
-		// enable lighting calculations
-		glDisable(GL_LIGHTING);
-		// turn the 4 lights on
-		glDisable(GL_LIGHT0);
-		glDisable(GL_LIGHT1);
-		glDisable(GL_LIGHT2);
-		glDisable(GL_LIGHT3);
-	}
-	if (get_render_pass_flags()&RPF_SET_MATERIAL) {
-		// set the surface material colors and the specular exponent,
-		// which is between 0 and 128 and generates sharpest highlights for 128 and no
-		// distinguished highlight for 0
-		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, black);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, black);
-		glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
-		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0);
-	}
-	if (get_render_pass_flags()&RPF_ENABLE_MATERIAL) {
-		// this mode allows to define the ambient and diffuse color of the surface material
-		// via the glColor commands
-		glDisable(GL_COLOR_MATERIAL);
-	}
-	if (get_render_pass_flags()&RPF_SET_STATE_FLAGS) {
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
-	}
-	if ((get_render_pass_flags()&RPF_SET_PROJECTION) != 0) {
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-	}
-	glMatrixMode(GL_MODELVIEW);
-	if ((get_render_pass_flags()&RPF_SET_MODELVIEW) != 0) {
-		glLoadIdentity();
-	}
-	// this defines the background color to which the frame buffer is set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_COLOR)
-		glClearColor(0,0,0,0);
-	// this defines the background color to which the accum buffer is set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_ACCUM)
-		glClearAccum(0,0,0,0);
-	// this defines the background depth buffer value set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_DEPTH)
-		glClearDepth(1);
-	// this defines the background depth buffer value set by glClear
-	if (get_render_pass_flags()&RPF_SET_CLEAR_STENCIL)
-		glClearStencil(0);
-		*/
+//	glPopAttrib();
 }
-
 
 struct format_callback_handler : public traverse_callback_handler
 {
@@ -489,117 +441,6 @@ void gl_context::perform_screen_shot()
 	if (wr.is_format_supported(*dv.get_format()))
 		wr.write_image(dv);
 }
-/*
-void enable_material_color(GLenum side, const textured_material::color_type& c, float alpha, GLenum type)
-{
-	GLfloat v[4] = {c[0],c[1],c[2],c[3]*alpha};
-	glMaterialfv(side, type, v);
-}
-*/
-
-/// enable a material without textures
-void gl_context::enable_material(const cgv::media::illum::phong_material& mat, MaterialSide ms, float alpha)
-{
-	if (support_compatibility_mode)
-		gl_set_material(mat, ms, alpha);
-	cgv::media::illum::surface_material M(
-		cgv::media::illum::BrdfType(cgv::media::illum::BT_LAMBERTIAN + cgv::media::illum::BT_PHONG),
-		mat.get_diffuse(), 1.0f / mat.get_shininess() - 1.0f / 128.0f, 0.0f, 0.5f,
-		mat.get_emission(), mat.get_diffuse().transparency(), std::complex<float>(1.5f, 0.0f),
-		0.0f, 0.0f, mat.get_specular());
-	bool tmp = support_compatibility_mode;
-	support_compatibility_mode = false;
-	set_material(M);
-	support_compatibility_mode = tmp;
-}
-
-/// disable phong material
-void gl_context::disable_material(const cgv::media::illum::phong_material& mat)
-{
-}
-
-/// enable a material with textures
-void gl_context::enable_material(const textured_material& mat, MaterialSide ms, float alpha)
-{
-	/*
-	if (ms == MS_NONE)
-		return;
-	bool do_alpha = (mat.get_diffuse_texture() != 0) && mat.get_diffuse_texture()->get_component_name(mat.get_diffuse_texture()->get_nr_components() - 1)[0] == 'A';
-	if (ms != MS_BACK) {
-		GLuint flags = do_alpha ? GL_COLOR_BUFFER_BIT : GL_CURRENT_BIT;
-		if (mat.get_bump_texture() != 0 || mat.get_diffuse_texture() != 0)
-			flags |= GL_TEXTURE_BIT;
-		flags |= GL_LIGHTING_BIT | GL_ENABLE_BIT;
-		glPushAttrib(flags);
-		if (shader_program_stack.empty())
-			glEnable(GL_LIGHTING);
-		glDisable(GL_COLOR_MATERIAL);
-	}
-
-	gl_set_material(mat, ms, alpha);
-
-	if (ms != MS_BACK) {
-		if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
-			shader_program& prog = ref_textured_material_prog(*this);
-			bool use_bump_map = mat.get_bump_texture() != 0;
-			if (use_bump_map)
-				mat.get_bump_texture()->enable(*this, 0);
-
-			bool use_diffuse_map = mat.get_diffuse_texture() != 0;
-			if (use_diffuse_map)
-				mat.get_diffuse_texture()->enable(*this, 1);
-
-			prog.enable(*this);
-			prog.set_uniform(*this, "use_bump_map", use_bump_map);
-			if (use_bump_map) {
-				prog.set_uniform(*this, "bump_map", 0);
-				prog.set_uniform(*this, "bump_map_res", (int)(mat.get_bump_texture()->get_width()));
-				prog.set_uniform(*this, "bump_scale", 400 * mat.get_bump_scale());
-			}
-			prog.set_uniform(*this, "use_diffuse_map", use_diffuse_map);
-			if (use_diffuse_map)
-				prog.set_uniform(*this, "diffuse_map", 1);
-			set_lighting_parameters(*this, prog);
-		}
-		else if (mat.get_diffuse_texture()) {
-			unsigned side = map_to_gl(ms);
-//			enable_material_color(side, textured_material::color_type(1, 1, 1, 1), alpha, GL_DIFFUSE);
-			mat.get_diffuse_texture()->enable(*this);
-			glTexEnvi(GL_TEXTURE_2D, GL_TEXTURE_ENV, GL_MODULATE);
-		}
-		if (do_alpha) {
-			glEnable(GL_ALPHA_TEST);
-			switch (mat.get_alpha_test_func()) {
-			case textured_material::AT_ALWAYS: glAlphaFunc(GL_ALWAYS, mat.get_alpha_threshold()); break;
-			case textured_material::AT_LESS: glAlphaFunc(GL_LESS, mat.get_alpha_threshold()); break;
-			case textured_material::AT_EQUAL: glAlphaFunc(GL_EQUAL, mat.get_alpha_threshold()); break;
-			case textured_material::AT_GREATER: glAlphaFunc(GL_GREATER, mat.get_alpha_threshold()); break;
-			}
-		}
-		else
-			glColor4f(1, 1, 1, alpha);
-	}
-	*/
-}
-
-/*
-/// disable phong material
-void gl_context::disable_material(const textured_material& mat)
-{
-	if ((mat.get_bump_texture() || phong_shading) && ref_textured_material_prog(*this).is_linked()) {
-		shader_program& prog = ref_textured_material_prog(*this);
-		prog.disable(*this);
-		if (mat.get_diffuse_texture())
-			mat.get_diffuse_texture()->disable(*this);
-		if (mat.get_bump_texture())
-			mat.get_bump_texture()->disable(*this);
-	}
-	else if (mat.get_diffuse_texture()) {
-		mat.get_diffuse_texture()->disable(*this);
-	}
-	glPopAttrib();
-}
-*/
 
 /// get list of program uniforms
 void gl_context::enumerate_program_uniforms(shader_program& prog, std::vector<std::string>& names, std::vector<int>* locations_ptr, std::vector<int>* sizes_ptr, std::vector<int>* types_ptr, bool show) const
@@ -685,7 +526,7 @@ shader_program& gl_context::ref_default_shader_program(bool texture_support)
 				error("could not build default shader program from default.glpr");
 				exit(0);
 			}
-			prog.specify_standard_uniforms(true, false, false);
+			prog.specify_standard_uniforms(true, false, false, true);
 			prog.specify_standard_vertex_attribute_names(*this, true, false, false);
 		}
 		return prog;
@@ -696,7 +537,7 @@ shader_program& gl_context::ref_default_shader_program(bool texture_support)
 			exit(0);
 		}
 		prog_texture.set_uniform(*this, "texture", 0);
-		prog_texture.specify_standard_uniforms(true, false, false);
+		prog_texture.specify_standard_uniforms(true, false, false, true);
 		prog_texture.specify_standard_vertex_attribute_names(*this, true, false, true);
 	}
 	return prog_texture;
@@ -714,7 +555,7 @@ shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 				error("could not build surface shader program from default_surface.glpr");
 				exit(0);
 			}
-			prog.specify_standard_uniforms(true, true, true);
+			prog.specify_standard_uniforms(true, true, true, true);
 			prog.specify_standard_vertex_attribute_names(*this, true, true, false);
 		}
 		return prog;
@@ -724,7 +565,7 @@ shader_program& gl_context::ref_surface_shader_program(bool texture_support)
 			error("could not build surface shader program with texture support from textured_surface.glpr");
 			exit(0);
 		}
-		prog_texture.specify_standard_uniforms(true, true, true);
+		prog_texture.specify_standard_uniforms(true, true, true, true);
 		prog_texture.specify_standard_vertex_attribute_names(*this, true, true, true);
 	}
 	return prog_texture;
@@ -742,15 +583,15 @@ void gl_context::on_lights_changed()
 			}
 			GLfloat col[4] = { 1,1,1,1 };
 			const cgv::media::illum::light_source& light = get_light_source(get_enabled_light_source_handle(light_idx));
-			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission()*light.get_ambient_scale();
+			(rgb&)(col[0]) = light.get_emission()*light.get_ambient_scale();
 			glLightfv(GL_LIGHT0 + light_idx, GL_AMBIENT, col);
-			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission();
+			(rgb&)(col[0]) = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_DIFFUSE, col);
-			(cgv::media::illum::light_source::color_type&)(col[0]) = light.get_emission();
+			(rgb&)(col[0]) = light.get_emission();
 			glLightfv(GL_LIGHT0 + light_idx, GL_SPECULAR, col);
 
 			GLfloat pos[4] = { 0,0,0,light.get_type() == cgv::media::illum::LT_DIRECTIONAL ? 0.0f : 1.0f };
-			(cgv::media::illum::light_source::vec_type&)(pos[0]) = light.get_position();
+			(vec3&)(pos[0]) = light.get_position();
 			glLightfv(GL_LIGHT0 + light_idx, GL_POSITION, pos);
 			if (light.get_type() != cgv::media::illum::LT_DIRECTIONAL) {
 				glLightf(GL_LIGHT0 + light_idx, GL_CONSTANT_ATTENUATION, light.get_constant_attenuation());
@@ -777,36 +618,6 @@ void gl_context::on_lights_changed()
 		}
 	}
 	context::on_lights_changed();
-}
-
-template <typename T>
-void gl_rotate(const T& a, const cgv::math::fvec<T,3>& axis);
-
-template <> void gl_rotate<float>(const float& a, const cgv::math::fvec<float,3>& axis)
-{
-	glRotatef(a, axis(0), axis(1), axis(2));
-}
-
-template <> void gl_rotate<double>(const double& a, const cgv::math::fvec<double,3>& axis)
-{
-	glRotated(a, axis(0), axis(1), axis(2));
-}
-
-
-template <typename T>
-void rotate(const cgv::math::fvec<T,3>& src, const cgv::math::fvec<T,3>& dest)
-{
-	T c = dot(src,dest);
-	cgv::math::fvec<T,3> axis = cross(src,dest);
-	T s = axis.length();
-	if (s < 10 * std::numeric_limits<T>::epsilon()) {
-		axis = cross(src, cgv::math::fvec<T, 3>(1, 0, 0));
-		if (axis.length() < 10 * std::numeric_limits<T>::epsilon())
-			axis = cross(src, cgv::math::fvec<T, 3>(0, 1, 0));
-	}
-	T a = atan2(s, c) * 180 / (float)M_PI;
-	axis.normalize();
-	gl_rotate(a, axis);
 }
 
 void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
@@ -836,52 +647,58 @@ void gl_context::tesselate_arrow(double length, double aspect, double rel_tip_ra
 	pop_modelview_matrix();
 }
 
-///
-void gl_context::tesselate_arrow(const cgv::math::fvec<double, 3>& start, const cgv::math::fvec<double, 3>& end, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
+/// helper function that multiplies a rotation to modelview matrix such that vector is rotated onto target
+void gl_context::rotate_vector_to_target(const dvec3& vector, const dvec3& target)
 {
+	double angle;
+	dvec3 axis;
+	compute_rotation_axis_and_angle_from_vector_pair(vector, target, axis, angle);
+	mul_modelview_matrix(cgv::math::rotate4<double>(180.0 / M_PI * angle, axis));
+}
+
+///
+void gl_context::tesselate_arrow(const dvec3& start, const dvec3& end, double aspect, double rel_tip_radius, double tip_aspect, int res, bool edges)
+{
+	if ((start - end).length() < 1e-8) {
+		error("ignored tesselate arrow called with start and end closer then 1e-8");
+		return;
+	}
 	push_modelview_matrix();
-	glTranslated(start(0),start(1),start(2));
-	rotate(cgv::math::fvec<double,3>(0,0,1), end-start);
-	tesselate_arrow((end-start).length(), aspect, rel_tip_radius, tip_aspect, res, edges);
+		mul_modelview_matrix(cgv::math::translate4<double>(start));
+		rotate_vector_to_target(dvec3(0, 0, 1), end - start);
+		tesselate_arrow((end-start).length(), aspect, rel_tip_radius, tip_aspect, res, edges);
 	pop_modelview_matrix();
 }
 
 void gl_context::draw_light_source(const light_source& l, float i, float light_scale)
-{
-	glPushAttrib(GL_LIGHTING_BIT|GL_CURRENT_BIT);
-
-	GLfloat e[] = { l.get_emission()[0]*i,l.get_emission()[1]*i,l.get_emission()[2]*i, 1 };
-	GLfloat s[] = { 0.5f,0.5f,0.5f,1 };
-	glColor3f(0,0,0);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, e);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, s);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 40);
-
+{	
+	set_color(i*l.get_emission());
 	push_modelview_matrix();
 	switch (l.get_type()) {
-	case LT_DIRECTIONAL : 
-		glScalef(light_scale, light_scale, light_scale);
-		rotate(light_source::vec_type(0,0,-1),(const light_source::vec_type&)l.get_position());
-		tesselate_arrow(2,0.1f,2,0.5);
+	case LT_DIRECTIONAL :
+		mul_modelview_matrix(cgv::math::scale4<double>(light_scale, light_scale, light_scale));
+		tesselate_arrow(vec3(0.0f), l.get_position(), 0.1f,2.0f,0.5f);
 		break;
 	case LT_POINT :
-		glTranslatef(l.get_position()(0)/l.get_position()(3), l.get_position()(1)/l.get_position()(3), l.get_position()(2)/l.get_position()(3));
-		glScalef(0.3f*light_scale, 0.3f*light_scale, 0.3f*light_scale);
+		mul_modelview_matrix(
+			cgv::math::translate4<double>(l.get_position())*
+			cgv::math::scale4<double>(vec3(0.3f*light_scale)));
 		tesselate_unit_sphere();
 		break;
 	case LT_SPOT :
-		glTranslatef(l.get_position()(0)/l.get_position()(3), l.get_position()(1)/l.get_position()(3), l.get_position()(2)/l.get_position()(3));
-		glScalef(light_scale, light_scale, light_scale);
-		rotate(light_source::vec_type(0,0,-1),l.get_spot_direction());
+		mul_modelview_matrix(
+			cgv::math::translate4<double>(l.get_position())*
+			cgv::math::scale4<double>(vec3(light_scale))
+		);
+		rotate_vector_to_target(dvec3(0, 0, -1), l.get_spot_direction());
 		{
 			float t = tan(l.get_spot_cutoff()*(float)M_PI/180);
 			if (l.get_spot_cutoff() > 45.0f)
-				glScalef(1,1,0.5f/t);
+				mul_modelview_matrix(cgv::math::scale4<double>(1, 1, 0.5f / t));
 			else
-				glScalef(t,t,0.5);
-			glTranslatef(0,0,-1);
-			GLboolean cull;
-			glGetBooleanv(GL_CULL_FACE, &cull);
+				mul_modelview_matrix(cgv::math::scale4<double>(t, t, 0.5f));
+			mul_modelview_matrix(cgv::math::translate4<double>(0, 0, -1));
+			GLboolean cull = glIsEnabled(GL_CULL_FACE);
 			glDisable(GL_CULL_FACE);
 			tesselate_unit_cone();
 			if (cull)
@@ -889,8 +706,6 @@ void gl_context::draw_light_source(const light_source& l, float i, float light_s
 		}
 	}
 	pop_modelview_matrix();
-
-	glPopAttrib();
 }
 
 
@@ -1100,6 +915,30 @@ void gl_context::draw_edges_of_faces(
 	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
 
+
+void gl_context::draw_elements_void(GLenum mode, size_t total_count, GLenum type, size_t type_size, const void* indices) const
+{
+	ensure_configured();
+	size_t drawn = 0;
+	const cgv::type::uint8_type* index_ptr = static_cast<const cgv::type::uint8_type*>(indices);
+	while (drawn < total_count) {
+		size_t count = total_count - drawn;
+		if (count > max_nr_indices)
+			count = size_t(max_nr_indices);
+		glDrawElements(mode, GLsizei(count), type, index_ptr + drawn * type_size);
+		drawn += count;
+	}
+}
+
+size_t max_nr_indices, max_nr_vertices;
+void gl_context::ensure_configured() const
+{
+	if (max_nr_indices != 0)
+		return;
+	glGetInteger64v(GL_MAX_ELEMENTS_INDICES, reinterpret_cast<GLint64*>(&max_nr_indices));
+	glGetInteger64v(GL_MAX_ELEMENTS_VERTICES, reinterpret_cast<GLint64*>(&max_nr_vertices));
+}
+
 /// pass geometry of given strip or fan to current shader program and generate draw calls to render lines for the edges
 void gl_context::draw_edges_of_strip_or_fan(
 	const float* vertices, const float* normals, const float* tex_coords,
@@ -1140,10 +979,9 @@ void gl_context::draw_edges_of_strip_or_fan(
 	std::vector<vec2> T;
 	if (!prepare_attributes(P, N, T, nr_vertices, vertices, normals, tex_coords, vertex_indices, normal_indices, tex_coord_indices, flip_normals))
 		return;
-	glDrawElements(GL_LINES, I.size(), GL_UNSIGNED_INT, &I[0]);
+	draw_elements(GL_LINES, I.size(), &I[0]);
 	release_attributes(normals, tex_coords, normal_indices, tex_coord_indices);
 }
-
 
 void gl_context::draw_faces(
 	const float* vertices, const float* normals, const float* tex_coords, 
@@ -1964,7 +1802,7 @@ bool gl_context::frame_buffer_enable(frame_buffer_base& fbb)
 	if (buffers.size() == 1)
 		glDrawBuffer(buffers[0]);
 	else if (buffers.size() > 1) {
-		glDrawBuffers(buffers.size(), reinterpret_cast<GLenum*>(&buffers[0]));
+		glDrawBuffers(GLsizei(buffers.size()), reinterpret_cast<GLenum*>(&buffers[0]));
 	}
 	else {
 		error("gl_context::frame_buffer_enable: no attached draw buffer selected!!", &fbb);
@@ -2244,6 +2082,8 @@ bool gl_context::shader_program_enable(shader_program_base& spb)
 		set_current_material(prog);
 	if (auto_set_view_in_current_shader_program && spb.does_use_view())
 		set_current_view(prog);
+	if (auto_set_gamma_in_current_shader_program && spb.does_use_gamma())
+		prog.set_uniform(*this, "gamma", gamma);
 	return true;
 }
 
@@ -2480,13 +2320,13 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	case TI_INT32:
 		switch (value_type.element_type) {
 		case ET_VALUE:
-			glUniform1iv(loc, nr_elements, reinterpret_cast<const int32_type*>(value_ptr));
+			glUniform1iv(loc, GLsizei(nr_elements), reinterpret_cast<const int32_type*>(value_ptr));
 			break;
 		case ET_VECTOR:
 			switch (value_type.nr_rows) {
-			case 2: glUniform2iv(loc, nr_elements, reinterpret_cast<const int32_type*>(value_ptr)); break;
-			case 3: glUniform3iv(loc, nr_elements, reinterpret_cast<const int32_type*>(value_ptr)); break;
-			case 4: glUniform4iv(loc, nr_elements, reinterpret_cast<const int32_type*>(value_ptr)); break;
+			case 2: glUniform2iv(loc, GLsizei(nr_elements), reinterpret_cast<const int32_type*>(value_ptr)); break;
+			case 3: glUniform3iv(loc, GLsizei(nr_elements), reinterpret_cast<const int32_type*>(value_ptr)); break;
+			case 4: glUniform4iv(loc, GLsizei(nr_elements), reinterpret_cast<const int32_type*>(value_ptr)); break;
 			default:
 				error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") vector dimension outside [2,..4].", &spb);
 				res = false;
@@ -2502,13 +2342,13 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	case TI_UINT32:
 		switch (value_type.element_type) {
 		case ET_VALUE:
-			glUniform1uiv(loc, nr_elements, reinterpret_cast<const uint32_type*>(value_ptr));
+			glUniform1uiv(loc, GLsizei(nr_elements), reinterpret_cast<const uint32_type*>(value_ptr));
 			break;
 		case ET_VECTOR:
 			switch (value_type.nr_rows) {
-			case 2: glUniform2uiv(loc, nr_elements, reinterpret_cast<const uint32_type*>(value_ptr)); break;
-			case 3:	glUniform3uiv(loc, nr_elements, reinterpret_cast<const uint32_type*>(value_ptr)); break;
-			case 4:	glUniform4uiv(loc, nr_elements, reinterpret_cast<const uint32_type*>(value_ptr)); break;
+			case 2: glUniform2uiv(loc, GLsizei(nr_elements), reinterpret_cast<const uint32_type*>(value_ptr)); break;
+			case 3:	glUniform3uiv(loc, GLsizei(nr_elements), reinterpret_cast<const uint32_type*>(value_ptr)); break;
+			case 4:	glUniform4uiv(loc, GLsizei(nr_elements), reinterpret_cast<const uint32_type*>(value_ptr)); break;
 			default:
 				error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") vector dimension outside [2,..4].", &spb);
 				res = false;
@@ -2524,13 +2364,13 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 	case TI_FLT32:
 		switch (value_type.element_type) {
 		case ET_VALUE:
-			glUniform1fv(loc, nr_elements, reinterpret_cast<const flt32_type*>(value_ptr));
+			glUniform1fv(loc, GLsizei(nr_elements), reinterpret_cast<const flt32_type*>(value_ptr));
 			break;
 		case ET_VECTOR:
 			switch (value_type.nr_rows) {
-			case 2: glUniform2fv(loc, nr_elements, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-			case 3:	glUniform3fv(loc, nr_elements, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-			case 4:	glUniform4fv(loc, nr_elements, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+			case 2: glUniform2fv(loc, GLsizei(nr_elements), reinterpret_cast<const flt32_type*>(value_ptr)); break;
+			case 3:	glUniform3fv(loc, GLsizei(nr_elements), reinterpret_cast<const flt32_type*>(value_ptr)); break;
+			case 4:	glUniform4fv(loc, GLsizei(nr_elements), reinterpret_cast<const flt32_type*>(value_ptr)); break;
 			default:
 				error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") vector dimension outside [2,..4].", &spb);
 				res = false;
@@ -2541,9 +2381,9 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 			switch (value_type.nr_rows) {
 			case 2:
 				switch (value_type.nr_columns) {
-				case 2: glUniformMatrix2fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 3: glUniformMatrix2x3fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 4: glUniformMatrix2x4fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 2: glUniformMatrix2fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 3: glUniformMatrix2x3fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 4: glUniformMatrix2x4fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
 				default:
 					error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") matrix number of columns outside [2,..4].", &spb);
 					res = false;
@@ -2552,9 +2392,9 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 				break;
 			case 3:
 				switch (value_type.nr_columns) {
-				case 2: glUniformMatrix3x2fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 3:	glUniformMatrix3fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr));	break;
-				case 4:	glUniformMatrix3x4fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 2: glUniformMatrix3x2fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 3:	glUniformMatrix3fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr));	break;
+				case 4:	glUniformMatrix3x4fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
 				default:
 					error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") matrix number of columns outside [2,..4].", &spb);
 					res = false;
@@ -2563,9 +2403,9 @@ bool gl_context::set_uniform_array_void(shader_program_base& spb, int loc, type_
 				break;
 			case 4:
 				switch (value_type.nr_columns) {
-				case 2: glUniformMatrix4x2fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 3:	glUniformMatrix4x3fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
-				case 4:	glUniformMatrix4fv(loc, nr_elements, value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr));	break;
+				case 2: glUniformMatrix4x2fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 3:	glUniformMatrix4x3fv(loc, GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr)); break;
+				case 4:	glUniformMatrix4fv(loc,   GLsizei(nr_elements), value_type.is_row_major, reinterpret_cast<const flt32_type*>(value_ptr));	break;
 				default:
 					error(std::string("gl_context::set_uniform_array_void(") + value_type_index_to_string(value_type) + ") matrix number of columns outside [2,..4].", &spb);
 					res = false;

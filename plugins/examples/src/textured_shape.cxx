@@ -11,13 +11,6 @@
 #include <cgv_gl/gl/gl.h>
 #include <cgv/media/color.h> 
 
-using namespace cgv::base;
-using namespace cgv::gui;
-using namespace cgv::data;
-using namespace cgv::render;
-using namespace cgv::signal;
-using namespace cgv::utils;
-
 class textured_shape : 
 	public cgv::base::node,          /// derive from node to integrate into global tree structure and to store a name
 	public cgv::gui::provider,
@@ -104,7 +97,7 @@ public:
 	}
 	bool init(cgv::render::context& ctx)
 	{
-		size_t di = mat.add_image_file("res://alhambra.png");
+		int di = mat.add_image_file("res://alhambra.png");
 		mat.set_diffuse_index(di);
 		if (mat.ensure_textures(ctx))
 			t_ptr = mat.get_texture(di);
